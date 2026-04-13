@@ -15,8 +15,7 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
 .wrap{padding:22px 28px;max-width:1400px;margin:0 auto;}
 .ph{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px;flex-wrap:wrap;gap:12px;}
 .pt{font-size:22px;font-weight:600;margin-bottom:3px;}
-.ps{font-size:12px;color:var(--m);}
-.ps em{color:var(--ac2);font-style:normal;}
+.ps{font-size:12px;color:var(--m);}.ps em{color:var(--ac2);font-style:normal;}
 .df{background:var(--s);border:1px solid var(--b);border-radius:10px;padding:9px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .fl{font-size:10px;color:var(--m);text-transform:uppercase;letter-spacing:.07em;}
 .di{background:var(--s2);border:1px solid var(--b);border-radius:6px;color:var(--t);font-size:12px;padding:5px 9px;outline:none;}
@@ -54,7 +53,7 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
 .funnel-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
 .funnel-lbl{font-size:11px;color:var(--m);width:88px;flex-shrink:0;text-align:right;}
 .funnel-wrap{flex:1;background:rgba(255,255,255,.05);border-radius:4px;height:24px;overflow:hidden;}
-.funnel-bar{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:10px;font-size:11px;font-weight:600;color:#fff;white-space:nowrap;}
+.funnel-bar{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:10px;font-size:11px;font-weight:600;color:#fff;transition:width .3s;}
 .funnel-pct{font-size:11px;color:var(--m);width:46px;text-align:right;flex-shrink:0;}
 .fgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
 .fc{background:var(--s2);border-radius:10px;padding:14px;text-align:center;}
@@ -64,9 +63,7 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
 .mail-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:8px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;align-items:center;}
 .mail-hdr{color:var(--m);font-size:10px;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--b);padding-bottom:9px;margin-bottom:4px;}
 .rate{display:inline-block;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:600;background:rgba(124,58,237,.15);color:var(--ac2);}
-.setup-box{background:var(--s);border:1px solid var(--b);border-radius:12px;padding:28px;text-align:center;color:var(--m);}
-.setup-box h3{color:#fff;font-size:15px;margin-bottom:8px;}
-.setup-box code{background:var(--s2);padding:3px 8px;border-radius:4px;font-size:12px;color:var(--ac2);}
+.no-data{color:var(--m);font-size:13px;padding:24px;text-align:center;}
 @media(max-width:900px){.mg{grid-template-columns:repeat(3,1fr);}.g2,.g3{grid-template-columns:1fr;}.fgrid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:560px){.mg{grid-template-columns:repeat(2,1fr);}.wrap{padding:14px;}.ph{flex-direction:column;}}
 </style>
@@ -80,25 +77,27 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
   <div class="ph">
     <div>
       <p class="pt">B2B Dashboard</p>
-      <p class="ps">Mails · Sales · Ads · InMails · Events &nbsp;·&nbsp; <em id="lu">—</em></p>
+      <p class="ps">Mails · Sales · Ads · InMails · <em id="lu">—</em></p>
     </div>
     <div class="df">
       <span class="fl">Range</span>
-      <input type="date" class="di" id="df" value="2026-02-01">
+      <input type="date" class="di" id="df">
       <span style="color:var(--m);font-size:11px">→</span>
-      <input type="date" class="di" id="dt" value="2026-04-13">
+      <input type="date" class="di" id="dt">
       <button class="qb on" data-r="all">All</button>
       <button class="qb" data-r="30">30d</button>
       <button class="qb" data-r="7">7d</button>
+      <span style="font-size:11px;color:var(--m);font-family:monospace;" id="fi">—</span>
     </div>
   </div>
 
+  <!-- TOP SUMMARY — always updates with filter -->
   <div class="mg">
-    <div class="mc gn"><div class="ml">Total B2B Sales</div><div class="mv" id="mSales">₹4.16L</div><div class="ms" id="mOrders">13 orders</div></div>
-    <div class="mc bl"><div class="ml">Emails Delivered</div><div class="mv" id="mDel">3,254</div><div class="ms" id="mOpen">19.2% open rate</div></div>
-    <div class="mc or"><div class="ml">Email Responses</div><div class="mv" id="mResp">60</div><div class="ms" id="mRespR">1.8% response rate</div></div>
-    <div class="mc ye"><div class="ml">Ads Leads</div><div class="mv" id="mLeads">17</div><div class="ms" id="mConv">2 converted · 11.8%</div></div>
-    <div class="mc"><div class="ml">InMails Sent</div><div class="mv" id="mInmail">11</div><div class="ms">FM: 6 · IT: 4</div></div>
+    <div class="mc gn"><div class="ml">Total B2B Sales</div><div class="mv" id="tSales">—</div><div class="ms" id="tOrders">— orders</div></div>
+    <div class="mc bl"><div class="ml">Emails Delivered</div><div class="mv" id="tDel">—</div><div class="ms" id="tOpenR">— open rate</div></div>
+    <div class="mc or"><div class="ml">Email Responses</div><div class="mv" id="tResp">—</div><div class="ms" id="tRespR">— response rate</div></div>
+    <div class="mc ye"><div class="ml">Ads Leads</div><div class="mv" id="tLeads">—</div><div class="ms" id="tConvR">— converted</div></div>
+    <div class="mc"><div class="ml">InMails Sent</div><div class="mv" id="tInmail">—</div><div class="ms" id="tInmailS">—</div></div>
   </div>
 
   <div class="tabs">
@@ -107,7 +106,6 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
     <div class="tab" data-tab="sales">Sales</div>
     <div class="tab" data-tab="ads">Ads</div>
     <div class="tab" data-tab="inmails">InMails</div>
-    <div class="tab" data-tab="events">Events</div>
   </div>
 
   <!-- OVERVIEW -->
@@ -116,16 +114,16 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
       <div class="cc">
         <div class="ch"><div class="ct">Email Funnel</div></div>
         <div class="fgrid">
-          <div class="fc"><div class="fcv" style="color:var(--bl)">3,254</div><div class="fcl">Delivered</div><div class="fcr">100%</div></div>
-          <div class="fc"><div class="fcv" style="color:var(--ac2)">625</div><div class="fcl">Opened</div><div class="fcr">19.2%</div></div>
-          <div class="fc"><div class="fcv" style="color:var(--or)">88</div><div class="fcl">Clicked</div><div class="fcr">2.7%</div></div>
-          <div class="fc"><div class="fcv" style="color:var(--gr)">60</div><div class="fcl">Responded</div><div class="fcr">1.8%</div></div>
+          <div class="fc"><div class="fcv" style="color:var(--bl)" id="fcDel">—</div><div class="fcl">Delivered</div><div class="fcr">100%</div></div>
+          <div class="fc"><div class="fcv" style="color:var(--ac2)" id="fcOpen">—</div><div class="fcl">Opened</div><div class="fcr" id="fcOpenR">—</div></div>
+          <div class="fc"><div class="fcv" style="color:var(--or)" id="fcClick">—</div><div class="fcl">Clicked</div><div class="fcr" id="fcClickR">—</div></div>
+          <div class="fc"><div class="fcv" style="color:var(--gr)" id="fcResp">—</div><div class="fcl">Responded</div><div class="fcr" id="fcRespR">—</div></div>
         </div>
-        <div class="funnel-row"><span class="funnel-lbl">Delivered</span><div class="funnel-wrap"><div class="funnel-bar" style="width:100%;background:#3b82f6">3,254</div></div><span class="funnel-pct">100%</span></div>
-        <div class="funnel-row"><span class="funnel-lbl">Opened</span><div class="funnel-wrap"><div class="funnel-bar" style="width:19.2%;background:#7c3aed">625</div></div><span class="funnel-pct">19.2%</span></div>
-        <div class="funnel-row"><span class="funnel-lbl">Clicked</span><div class="funnel-wrap"><div class="funnel-bar" style="width:2.7%;background:#f97316">88</div></div><span class="funnel-pct">2.7%</span></div>
-        <div class="funnel-row"><span class="funnel-lbl">Responded</span><div class="funnel-wrap"><div class="funnel-bar" style="width:1.84%;background:#22c55e">60</div></div><span class="funnel-pct">1.8%</span></div>
-        <div class="funnel-row"><span class="funnel-lbl">Bounced</span><div class="funnel-wrap"><div class="funnel-bar" style="width:2.27%;background:#ef4444">74</div></div><span class="funnel-pct">2.3%</span></div>
+        <div class="funnel-row"><span class="funnel-lbl">Delivered</span><div class="funnel-wrap"><div class="funnel-bar" id="fbDel" style="width:100%;background:#3b82f6">—</div></div><span class="funnel-pct">100%</span></div>
+        <div class="funnel-row"><span class="funnel-lbl">Opened</span><div class="funnel-wrap"><div class="funnel-bar" id="fbOpen" style="background:#7c3aed">—</div></div><span class="funnel-pct" id="fpOpen">—</span></div>
+        <div class="funnel-row"><span class="funnel-lbl">Clicked</span><div class="funnel-wrap"><div class="funnel-bar" id="fbClick" style="background:#f97316">—</div></div><span class="funnel-pct" id="fpClick">—</span></div>
+        <div class="funnel-row"><span class="funnel-lbl">Responded</span><div class="funnel-wrap"><div class="funnel-bar" id="fbResp" style="background:#22c55e">—</div></div><span class="funnel-pct" id="fpResp">—</span></div>
+        <div class="funnel-row"><span class="funnel-lbl">Bounced</span><div class="funnel-wrap"><div class="funnel-bar" id="fbBounce" style="background:#ef4444">—</div></div><span class="funnel-pct" id="fpBounce">—</span></div>
       </div>
       <div class="cc">
         <div class="ch"><div class="ct">Sales by Date (₹)</div></div>
@@ -139,24 +137,19 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
     </div>
   </div>
 
-  <!-- MAILS -->
+  <!-- MAILS — note: mail data is campaign-level, not date-level from sheet -->
   <div class="tp" id="tp-mails">
     <div class="mg" style="grid-template-columns:repeat(4,1fr);">
-      <div class="mc bl"><div class="ml">Delivered</div><div class="mv">1,805</div><div class="ms">4 campaigns</div></div>
-      <div class="mc"><div class="ml">Opened</div><div class="mv">327</div><div class="ms">18.1% open rate</div></div>
-      <div class="mc or"><div class="ml">Clicked</div><div class="mv">35</div><div class="ms">1.9% click rate</div></div>
-      <div class="mc gn"><div class="ml">Responded</div><div class="mv">56</div><div class="ms">3.1% response rate</div></div>
+      <div class="mc bl"><div class="ml">Delivered</div><div class="mv" id="mDel">—</div><div class="ms" id="mDelS">— campaigns</div></div>
+      <div class="mc"><div class="ml">Opened</div><div class="mv" id="mOpened">—</div><div class="ms" id="mOpenedR">— open rate</div></div>
+      <div class="mc or"><div class="ml">Clicked</div><div class="mv" id="mClicked">—</div><div class="ms" id="mClickedR">— click rate</div></div>
+      <div class="mc gn"><div class="ml">Responded</div><div class="mv" id="mResponded">—</div><div class="ms" id="mRespondedR">— response rate</div></div>
     </div>
     <div class="g1"><div class="cc">
-      <div class="ch"><div class="ct">Performance by Industry / Campaign</div></div>
-      <div class="mail-row mail-hdr"><span>Industry / Campaign</span><span>Delivered</span><span>Opened</span><span>Clicked</span><span>Responded</span></div>
+      <div class="ch"><div class="ct">Performance by Campaign</div></div>
+      <div class="mail-row mail-hdr"><span>Campaign</span><span>Delivered</span><span>Opened</span><span>Clicked</span><span>Responded</span></div>
       <div id="mailTable"></div>
-      <div class="mail-row" style="font-weight:600;color:#fff;border-top:1px solid var(--b);margin-top:6px;padding-top:10px;">
-        <span>TOTAL</span><span>1,805</span>
-        <span>327 <span class="rate">18.1%</span></span>
-        <span>35 <span class="rate">1.9%</span></span>
-        <span>56 <span class="rate">3.1%</span></span>
-      </div>
+      <div class="mail-row" style="font-weight:600;color:#fff;border-top:1px solid var(--b);margin-top:6px;padding-top:10px;" id="mailTotal"></div>
     </div></div>
     <div class="g2">
       <div class="cc"><div class="ch"><div class="ct">Open Rate by Campaign</div></div><div class="cw" id="mailOpen" style="min-height:200px"></div></div>
@@ -167,17 +160,17 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
   <!-- SALES -->
   <div class="tp" id="tp-sales">
     <div class="mg" style="grid-template-columns:repeat(4,1fr);">
-      <div class="mc gn"><div class="ml">Total Revenue</div><div class="mv">₹4.16L</div><div class="ms">13 orders</div></div>
-      <div class="mc gn"><div class="ml">Avg Order Value</div><div class="mv">₹32K</div><div class="ms">per order</div></div>
-      <div class="mc gn"><div class="ml">Top POC</div><div class="mv">Manjari</div><div class="ms">6 orders · ₹2.28L</div></div>
-      <div class="mc gn"><div class="ml">Biggest Order</div><div class="mv">₹1.01L</div><div class="ms">Shopknot Impex</div></div>
+      <div class="mc gn"><div class="ml">Total Revenue</div><div class="mv" id="sTotalRev">—</div><div class="ms" id="sTotalOrd">— orders</div></div>
+      <div class="mc gn"><div class="ml">Avg Order Value</div><div class="mv" id="sAvg">—</div><div class="ms">per order</div></div>
+      <div class="mc gn"><div class="ml">Top POC</div><div class="mv" id="sTopPoc">—</div><div class="ms" id="sTopPocAmt">—</div></div>
+      <div class="mc gn"><div class="ml">Biggest Order</div><div class="mv" id="sBigAmt">—</div><div class="ms" id="sBigClient">—</div></div>
     </div>
     <div class="g2">
       <div class="cc"><div class="ch"><div class="ct">Revenue by POC</div></div><div class="cw" id="salesPoc" style="min-height:180px"></div></div>
       <div class="cc"><div class="ch"><div class="ct">Daily Revenue</div></div><div class="cw" id="salesDate" style="min-height:180px"></div></div>
     </div>
     <div class="g1"><div class="cc">
-      <div class="ch"><div class="ct">All Orders</div></div>
+      <div class="ch"><div class="ct">All Orders</div><span id="salesCount" style="font-size:11px;color:var(--m)"></span></div>
       <table class="tbl">
         <thead><tr><th>Ref No.</th><th>Date</th><th>Client</th><th>POC</th><th>Type</th><th style="text-align:right">Amount</th></tr></thead>
         <tbody id="salesTable"></tbody>
@@ -188,13 +181,13 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
   <!-- ADS -->
   <div class="tp" id="tp-ads">
     <div class="mg" style="grid-template-columns:repeat(4,1fr);">
-      <div class="mc ye"><div class="ml">Total Leads</div><div class="mv">17</div><div class="ms">from ads</div></div>
-      <div class="mc ye"><div class="ml">Inbound</div><div class="mv">12</div><div class="ms">70.6% of leads</div></div>
-      <div class="mc ye"><div class="ml">CCBD</div><div class="mv">5</div><div class="ms">29.4% of leads</div></div>
-      <div class="mc gn"><div class="ml">Converted</div><div class="mv">2</div><div class="ms">11.8% conv rate</div></div>
+      <div class="mc ye"><div class="ml">Total Leads</div><div class="mv" id="aTotal">—</div><div class="ms">from ads</div></div>
+      <div class="mc ye"><div class="ml">Inbound</div><div class="mv" id="aInbound">—</div><div class="ms" id="aInboundR">—</div></div>
+      <div class="mc ye"><div class="ml">CCBD</div><div class="mv" id="aCcbd">—</div><div class="ms" id="aCcbdR">—</div></div>
+      <div class="mc gn"><div class="ml">Converted</div><div class="mv" id="aConv">—</div><div class="ms" id="aConvR">— conv rate</div></div>
     </div>
     <div class="g1"><div class="cc">
-      <div class="ch"><div class="ct">All Leads</div></div>
+      <div class="ch"><div class="ct">All Leads</div><span id="adsCount" style="font-size:11px;color:var(--m)"></span></div>
       <table class="tbl">
         <thead><tr><th>Date</th><th>Client</th><th>Source</th><th>POC</th><th>Lead Type</th><th>Converted</th><th style="text-align:right">Order Value</th></tr></thead>
         <tbody id="adsTable"></tbody>
@@ -202,12 +195,12 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
     </div></div>
   </div>
 
-  <!-- INMAILS -->
+  <!-- INMAILS — not date-filterable, static contact list -->
   <div class="tp" id="tp-inmails">
     <div class="mg" style="grid-template-columns:repeat(3,1fr);">
-      <div class="mc bl"><div class="ml">Total Contacts</div><div class="mv">11</div><div class="ms">LinkedIn InMails</div></div>
-      <div class="mc bl"><div class="ml">Facility Mgmt</div><div class="mv">6</div><div class="ms">FM industry</div></div>
-      <div class="mc bl"><div class="ml">IT Industry</div><div class="mv">4</div><div class="ms">IT sector</div></div>
+      <div class="mc bl"><div class="ml">Total Contacts</div><div class="mv" id="iTotal">—</div><div class="ms">LinkedIn InMails</div></div>
+      <div class="mc bl"><div class="ml">Facility Mgmt</div><div class="mv" id="iFM">—</div><div class="ms">FM industry</div></div>
+      <div class="mc bl"><div class="ml">IT Industry</div><div class="mv" id="iIT">—</div><div class="ms">IT sector</div></div>
     </div>
     <div class="g1"><div class="cc">
       <div class="ch"><div class="ct">InMail Contact List</div></div>
@@ -217,24 +210,14 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
       </table>
     </div></div>
   </div>
-
-  <!-- EVENTS -->
-  <div class="tp" id="tp-events">
-    <div class="setup-box">
-      <h3>Events data will appear here</h3>
-      <p style="margin-top:8px;font-size:13px;">Connect your Google Sheet to populate this tab with event tracking data.</p>
-      <p style="margin-top:12px;font-size:12px;">Add your Apps Script URL to <code>SHEET_URL</code> in the dashboard code.</p>
-    </div>
-  </div>
 </div>
 <div class="tip" id="tip"></div>
 
 <script>
-// ── LIVE DATA URL — add your Apps Script URL here ─────────
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzsb5FX-sds7Hv25Cd_crPLtJGqTDWaPDuNz10Z68UvaHjD_US5bLys6ncfkY_Wm1ibzA/exec';
+const SHEET_URL='https://script.google.com/macros/s/AKfycbzsb5FX-sds7Hv25Cd_crPLtJGqTDWaPDuNz10Z68UvaHjD_US5bLys6ncfkY_Wm1ibzA/exec';
 
-// ── DATA (from your Excel file) ───────────────────────────
-const SALES = [
+// ── RAW DATA ──────────────────────────────────────────────
+let SALES=[
   {ref:'Apr26-001',date:'2026-04-01',client:'Floraza',poc:'Siya',type:'Inst Order',amt:7890.9},
   {ref:'Apr26-024',date:'2026-04-02',client:'Gerson Lehrman Group',poc:'Manjari',type:'Inst Order',amt:16830},
   {ref:'Apr26-044',date:'2026-04-02',client:'Qteam Solution Services',poc:'Dhyana',type:'Inst Order',amt:20500},
@@ -250,14 +233,14 @@ const SALES = [
   {ref:'Apr26-269',date:'2026-04-13',client:'Mistins',poc:'Manjari',type:'Inst Order',amt:18447},
 ];
 
-const MAILS = [
-  {industry:'Corporates',delivered:401,opened:75,clicked:12,responded:3},
-  {industry:'Facility Mgmt (7 Apr)',delivered:593,opened:122,clicked:15,responded:50},
-  {industry:'IT (8 Apr)',delivered:380,opened:81,clicked:5,responded:2},
-  {industry:'IT (9 Apr)',delivered:431,opened:49,clicked:3,responded:1},
+let MAILS=[
+  {industry:'Corporates',delivered:401,opened:75,clicked:12,responded:3,bounced:8},
+  {industry:'Facility Mgmt (7 Apr)',delivered:593,opened:122,clicked:15,responded:50,bounced:14},
+  {industry:'IT (8 Apr)',delivered:380,opened:81,clicked:5,responded:2,bounced:9},
+  {industry:'IT (9 Apr)',delivered:431,opened:49,clicked:3,responded:1,bounced:43},
 ];
 
-const ADS = [
+let ADS=[
   {date:'2026-03-31',client:'Vijay Chaudhary',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'No',val:null},
   {date:'2026-03-31',client:'Rachael',type:'Inbound',poc:'Siya',lead:'Cold',conv:'—',val:null},
   {date:'2026-03-31',client:'Gaunisha Gaanavi',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'No',val:null},
@@ -277,7 +260,7 @@ const ADS = [
   {date:'2026-04-09',client:'Neeraj Kumar',type:'CCBD',poc:'Siya',lead:'Cold',conv:'—',val:null},
 ];
 
-const INMAILS = [
+let INMAILS=[
   {n:1,ind:'FM',company:'CBRE South Asia',role:'Assistant Manager',poc:'Rajesh K Nair'},
   {n:2,ind:'FM',company:'Quess Corp',role:'GM Procurement',poc:'Shiv Kumara'},
   {n:3,ind:'FM',company:'Supreme Facility Management',role:'Group Director & CEO',poc:'Dr. Amol Shingate'},
@@ -293,21 +276,37 @@ const INMAILS = [
 
 // ── HELPERS ───────────────────────────────────────────────
 function fmt(n){if(!n||isNaN(n)||n===0)return'—';if(n>=100000)return'₹'+(n/100000).toFixed(1)+'L';if(n>=1000)return'₹'+(n/1000).toFixed(0)+'K';return'₹'+Math.round(n);}
-function fdate(d){return d.slice(5).replace('-','/');}
+function pct(a,b){return b>0?Math.round(a/b*100)+'%':'0%';}
+function fdate(d){return d?d.slice(5).replace('-','/'):'—';}
+function set(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
+
 const tipEl=document.getElementById('tip');
 function showTip(e,h){tipEl.innerHTML=h;tipEl.style.display='block';tipEl.style.left=(e.clientX+12)+'px';tipEl.style.top=(e.clientY-30)+'px';}
 function hideTip(){tipEl.style.display='none';}
 
-// ── BAR CHART (vertical) ──────────────────────────────────
+// ── DATE FILTER ───────────────────────────────────────────
+function getF(){return document.getElementById('df').value;}
+function getT(){return document.getElementById('dt').value;}
+function inRange(date){
+  const f=getF(),t=getT();
+  if(f&&date<f)return false;
+  if(t&&date>t)return false;
+  return true;
+}
+function fSales(){return SALES.filter(s=>inRange(s.date));}
+function fAds(){return ADS.filter(a=>inRange(a.date));}
+// Mails are campaign-level so always show all (no per-row dates)
+function fMails(){return MAILS;}
+// InMails are static contacts
+function fInmails(){return INMAILS;}
+
+// ── CHARTS ────────────────────────────────────────────────
 function barChart(id,labels,datasets,h){
-  h=h||200;
-  const el=document.getElementById(id);if(!el)return;
-  const W=el.clientWidth||600;
-  const P={t:8,r:10,b:48,l:55},cW=W-P.l-P.r,cH=h-P.t-P.b;
-  const n=labels.length,ds=datasets.length;
-  if(!n){el.innerHTML='';return;}
+  h=h||200;const el=document.getElementById(id);if(!el)return;
+  const W=el.clientWidth||600,P={t:8,r:10,b:48,l:55},cW=W-P.l-P.r,cH=h-P.t-P.b;
+  if(!labels.length){el.innerHTML='<p class="no-data">No data in selected range</p>';return;}
   const maxV=Math.max(...datasets.flatMap(d=>d.data).filter(v=>v>0),1);
-  const bW=Math.min((cW/n)*0.8/ds,34);
+  const bW=Math.min((cW/labels.length)*0.8/datasets.length,34);
   let s=`<svg width="${W}" height="${h}" xmlns="http://www.w3.org/2000/svg">`;
   for(let i=0;i<=4;i++){
     const y=P.t+cH-(i/4)*cH,v=maxV*i/4;
@@ -317,26 +316,24 @@ function barChart(id,labels,datasets,h){
   datasets.forEach((d,di)=>{
     labels.forEach((lbl,i)=>{
       const v=d.data[i]||0,bH=Math.max((v/maxV)*cH,0);
-      const x=P.l+i*(cW/n)+(cW/n-ds*bW)/2+di*bW,y=P.t+cH-bH;
+      const x=P.l+i*(cW/labels.length)+(cW/labels.length-datasets.length*bW)/2+di*bW,y=P.t+cH-bH;
       const tv=d.vf?d.vf(v):fmt(v);
       s+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bW.toFixed(1)}" height="${bH.toFixed(1)}" fill="${d.color}" rx="3" opacity=".88" style="cursor:pointer" onmouseenter="showTip(event,'<b>${lbl}</b><br>${d.label||''}: ${tv}')" onmouseleave="hideTip()"/>`;
     });
   });
   labels.forEach((lbl,i)=>{
-    const x=(P.l+i*(cW/n)+(cW/n)/2)|0;
+    const x=(P.l+i*(cW/labels.length)+(cW/labels.length)/2)|0;
     s+=`<text x="${x}" y="${h-5}" text-anchor="end" fill="#aaa" font-size="9" font-family="system-ui" transform="rotate(-35,${x},${h-5})">${lbl}</text>`;
   });
   s+=`<line x1="${P.l}" y1="${P.t}" x2="${P.l}" y2="${P.t+cH}" stroke="#333" stroke-width="1"/>`;
   s+=`<line x1="${P.l}" y1="${P.t+cH}" x2="${P.l+cW}" y2="${P.t+cH}" stroke="#333" stroke-width="1"/>`;
-  s+='</svg>';
-  el.innerHTML=s;
+  s+='</svg>';el.innerHTML=s;
 }
 
-// ── HORIZONTAL BAR CHART ──────────────────────────────────
 function hbar(id,labels,values,colors,vf){
   const el=document.getElementById(id);if(!el)return;
-  const W=el.clientWidth||400;
-  const maxV=Math.max(...values,1),rowH=32,P={l:115,r:55,t:4};
+  if(!labels.length){el.innerHTML='<p class="no-data">No data in selected range</p>';return;}
+  const W=el.clientWidth||400,maxV=Math.max(...values,1),rowH=32,P={l:115,r:55,t:4};
   const H=labels.length*rowH+P.t*2;
   let s=`<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">`;
   labels.forEach((lbl,i)=>{
@@ -347,106 +344,127 @@ function hbar(id,labels,values,colors,vf){
     s+=`<rect x="${P.l}" y="${y+5}" width="${Math.max(bW,3).toFixed(1)}" height="${rowH-12}" fill="${col}" rx="3" opacity=".85" style="cursor:pointer" onmouseenter="showTip(event,'${lbl}: ${tv}')" onmouseleave="hideTip()"/>`;
     s+=`<text x="${P.l+bW+7}" y="${y+rowH/2+4}" fill="#ccc" font-size="10" font-family="system-ui">${tv}</text>`;
   });
-  s+='</svg>';
-  el.innerHTML=s;
+  s+='</svg>';el.innerHTML=s;
 }
 
-// ── RENDER FUNCTIONS ──────────────────────────────────────
-function renderOverview(){
-  const sales=filteredSales(), ads=filteredAds();
-  // Update summary metrics
-  const totalSales=sales.reduce((a,s)=>a+s.amt,0);
-  const totalOrders=sales.length;
-  document.getElementById('mSales').textContent=fmt(totalSales)||'—';
-  document.getElementById('mOrders').textContent=totalOrders+' orders';
+// ── RENDER ALL ────────────────────────────────────────────
+function renderAll(){
+  const sales=fSales(), ads=fAds(), mails=fMails(), inmails=fInmails();
+
+  // ── TOP SUMMARY METRICS (all tied to filter) ──
+  const totalSalesAmt=sales.reduce((a,s)=>a+s.amt,0);
+  const totalDel=mails.reduce((a,m)=>a+m.delivered,0);
+  const totalOpen=mails.reduce((a,m)=>a+m.opened,0);
+  const totalResp=mails.reduce((a,m)=>a+m.responded,0);
+  const totalBounce=mails.reduce((a,m)=>a+m.bounced,0);
   const totalLeads=ads.length;
-  const converted=ads.filter(a=>a.conv==='Yes').length;
-  document.getElementById('mLeads').textContent=totalLeads;
-  document.getElementById('mConv').textContent=converted+' converted · '+(totalLeads?Math.round(converted/totalLeads*100):0)+'%';
-  // Sales by date
+  const totalConv=ads.filter(a=>a.conv==='Yes').length;
+
+  set('tSales', fmt(totalSalesAmt)||'₹0');
+  set('tOrders', sales.length+' orders');
+  set('tDel', totalDel.toLocaleString());
+  set('tOpenR', pct(totalOpen,totalDel)+' open rate');
+  set('tResp', totalResp);
+  set('tRespR', pct(totalResp,totalDel)+' response rate');
+  set('tLeads', totalLeads);
+  set('tConvR', totalConv+' converted · '+pct(totalConv,totalLeads||1));
+  set('tInmail', inmails.length);
+  set('tInmailS', 'FM: '+inmails.filter(i=>i.ind==='FM').length+' · IT: '+inmails.filter(i=>i.ind==='IT').length);
+
+  // ── DATE FILTER INFO ──
+  const allDates=[...sales.map(s=>s.date),...ads.map(a=>a.date)].sort();
+  set('fi', (sales.length+ads.length)+' records');
+
+  // ── OVERVIEW TAB ──
+  // Email funnel cards
+  set('fcDel', totalDel.toLocaleString());
+  set('fcOpen', totalOpen);  set('fcOpenR', pct(totalOpen,totalDel));
+  set('fcClick', mails.reduce((a,m)=>a+m.clicked,0)); set('fcClickR', pct(mails.reduce((a,m)=>a+m.clicked,0),totalDel));
+  set('fcResp', totalResp); set('fcRespR', pct(totalResp,totalDel));
+
+  // Funnel bars
+  const totalClick=mails.reduce((a,m)=>a+m.clicked,0);
+  const fbarEl=document.getElementById('fbDel');if(fbarEl)fbarEl.textContent=totalDel.toLocaleString();
+  const setFbar=(id,pctId,v,total,color)=>{
+    const el=document.getElementById(id);const pel=document.getElementById(pctId);
+    const p=total>0?v/total*100:0;
+    if(el){el.style.width=Math.min(p,100)+'%';el.textContent=v;}
+    if(pel)pel.textContent=pct(v,total);
+  };
+  setFbar('fbOpen','fpOpen',totalOpen,totalDel);
+  setFbar('fbClick','fpClick',totalClick,totalDel);
+  setFbar('fbResp','fpResp',totalResp,totalDel);
+  setFbar('fbBounce','fpBounce',totalBounce,totalDel);
+
+  // Sales by date chart
   const byDate={};
   sales.forEach(s=>{byDate[s.date]=(byDate[s.date]||0)+s.amt;});
   const dates=Object.keys(byDate).sort();
   barChart('ovSales',dates.map(d=>fdate(d)),[{label:'Sales',data:dates.map(d=>byDate[d]),color:'#22c55e',vf:fmt}],220);
 
-  // Ads type
+  // Ads charts
   const types={Inbound:ads.filter(a=>a.type==='Inbound').length,CCBD:ads.filter(a=>a.type==='CCBD').length};
-  hbar('ovAdsType',Object.keys(types),Object.values(types),['#3b82f6','#7c3aed']);
-
-  // Conversion
+  hbar('ovAdsType',Object.keys(types).filter(k=>types[k]>0),Object.keys(types).filter(k=>types[k]>0).map(k=>types[k]),['#3b82f6','#7c3aed']);
   const conv={'Converted':ads.filter(a=>a.conv==='Yes').length,'Not Converted':ads.filter(a=>a.conv==='No').length,'Pending':ads.filter(a=>a.conv==='—').length};
-  hbar('ovAdsConv',Object.keys(conv),Object.values(conv),['#22c55e','#ef4444','#888']);
+  const convK=Object.keys(conv).filter(k=>conv[k]>0);
+  hbar('ovAdsConv',convK,convK.map(k=>conv[k]),['#22c55e','#ef4444','#888']);
 
   // Sales by POC
-  const byPoc={};
-  sales.forEach(s=>{byPoc[s.poc]=(byPoc[s.poc]||0)+s.amt;});
+  const byPoc={};sales.forEach(s=>{byPoc[s.poc]=(byPoc[s.poc]||0)+s.amt;});
   const pocs=Object.entries(byPoc).sort((a,b)=>b[1]-a[1]);
   hbar('ovPoc',pocs.map(p=>p[0]),pocs.map(p=>p[1]),['#a78bfa','#7c3aed','#6d28d9','#5b21b6'],fmt);
-}
 
-function renderMails(){
-  document.getElementById('mailTable').innerHTML=MAILS.map(m=>`
+  // ── MAILS TAB ──
+  set('mDel', totalDel.toLocaleString()); set('mDelS', mails.length+' campaigns');
+  set('mOpened', totalOpen); set('mOpenedR', pct(totalOpen,totalDel)+' open rate');
+  set('mClicked', totalClick); set('mClickedR', pct(totalClick,totalDel)+' click rate');
+  set('mResponded', totalResp); set('mRespondedR', pct(totalResp,totalDel)+' response rate');
+
+  document.getElementById('mailTable').innerHTML=mails.map(m=>`
     <div class="mail-row">
       <span style="color:#eee">${m.industry}</span>
       <span>${m.delivered}</span>
-      <span>${m.opened} <span class="rate">${(m.opened/m.delivered*100).toFixed(1)}%</span></span>
-      <span>${m.clicked} <span class="rate">${(m.clicked/m.delivered*100).toFixed(1)}%</span></span>
-      <span>${m.responded} <span class="rate">${(m.responded/m.delivered*100).toFixed(1)}%</span></span>
+      <span>${m.opened} <span class="rate">${pct(m.opened,m.delivered)}</span></span>
+      <span>${m.clicked} <span class="rate">${pct(m.clicked,m.delivered)}</span></span>
+      <span>${m.responded} <span class="rate">${pct(m.responded,m.delivered)}</span></span>
     </div>`).join('');
+  document.getElementById('mailTotal').innerHTML=`<span>TOTAL</span><span>${totalDel.toLocaleString()}</span><span>${totalOpen} <span class="rate">${pct(totalOpen,totalDel)}</span></span><span>${totalClick} <span class="rate">${pct(totalClick,totalDel)}</span></span><span>${totalResp} <span class="rate">${pct(totalResp,totalDel)}</span></span>`;
 
-  hbar('mailOpen',MAILS.map(m=>m.industry.slice(0,18)),MAILS.map(m=>+(m.opened/m.delivered*100).toFixed(1)),['#7c3aed','#6d28d9','#5b21b6','#4c1d95'],v=>v+'%');
-  hbar('mailResp',MAILS.map(m=>m.industry.slice(0,18)),MAILS.map(m=>+(m.responded/m.delivered*100).toFixed(1)),['#22c55e','#16a34a','#15803d','#166534'],v=>v+'%');
-}
+  hbar('mailOpen',mails.map(m=>m.industry.slice(0,18)),mails.map(m=>+(pct(m.opened,m.delivered).replace('%',''))),['#7c3aed','#6d28d9','#5b21b6','#4c1d95'],v=>v+'%');
+  hbar('mailResp',mails.map(m=>m.industry.slice(0,18)),mails.map(m=>+(pct(m.responded,m.delivered).replace('%',''))),['#22c55e','#16a34a','#15803d','#166534'],v=>v+'%');
 
-function renderSales(){
-  const sales=filteredSales();
-  // Update sales metrics
-  const total=sales.reduce((a,s)=>a+s.amt,0);
-  const avg=sales.length?total/sales.length:0;
-  const topPocEntry=Object.entries(sales.reduce((a,s)=>{a[s.poc]=(a[s.poc]||0)+s.amt;return a;},{})).sort((a,b)=>b[1]-a[1])[0];
+  // ── SALES TAB ──
+  const avg=sales.length?totalSalesAmt/sales.length:0;
+  const topPoc=Object.entries(byPoc).sort((a,b)=>b[1]-a[1])[0];
   const biggest=sales.reduce((a,s)=>s.amt>a.amt?s:a,{amt:0,client:'—'});
-  document.querySelector('#tp-sales .mg .mc:nth-child(1) .mv').textContent=fmt(total)||'—';
-  document.querySelector('#tp-sales .mg .mc:nth-child(1) .ms').textContent=sales.length+' orders';
-  document.querySelector('#tp-sales .mg .mc:nth-child(2) .mv').textContent=fmt(avg)||'—';
-  if(topPocEntry){document.querySelector('#tp-sales .mg .mc:nth-child(3) .mv').textContent=topPocEntry[0];document.querySelector('#tp-sales .mg .mc:nth-child(3) .ms').textContent=fmt(topPocEntry[1]);}
-  document.querySelector('#tp-sales .mg .mc:nth-child(4) .mv').textContent=fmt(biggest.amt)||'—';
-  document.querySelector('#tp-sales .mg .mc:nth-child(4) .ms').textContent=biggest.client.slice(0,18);
+  set('sTotalRev', fmt(totalSalesAmt)||'₹0'); set('sTotalOrd', sales.length+' orders');
+  set('sAvg', fmt(avg)||'—');
+  set('sTopPoc', topPoc?topPoc[0]:'—'); set('sTopPocAmt', topPoc?fmt(topPoc[1])+' revenue':'—');
+  set('sBigAmt', fmt(biggest.amt)||'—'); set('sBigClient', biggest.client?biggest.client.slice(0,20):'—');
+  set('salesCount', sales.length+' orders in range');
 
-  const byPoc={};
-  sales.forEach(s=>{byPoc[s.poc]=(byPoc[s.poc]||0)+s.amt;});
-  const pocs=Object.entries(byPoc).sort((a,b)=>b[1]-a[1]);
   hbar('salesPoc',pocs.map(p=>p[0]),pocs.map(p=>p[1]),['#22c55e','#16a34a','#15803d','#166534'],fmt);
-
-  const byDate={};
-  sales.forEach(s=>{byDate[s.date]=(byDate[s.date]||0)+s.amt;});
-  const dates=Object.keys(byDate).sort();
   barChart('salesDate',dates.map(d=>fdate(d)),[{label:'Revenue',data:dates.map(d=>byDate[d]),color:'#22c55e',vf:fmt}],180);
 
-  document.getElementById('salesTable').innerHTML=sales.map(s=>`<tr>
+  document.getElementById('salesTable').innerHTML=sales.length?sales.map(s=>`<tr>
     <td style="font-family:monospace;color:#a78bfa">${s.ref}</td>
     <td>${fdate(s.date)}</td>
     <td style="color:#fff">${s.client}</td>
     <td><span class="badge poc">${s.poc}</span></td>
     <td style="color:#888">${s.type}</td>
     <td style="text-align:right;font-family:monospace;color:#22c55e;font-weight:600">${fmt(s.amt)}</td>
-  </tr>`).join('');
-}
+  </tr>`).join(''):'<tr><td colspan="6" class="no-data">No orders in selected date range</td></tr>';
 
-function renderAds(){
-  const ads=filteredAds();
-  // Update ads metrics
+  // ── ADS TAB ──
   const inbound=ads.filter(a=>a.type==='Inbound').length;
   const ccbd=ads.filter(a=>a.type==='CCBD').length;
-  const conv=ads.filter(a=>a.conv==='Yes').length;
-  document.querySelector('#tp-ads .mg .mc:nth-child(1) .mv').textContent=ads.length;
-  document.querySelector('#tp-ads .mg .mc:nth-child(2) .mv').textContent=inbound;
-  document.querySelector('#tp-ads .mg .mc:nth-child(2) .ms').textContent=ads.length?(Math.round(inbound/ads.length*100))+'% of leads':'—';
-  document.querySelector('#tp-ads .mg .mc:nth-child(3) .mv').textContent=ccbd;
-  document.querySelector('#tp-ads .mg .mc:nth-child(3) .ms').textContent=ads.length?(Math.round(ccbd/ads.length*100))+'% of leads':'—';
-  document.querySelector('#tp-ads .mg .mc:nth-child(4) .mv').textContent=conv;
-  document.querySelector('#tp-ads .mg .mc:nth-child(4) .ms').textContent=ads.length?(Math.round(conv/ads.length*100))+'% conv rate':'—';
+  set('aTotal', totalLeads); 
+  set('aInbound', inbound); set('aInboundR', pct(inbound,totalLeads||1)+' of leads');
+  set('aCcbd', ccbd); set('aCcbdR', pct(ccbd,totalLeads||1)+' of leads');
+  set('aConv', totalConv); set('aConvR', pct(totalConv,totalLeads||1)+' conv rate');
+  set('adsCount', ads.length+' leads in range');
 
-  document.getElementById('adsTable').innerHTML=ads.map(a=>`<tr>
+  document.getElementById('adsTable').innerHTML=ads.length?ads.map(a=>`<tr>
     <td>${fdate(a.date)}</td>
     <td style="color:#fff">${a.client}</td>
     <td><span class="badge ${a.type.toLowerCase()}">${a.type}</span></td>
@@ -454,40 +472,22 @@ function renderAds(){
     <td><span class="badge ${a.lead.toLowerCase()}">${a.lead}</span></td>
     <td><span class="badge ${a.conv==='Yes'?'yes':a.conv==='No'?'no':''}">${a.conv}</span></td>
     <td style="text-align:right;font-family:monospace;color:#22c55e">${a.val?fmt(a.val):'—'}</td>
-  </tr>`).join('');
-}
+  </tr>`).join(''):'<tr><td colspan="7" class="no-data">No leads in selected date range</td></tr>';
 
-function renderInmails(){
-  document.getElementById('inmailTable').innerHTML=INMAILS.map(m=>`<tr>
+  // ── INMAILS TAB (static — no date filter) ──
+  set('iTotal', inmails.length);
+  set('iFM', inmails.filter(i=>i.ind==='FM').length);
+  set('iIT', inmails.filter(i=>i.ind==='IT').length);
+  document.getElementById('inmailTable').innerHTML=inmails.map(m=>`<tr>
     <td style="color:#888">${m.n}</td>
     <td><span class="badge ${m.ind==='FM'?'inbound':'ccbd'}">${m.ind}</span></td>
     <td style="color:#fff">${m.company}</td>
     <td style="color:#aaa">${m.role}</td>
     <td style="color:#a78bfa">${m.poc}</td>
   </tr>`).join('');
-}
 
-function renderAll(){
-  renderOverview();
-  renderMails();
-  renderSales();
-  renderAds();
-  renderInmails();
   document.getElementById('lu').textContent='Updated '+new Date().toLocaleTimeString();
 }
-
-// ── FILTER HELPERS ───────────────────────────────────────
-function getRange(){
-  return{f:document.getElementById('df').value, t:document.getElementById('dt').value};
-}
-function inRange(date){
-  const{f,t}=getRange();
-  if(f&&date<f)return false;
-  if(t&&date>t)return false;
-  return true;
-}
-function filteredSales(){return SALES.filter(s=>inRange(s.date));}
-function filteredAds(){return ADS.filter(a=>inRange(a.date));}
 
 // ── TABS ──────────────────────────────────────────────────
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
@@ -498,7 +498,7 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
   setTimeout(renderAll,30);
 }));
 
-// Date range buttons
+// ── DATE RANGE CONTROLS ───────────────────────────────────
 document.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>{
   document.querySelectorAll('[data-r]').forEach(x=>x.classList.remove('on'));
   b.classList.add('on');
@@ -518,75 +518,42 @@ document.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>
 document.getElementById('df').addEventListener('change',()=>{document.querySelectorAll('[data-r]').forEach(x=>x.classList.remove('on'));renderAll();});
 document.getElementById('dt').addEventListener('change',()=>{document.querySelectorAll('[data-r]').forEach(x=>x.classList.remove('on'));renderAll();});
 
-// ── BOOT ──────────────────────────────────────────────────
+// ── BOOT + LIVE FETCH ─────────────────────────────────────
 window.addEventListener('load',()=>{
   renderAll();
   if(SHEET_URL){
     (async()=>{
       try{
-        const ctrl=new AbortController();
-        setTimeout(()=>ctrl.abort(),12000);
+        const ctrl=new AbortController();setTimeout(()=>ctrl.abort(),12000);
         const res=await fetch(SHEET_URL+'?t='+Date.now(),{cache:'no-store',signal:ctrl.signal});
         if(!res.ok)throw new Error('bad');
         const raw=JSON.parse(await res.text());
 
-        // Parse Sales_Log
         if(raw['Sales_Log']){
-          const rows=raw['Sales_Log'].slice(1);
-          const parsed=[];
-          rows.forEach(r=>{
-            if(!r[0])return;
-            const d=r[3]||r[2];
-            const ds=d instanceof Date?d.toISOString().slice(0,10):typeof d==='string'?d.slice(0,10):'';
-            if(!ds)return;
-            parsed.push({ref:String(r[0]),date:ds,client:String(r[5]||'').trim(),poc:String(r[4]||'').trim(),type:String(r[1]||''),amt:parseFloat(r[6])||0});
-          });
-          if(parsed.length>0){SALES.length=0;parsed.forEach(p=>SALES.push(p));}
+          const parsed=raw['Sales_Log'].slice(1).filter(r=>r[0]).map(r=>{
+            const d=r[3]||r[2];const ds=d instanceof Date?d.toISOString().slice(0,10):typeof d==='string'?d.slice(0,10):'';
+            return ds?{ref:String(r[0]),date:ds,client:String(r[5]||'').trim(),poc:String(r[4]||'').trim(),type:String(r[1]||''),amt:parseFloat(r[6])||0}:null;
+          }).filter(Boolean);
+          if(parsed.length>0){SALES=parsed;}
         }
-
-        // Parse Mails
         if(raw['Mails']){
-          const rows=raw['Mails'].slice(3);
-          const parsed=[];
-          rows.forEach(r=>{
-            if(!r[0]||typeof r[0]!=='string')return;
-            if(typeof r[1]!=='number'||!r[1])return;
-            parsed.push({industry:r[0].trim(),delivered:Math.round(r[1]),opened:Math.round(r[2]||0),clicked:Math.round(r[3]||0),responded:Math.round(r[4]||0)});
-          });
-          if(parsed.length>0){MAILS.length=0;parsed.forEach(p=>MAILS.push(p));}
+          const parsed=raw['Mails'].slice(3).filter(r=>r[0]&&typeof r[0]==='string'&&typeof r[1]==='number'&&r[1]>0).map(r=>({industry:r[0].trim(),delivered:Math.round(r[1]),opened:Math.round(r[2]||0),clicked:Math.round(r[3]||0),responded:Math.round(r[4]||0),bounced:0}));
+          if(parsed.length>0){MAILS=parsed;}
         }
-
-        // Parse Ads_Log
         if(raw['Ads_Log']){
-          const rows=raw['Ads_Log'].slice(1);
-          const parsed=[];
-          rows.forEach(r=>{
-            if(!r[1])return;
-            const d=r[3];
-            const ds=d instanceof Date?d.toISOString().slice(0,10):typeof d==='string'?d.slice(0,10):'';
-            if(!ds)return;
-            parsed.push({date:ds,client:String(r[1]||'').trim(),type:String(r[7]||''),poc:String(r[8]||'').trim(),lead:String(r[12]||''),conv:String(r[11]||'—'),val:parseFloat(r[10])||null});
-          });
-          if(parsed.length>0){ADS.length=0;parsed.forEach(p=>ADS.push(p));}
+          const parsed=raw['Ads_Log'].slice(1).filter(r=>r[1]).map(r=>{
+            const d=r[3];const ds=d instanceof Date?d.toISOString().slice(0,10):typeof d==='string'?d.slice(0,10):'';
+            return ds?{date:ds,client:String(r[1]||'').trim(),type:String(r[7]||''),poc:String(r[8]||'').trim(),lead:String(r[12]||''),conv:String(r[11]||'—'),val:parseFloat(r[10])||null}:null;
+          }).filter(Boolean);
+          if(parsed.length>0){ADS=parsed;}
         }
-
-        // Parse InMails
         if(raw['InMails ']){
-          const rows=raw['InMails '].slice(1);
-          const parsed=[];
-          rows.forEach((r,i)=>{
-            if(!r[2])return;
-            parsed.push({n:i+1,ind:String(r[1]||'').trim(),company:String(r[2]||'').trim(),role:String(r[3]||'').trim(),poc:String(r[4]||'').trim()});
-          });
-          if(parsed.length>0){INMAILS.length=0;parsed.forEach(p=>INMAILS.push(p));}
+          const parsed=raw['InMails '].slice(1).filter(r=>r[2]).map((r,i)=>({n:i+1,ind:String(r[1]||'').trim(),company:String(r[2]||'').trim(),role:String(r[3]||'').trim(),poc:String(r[4]||'').trim()}));
+          if(parsed.length>0){INMAILS=parsed;}
         }
-
         document.getElementById('stxt').textContent='live · google sheets';
         renderAll();
-      }catch(e){
-        console.warn('Live fetch failed:',e.message);
-        document.getElementById('stxt').textContent='cached data';
-      }
+      }catch(e){document.getElementById('stxt').textContent='cached data';}
     })();
   }
   setInterval(renderAll,5*60*1000);
