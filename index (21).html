@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B2B Dashboard — Snackible</title>
+<style>
+:root{--bg:#0a0a0a;--s:#141414;--s2:#1c1c1c;--b:rgba(255,255,255,.07);--t:#fff;--m:#888;--ac:#7c3aed;--ac2:#a78bfa;--gr:#22c55e;--or:#f97316;--bl:#3b82f6;--re:#ef4444;--ye:#eab308;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
+.bar{border-bottom:1px solid var(--b);padding:13px 28px;display:flex;justify-content:space-between;align-items:center;background:var(--s);position:sticky;top:0;z-index:20;}
+.logo{font-size:14px;font-weight:700;letter-spacing:.04em;}.logo em{color:var(--ac2);font-style:normal;}
+.stl{font-size:11px;color:var(--m);display:flex;align-items:center;gap:6px;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--gr);}
+.wrap{padding:22px 28px;max-width:1400px;margin:0 auto;}
+.ph{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px;flex-wrap:wrap;gap:12px;}
+.pt{font-size:22px;font-weight:600;margin-bottom:3px;}
+.ps{font-size:12px;color:var(--m);}
+.ps em{color:var(--ac2);font-style:normal;}
+.df{background:var(--s);border:1px solid var(--b);border-radius:10px;padding:9px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.fl{font-size:10px;color:var(--m);text-transform:uppercase;letter-spacing:.07em;}
+.di{background:var(--s2);border:1px solid var(--b);border-radius:6px;color:var(--t);font-size:12px;padding:5px 9px;outline:none;}
+.di:focus{border-color:var(--ac2);}
+.qb{background:transparent;border:1px solid var(--b);border-radius:6px;color:var(--m);font-size:11px;padding:5px 10px;cursor:pointer;font-family:system-ui;}
+.qb:hover,.qb.on{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:600;}
+.mg{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:22px;}
+.mc{background:var(--s);border:1px solid var(--b);border-radius:12px;padding:16px;position:relative;overflow:hidden;}
+.mc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ac);}
+.mc.gn::before{background:var(--gr);}.mc.or::before{background:var(--or);}.mc.bl::before{background:var(--bl);}.mc.ye::before{background:var(--ye);}
+.ml{font-size:10px;color:var(--m);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
+.mv{font-size:22px;font-weight:600;font-family:monospace;color:#fff;}
+.ms{font-size:11px;color:var(--m);margin-top:4px;}
+.tabs{display:flex;border-bottom:1px solid var(--b);margin-bottom:20px;}
+.tab{padding:10px 22px;font-size:13px;font-weight:500;color:var(--m);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;user-select:none;}
+.tab:hover{color:var(--t);}.tab.on{color:var(--ac2);border-bottom-color:var(--ac2);}
+.tp{display:none;}.tp.on{display:block;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;}
+.g1{margin-bottom:14px;}
+.cc{background:var(--s);border:1px solid var(--b);border-radius:12px;padding:16px;}
+.ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:6px;}
+.ct{font-size:12px;font-weight:600;}
+.cw{width:100%;}
+.tip{position:fixed;background:#1a1a1a;border:1px solid #444;padding:5px 10px;border-radius:6px;font-size:11px;pointer-events:none;display:none;z-index:999;white-space:nowrap;}
+.tbl{width:100%;border-collapse:collapse;font-size:12px;}
+.tbl th{text-align:left;padding:8px 10px;color:var(--m);font-weight:500;border-bottom:1px solid var(--b);font-size:10px;text-transform:uppercase;letter-spacing:.06em;}
+.tbl td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);color:#ddd;vertical-align:middle;}
+.tbl tr:hover td{background:rgba(255,255,255,.03);}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;}
+.badge.yes{background:rgba(34,197,94,.15);color:#22c55e;}.badge.no{background:rgba(239,68,68,.12);color:#ef4444;}
+.badge.warm{background:rgba(234,179,8,.12);color:#eab308;}.badge.cold{background:rgba(148,163,184,.1);color:#94a3b8;}
+.badge.inbound{background:rgba(59,130,246,.12);color:#60a5fa;}.badge.ccbd{background:rgba(124,58,237,.15);color:#a78bfa;}
+.badge.poc{background:rgba(124,58,237,.12);color:#c4b5fd;}
+.funnel-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.funnel-lbl{font-size:11px;color:var(--m);width:88px;flex-shrink:0;text-align:right;}
+.funnel-wrap{flex:1;background:rgba(255,255,255,.05);border-radius:4px;height:24px;overflow:hidden;}
+.funnel-bar{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:10px;font-size:11px;font-weight:600;color:#fff;white-space:nowrap;}
+.funnel-pct{font-size:11px;color:var(--m);width:46px;text-align:right;flex-shrink:0;}
+.fgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
+.fc{background:var(--s2);border-radius:10px;padding:14px;text-align:center;}
+.fcv{font-size:26px;font-weight:600;font-family:monospace;}
+.fcl{font-size:10px;color:var(--m);margin-top:3px;text-transform:uppercase;letter-spacing:.06em;}
+.fcr{font-size:11px;color:var(--ac2);margin-top:3px;}
+.mail-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:8px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;align-items:center;}
+.mail-hdr{color:var(--m);font-size:10px;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--b);padding-bottom:9px;margin-bottom:4px;}
+.rate{display:inline-block;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:600;background:rgba(124,58,237,.15);color:var(--ac2);}
+.setup-box{background:var(--s);border:1px solid var(--b);border-radius:12px;padding:28px;text-align:center;color:var(--m);}
+.setup-box h3{color:#fff;font-size:15px;margin-bottom:8px;}
+.setup-box code{background:var(--s2);padding:3px 8px;border-radius:4px;font-size:12px;color:var(--ac2);}
+@media(max-width:900px){.mg{grid-template-columns:repeat(3,1fr);}.g2,.g3{grid-template-columns:1fr;}.fgrid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){.mg{grid-template-columns:repeat(2,1fr);}.wrap{padding:14px;}.ph{flex-direction:column;}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <div class="logo">SNACKIBLE <em>/ B2B</em></div>
+  <div class="stl"><div class="dot"></div><span id="stxt">ready</span></div>
+</div>
+<div class="wrap">
+  <div class="ph">
+    <div>
+      <p class="pt">B2B Dashboard</p>
+      <p class="ps">Mails · Sales · Ads · InMails · Events &nbsp;·&nbsp; <em id="lu">—</em></p>
+    </div>
+    <div class="df">
+      <span class="fl">Range</span>
+      <input type="date" class="di" id="df" value="2026-02-01">
+      <span style="color:var(--m);font-size:11px">→</span>
+      <input type="date" class="di" id="dt" value="2026-04-13">
+      <button class="qb on" data-r="all">All</button>
+      <button class="qb" data-r="30">30d</button>
+      <button class="qb" data-r="7">7d</button>
+    </div>
+  </div>
+
+  <div class="mg">
+    <div class="mc gn"><div class="ml">Total B2B Sales</div><div class="mv" id="mSales">₹4.16L</div><div class="ms" id="mOrders">13 orders</div></div>
+    <div class="mc bl"><div class="ml">Emails Delivered</div><div class="mv" id="mDel">3,254</div><div class="ms" id="mOpen">19.2% open rate</div></div>
+    <div class="mc or"><div class="ml">Email Responses</div><div class="mv" id="mResp">60</div><div class="ms" id="mRespR">1.8% response rate</div></div>
+    <div class="mc ye"><div class="ml">Ads Leads</div><div class="mv" id="mLeads">17</div><div class="ms" id="mConv">2 converted · 11.8%</div></div>
+    <div class="mc"><div class="ml">InMails Sent</div><div class="mv" id="mInmail">11</div><div class="ms">FM: 6 · IT: 4</div></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab on" data-tab="ov">Overview</div>
+    <div class="tab" data-tab="mails">Mails</div>
+    <div class="tab" data-tab="sales">Sales</div>
+    <div class="tab" data-tab="ads">Ads</div>
+    <div class="tab" data-tab="inmails">InMails</div>
+    <div class="tab" data-tab="events">Events</div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="tp on" id="tp-ov">
+    <div class="g2">
+      <div class="cc">
+        <div class="ch"><div class="ct">Email Funnel</div></div>
+        <div class="fgrid">
+          <div class="fc"><div class="fcv" style="color:var(--bl)">3,254</div><div class="fcl">Delivered</div><div class="fcr">100%</div></div>
+          <div class="fc"><div class="fcv" style="color:var(--ac2)">625</div><div class="fcl">Opened</div><div class="fcr">19.2%</div></div>
+          <div class="fc"><div class="fcv" style="color:var(--or)">88</div><div class="fcl">Clicked</div><div class="fcr">2.7%</div></div>
+          <div class="fc"><div class="fcv" style="color:var(--gr)">60</div><div class="fcl">Responded</div><div class="fcr">1.8%</div></div>
+        </div>
+        <div class="funnel-row"><span class="funnel-lbl">Delivered</span><div class="funnel-wrap"><div class="funnel-bar" style="width:100%;background:#3b82f6">3,254</div></div><span class="funnel-pct">100%</span></div>
+        <div class="funnel-row"><span class="funnel-lbl">Opened</span><div class="funnel-wrap"><div class="funnel-bar" style="width:19.2%;background:#7c3aed">625</div></div><span class="funnel-pct">19.2%</span></div>
+        <div class="funnel-row"><span class="funnel-lbl">Clicked</span><div class="funnel-wrap"><div class="funnel-bar" style="width:2.7%;background:#f97316">88</div></div><span class="funnel-pct">2.7%</span></div>
+        <div class="funnel-row"><span class="funnel-lbl">Responded</span><div class="funnel-wrap"><div class="funnel-bar" style="width:1.84%;background:#22c55e">60</div></div><span class="funnel-pct">1.8%</span></div>
+        <div class="funnel-row"><span class="funnel-lbl">Bounced</span><div class="funnel-wrap"><div class="funnel-bar" style="width:2.27%;background:#ef4444">74</div></div><span class="funnel-pct">2.3%</span></div>
+      </div>
+      <div class="cc">
+        <div class="ch"><div class="ct">Sales by Date (₹)</div></div>
+        <div class="cw" id="ovSales" style="min-height:220px"></div>
+      </div>
+    </div>
+    <div class="g3">
+      <div class="cc"><div class="ch"><div class="ct">Ads — Lead Source</div></div><div class="cw" id="ovAdsType" style="min-height:160px"></div></div>
+      <div class="cc"><div class="ch"><div class="ct">Ads — Conversion</div></div><div class="cw" id="ovAdsConv" style="min-height:160px"></div></div>
+      <div class="cc"><div class="ch"><div class="ct">Sales by POC</div></div><div class="cw" id="ovPoc" style="min-height:160px"></div></div>
+    </div>
+  </div>
+
+  <!-- MAILS -->
+  <div class="tp" id="tp-mails">
+    <div class="mg" style="grid-template-columns:repeat(4,1fr);">
+      <div class="mc bl"><div class="ml">Delivered</div><div class="mv">1,805</div><div class="ms">4 campaigns</div></div>
+      <div class="mc"><div class="ml">Opened</div><div class="mv">327</div><div class="ms">18.1% open rate</div></div>
+      <div class="mc or"><div class="ml">Clicked</div><div class="mv">35</div><div class="ms">1.9% click rate</div></div>
+      <div class="mc gn"><div class="ml">Responded</div><div class="mv">56</div><div class="ms">3.1% response rate</div></div>
+    </div>
+    <div class="g1"><div class="cc">
+      <div class="ch"><div class="ct">Performance by Industry / Campaign</div></div>
+      <div class="mail-row mail-hdr"><span>Industry / Campaign</span><span>Delivered</span><span>Opened</span><span>Clicked</span><span>Responded</span></div>
+      <div id="mailTable"></div>
+      <div class="mail-row" style="font-weight:600;color:#fff;border-top:1px solid var(--b);margin-top:6px;padding-top:10px;">
+        <span>TOTAL</span><span>1,805</span>
+        <span>327 <span class="rate">18.1%</span></span>
+        <span>35 <span class="rate">1.9%</span></span>
+        <span>56 <span class="rate">3.1%</span></span>
+      </div>
+    </div></div>
+    <div class="g2">
+      <div class="cc"><div class="ch"><div class="ct">Open Rate by Campaign</div></div><div class="cw" id="mailOpen" style="min-height:200px"></div></div>
+      <div class="cc"><div class="ch"><div class="ct">Response Rate by Campaign</div></div><div class="cw" id="mailResp" style="min-height:200px"></div></div>
+    </div>
+  </div>
+
+  <!-- SALES -->
+  <div class="tp" id="tp-sales">
+    <div class="mg" style="grid-template-columns:repeat(4,1fr);">
+      <div class="mc gn"><div class="ml">Total Revenue</div><div class="mv">₹4.16L</div><div class="ms">13 orders</div></div>
+      <div class="mc gn"><div class="ml">Avg Order Value</div><div class="mv">₹32K</div><div class="ms">per order</div></div>
+      <div class="mc gn"><div class="ml">Top POC</div><div class="mv">Manjari</div><div class="ms">6 orders · ₹2.28L</div></div>
+      <div class="mc gn"><div class="ml">Biggest Order</div><div class="mv">₹1.01L</div><div class="ms">Shopknot Impex</div></div>
+    </div>
+    <div class="g2">
+      <div class="cc"><div class="ch"><div class="ct">Revenue by POC</div></div><div class="cw" id="salesPoc" style="min-height:180px"></div></div>
+      <div class="cc"><div class="ch"><div class="ct">Daily Revenue</div></div><div class="cw" id="salesDate" style="min-height:180px"></div></div>
+    </div>
+    <div class="g1"><div class="cc">
+      <div class="ch"><div class="ct">All Orders</div></div>
+      <table class="tbl">
+        <thead><tr><th>Ref No.</th><th>Date</th><th>Client</th><th>POC</th><th>Type</th><th style="text-align:right">Amount</th></tr></thead>
+        <tbody id="salesTable"></tbody>
+      </table>
+    </div></div>
+  </div>
+
+  <!-- ADS -->
+  <div class="tp" id="tp-ads">
+    <div class="mg" style="grid-template-columns:repeat(4,1fr);">
+      <div class="mc ye"><div class="ml">Total Leads</div><div class="mv">17</div><div class="ms">from ads</div></div>
+      <div class="mc ye"><div class="ml">Inbound</div><div class="mv">12</div><div class="ms">70.6% of leads</div></div>
+      <div class="mc ye"><div class="ml">CCBD</div><div class="mv">5</div><div class="ms">29.4% of leads</div></div>
+      <div class="mc gn"><div class="ml">Converted</div><div class="mv">2</div><div class="ms">11.8% conv rate</div></div>
+    </div>
+    <div class="g1"><div class="cc">
+      <div class="ch"><div class="ct">All Leads</div></div>
+      <table class="tbl">
+        <thead><tr><th>Date</th><th>Client</th><th>Source</th><th>POC</th><th>Lead Type</th><th>Converted</th><th style="text-align:right">Order Value</th></tr></thead>
+        <tbody id="adsTable"></tbody>
+      </table>
+    </div></div>
+  </div>
+
+  <!-- INMAILS -->
+  <div class="tp" id="tp-inmails">
+    <div class="mg" style="grid-template-columns:repeat(3,1fr);">
+      <div class="mc bl"><div class="ml">Total Contacts</div><div class="mv">11</div><div class="ms">LinkedIn InMails</div></div>
+      <div class="mc bl"><div class="ml">Facility Mgmt</div><div class="mv">6</div><div class="ms">FM industry</div></div>
+      <div class="mc bl"><div class="ml">IT Industry</div><div class="mv">4</div><div class="ms">IT sector</div></div>
+    </div>
+    <div class="g1"><div class="cc">
+      <div class="ch"><div class="ct">InMail Contact List</div></div>
+      <table class="tbl">
+        <thead><tr><th>#</th><th>Industry</th><th>Company</th><th>Role</th><th>Contact Person</th></tr></thead>
+        <tbody id="inmailTable"></tbody>
+      </table>
+    </div></div>
+  </div>
+
+  <!-- EVENTS -->
+  <div class="tp" id="tp-events">
+    <div class="setup-box">
+      <h3>Events data will appear here</h3>
+      <p style="margin-top:8px;font-size:13px;">Connect your Google Sheet to populate this tab with event tracking data.</p>
+      <p style="margin-top:12px;font-size:12px;">Add your Apps Script URL to <code>SHEET_URL</code> in the dashboard code.</p>
+    </div>
+  </div>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+// ── LIVE DATA URL — add your Apps Script URL here ─────────
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzsb5FX-sds7Hv25Cd_crPLtJGqTDWaPDuNz10Z68UvaHjD_US5bLys6ncfkY_Wm1ibzA/exec';
+
+// ── DATA (from your Excel file) ───────────────────────────
+const SALES = [
+  {ref:'Apr26-001',date:'2026-04-01',client:'Floraza',poc:'Siya',type:'Inst Order',amt:7890.9},
+  {ref:'Apr26-024',date:'2026-04-02',client:'Gerson Lehrman Group',poc:'Manjari',type:'Inst Order',amt:16830},
+  {ref:'Apr26-044',date:'2026-04-02',client:'Qteam Solution Services',poc:'Dhyana',type:'Inst Order',amt:20500},
+  {ref:'Apr26-066',date:'2026-04-04',client:'PIPELINE INFRASTRUCTURE LTD',poc:'Manjari',type:'Inst Order',amt:5600},
+  {ref:'Apr26-102',date:'2026-04-06',client:'Behind the Scene',poc:'Manjari',type:'Inst Order',amt:66217},
+  {ref:'Apr26-103',date:'2026-04-06',client:'Tohfa Boutique',poc:'Siya',type:'Inst Order',amt:19159},
+  {ref:'Apr26-149',date:'2026-04-07',client:'SHOPKNOT IMPEX INDIA PVT LTD',poc:'Manjari',type:'Inst Order',amt:100800},
+  {ref:'Apr26-165',date:'2026-04-07',client:'Big Basket',poc:'Aditi',type:'Inst Order',amt:16536},
+  {ref:'Apr26-167',date:'2026-04-07',client:'Shalaka Somani',poc:'Siya',type:'Inst Order',amt:13200},
+  {ref:'Apr26-168',date:'2026-04-07',client:'Matrix Pharmacorp Pvt Ltd',poc:'Dhyana',type:'Inst Order',amt:43610},
+  {ref:'Apr26-169',date:'2026-04-08',client:'COMPASS INDIA FOOD SERVICES',poc:'Manjari',type:'Inst Order',amt:21160},
+  {ref:'Apr26-259',date:'2026-04-13',client:'JucyGifts',poc:'Siya',type:'Inst Order',amt:66233.7},
+  {ref:'Apr26-269',date:'2026-04-13',client:'Mistins',poc:'Manjari',type:'Inst Order',amt:18447},
+];
+
+const MAILS = [
+  {industry:'Corporates',delivered:401,opened:75,clicked:12,responded:3},
+  {industry:'Facility Mgmt (7 Apr)',delivered:593,opened:122,clicked:15,responded:50},
+  {industry:'IT (8 Apr)',delivered:380,opened:81,clicked:5,responded:2},
+  {industry:'IT (9 Apr)',delivered:431,opened:49,clicked:3,responded:1},
+];
+
+const ADS = [
+  {date:'2026-03-31',client:'Vijay Chaudhary',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'No',val:null},
+  {date:'2026-03-31',client:'Rachael',type:'Inbound',poc:'Siya',lead:'Cold',conv:'—',val:null},
+  {date:'2026-03-31',client:'Gaunisha Gaanavi',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'No',val:null},
+  {date:'2026-03-31',client:'Tanisha Bhatt',type:'Inbound',poc:'Siya',lead:'Warm',conv:'—',val:null},
+  {date:'2026-03-31',client:'Khushi Sachdeva',type:'CCBD',poc:'Siya',lead:'Warm',conv:'Yes',val:7890.9},
+  {date:'2026-04-01',client:'Hasti Shah',type:'Inbound',poc:'Siya',lead:'Cold',conv:'—',val:null},
+  {date:'2026-04-02',client:'Kala Adarsh',type:'Inbound',poc:'Siya',lead:'Cold',conv:'—',val:null},
+  {date:'2026-04-06',client:'Shreya Sinha',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'No',val:null},
+  {date:'2026-04-07',client:'Syed Abdullah',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'No',val:null},
+  {date:'2026-04-06',client:'Shaila Aggarwal',type:'Inbound',poc:'Siya',lead:'Cold',conv:'—',val:null},
+  {date:'2026-04-06',client:'Shalaka Somani',type:'Inbound',poc:'Siya',lead:'Cold',conv:'Yes',val:13200},
+  {date:'2026-04-06',client:'Pikasa Bagchi',type:'Inbound',poc:'Siya',lead:'Cold',conv:'—',val:null},
+  {date:'2026-04-07',client:'Suvhankar Das',type:'CCBD',poc:'Siya',lead:'Cold',conv:'—',val:null},
+  {date:'2026-04-08',client:'Ratndeep Bhagwat',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'—',val:null},
+  {date:'2026-04-06',client:'Gagan Oberoi',type:'CCBD',poc:'Siya',lead:'Warm',conv:'—',val:null},
+  {date:'2026-04-08',client:'Vivek Pandey',type:'CCBD',poc:'Manjari',lead:'Warm',conv:'—',val:null},
+  {date:'2026-04-09',client:'Neeraj Kumar',type:'CCBD',poc:'Siya',lead:'Cold',conv:'—',val:null},
+];
+
+const INMAILS = [
+  {n:1,ind:'FM',company:'CBRE South Asia',role:'Assistant Manager',poc:'Rajesh K Nair'},
+  {n:2,ind:'FM',company:'Quess Corp',role:'GM Procurement',poc:'Shiv Kumara'},
+  {n:3,ind:'FM',company:'Supreme Facility Management',role:'Group Director & CEO',poc:'Dr. Amol Shingate'},
+  {n:4,ind:'FM',company:'ISS Facility Services India',role:'Business Manager',poc:'Bishwanath Bhattacharya'},
+  {n:5,ind:'FM',company:'ISS Facility Services India',role:'HR Executive',poc:'Akshar Oza'},
+  {n:6,ind:'FM',company:'JLL India',role:'Operations Manager',poc:'Vikram Nair'},
+  {n:7,ind:'IT',company:'Infosys',role:'Procurement Lead',poc:'Ramesh Iyer'},
+  {n:8,ind:'IT',company:'TCS',role:'Admin Manager',poc:'Priya Sharma'},
+  {n:9,ind:'IT',company:'Wipro',role:'Facility Head',poc:'Anand Kumar'},
+  {n:10,ind:'IT',company:'HCL Technologies',role:'Corporate Services',poc:'Neha Singh'},
+  {n:11,ind:'FM',company:'Sodexo India',role:'Procurement Manager',poc:'Sanjay Mehta'},
+];
+
+// ── HELPERS ───────────────────────────────────────────────
+function fmt(n){if(!n||isNaN(n)||n===0)return'—';if(n>=100000)return'₹'+(n/100000).toFixed(1)+'L';if(n>=1000)return'₹'+(n/1000).toFixed(0)+'K';return'₹'+Math.round(n);}
+function fdate(d){return d.slice(5).replace('-','/');}
+const tipEl=document.getElementById('tip');
+function showTip(e,h){tipEl.innerHTML=h;tipEl.style.display='block';tipEl.style.left=(e.clientX+12)+'px';tipEl.style.top=(e.clientY-30)+'px';}
+function hideTip(){tipEl.style.display='none';}
+
+// ── BAR CHART (vertical) ──────────────────────────────────
+function barChart(id,labels,datasets,h){
+  h=h||200;
+  const el=document.getElementById(id);if(!el)return;
+  const W=el.clientWidth||600;
+  const P={t:8,r:10,b:48,l:55},cW=W-P.l-P.r,cH=h-P.t-P.b;
+  const n=labels.length,ds=datasets.length;
+  if(!n){el.innerHTML='';return;}
+  const maxV=Math.max(...datasets.flatMap(d=>d.data).filter(v=>v>0),1);
+  const bW=Math.min((cW/n)*0.8/ds,34);
+  let s=`<svg width="${W}" height="${h}" xmlns="http://www.w3.org/2000/svg">`;
+  for(let i=0;i<=4;i++){
+    const y=P.t+cH-(i/4)*cH,v=maxV*i/4;
+    s+=`<line x1="${P.l}" y1="${y|0}" x2="${P.l+cW}" y2="${y|0}" stroke="rgba(255,255,255,.06)" stroke-width="1"/>`;
+    s+=`<text x="${P.l-4}" y="${(y+4)|0}" text-anchor="end" fill="#777" font-size="9" font-family="system-ui">${datasets[0]&&datasets[0].yf?datasets[0].yf(v):fmt(v)||'0'}</text>`;
+  }
+  datasets.forEach((d,di)=>{
+    labels.forEach((lbl,i)=>{
+      const v=d.data[i]||0,bH=Math.max((v/maxV)*cH,0);
+      const x=P.l+i*(cW/n)+(cW/n-ds*bW)/2+di*bW,y=P.t+cH-bH;
+      const tv=d.vf?d.vf(v):fmt(v);
+      s+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bW.toFixed(1)}" height="${bH.toFixed(1)}" fill="${d.color}" rx="3" opacity=".88" style="cursor:pointer" onmouseenter="showTip(event,'<b>${lbl}</b><br>${d.label||''}: ${tv}')" onmouseleave="hideTip()"/>`;
+    });
+  });
+  labels.forEach((lbl,i)=>{
+    const x=(P.l+i*(cW/n)+(cW/n)/2)|0;
+    s+=`<text x="${x}" y="${h-5}" text-anchor="end" fill="#aaa" font-size="9" font-family="system-ui" transform="rotate(-35,${x},${h-5})">${lbl}</text>`;
+  });
+  s+=`<line x1="${P.l}" y1="${P.t}" x2="${P.l}" y2="${P.t+cH}" stroke="#333" stroke-width="1"/>`;
+  s+=`<line x1="${P.l}" y1="${P.t+cH}" x2="${P.l+cW}" y2="${P.t+cH}" stroke="#333" stroke-width="1"/>`;
+  s+='</svg>';
+  el.innerHTML=s;
+}
+
+// ── HORIZONTAL BAR CHART ──────────────────────────────────
+function hbar(id,labels,values,colors,vf){
+  const el=document.getElementById(id);if(!el)return;
+  const W=el.clientWidth||400;
+  const maxV=Math.max(...values,1),rowH=32,P={l:115,r:55,t:4};
+  const H=labels.length*rowH+P.t*2;
+  let s=`<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">`;
+  labels.forEach((lbl,i)=>{
+    const y=P.t+i*rowH,bW=((values[i]||0)/maxV)*(W-P.l-P.r);
+    const col=Array.isArray(colors)?colors[i%colors.length]:colors;
+    const tv=vf?vf(values[i]):''+Math.round(values[i]);
+    s+=`<text x="${P.l-7}" y="${y+rowH/2+4}" text-anchor="end" fill="#aaa" font-size="10" font-family="system-ui">${lbl}</text>`;
+    s+=`<rect x="${P.l}" y="${y+5}" width="${Math.max(bW,3).toFixed(1)}" height="${rowH-12}" fill="${col}" rx="3" opacity=".85" style="cursor:pointer" onmouseenter="showTip(event,'${lbl}: ${tv}')" onmouseleave="hideTip()"/>`;
+    s+=`<text x="${P.l+bW+7}" y="${y+rowH/2+4}" fill="#ccc" font-size="10" font-family="system-ui">${tv}</text>`;
+  });
+  s+='</svg>';
+  el.innerHTML=s;
+}
+
+// ── RENDER FUNCTIONS ──────────────────────────────────────
+function renderOverview(){
+  // Sales by date
+  const byDate={};
+  SALES.forEach(s=>{byDate[s.date]=(byDate[s.date]||0)+s.amt;});
+  const dates=Object.keys(byDate).sort();
+  barChart('ovSales',dates.map(d=>fdate(d)),[{label:'Sales',data:dates.map(d=>byDate[d]),color:'#22c55e',vf:fmt}],220);
+
+  // Ads type
+  const types={Inbound:ADS.filter(a=>a.type==='Inbound').length,CCBD:ADS.filter(a=>a.type==='CCBD').length};
+  hbar('ovAdsType',Object.keys(types),Object.values(types),['#3b82f6','#7c3aed']);
+
+  // Conversion
+  const conv={'Converted':ADS.filter(a=>a.conv==='Yes').length,'Not Converted':ADS.filter(a=>a.conv==='No').length,'Pending':ADS.filter(a=>a.conv==='—').length};
+  hbar('ovAdsConv',Object.keys(conv),Object.values(conv),['#22c55e','#ef4444','#888']);
+
+  // Sales by POC
+  const byPoc={};
+  SALES.forEach(s=>{byPoc[s.poc]=(byPoc[s.poc]||0)+s.amt;});
+  const pocs=Object.entries(byPoc).sort((a,b)=>b[1]-a[1]);
+  hbar('ovPoc',pocs.map(p=>p[0]),pocs.map(p=>p[1]),['#a78bfa','#7c3aed','#6d28d9','#5b21b6'],fmt);
+}
+
+function renderMails(){
+  document.getElementById('mailTable').innerHTML=MAILS.map(m=>`
+    <div class="mail-row">
+      <span style="color:#eee">${m.industry}</span>
+      <span>${m.delivered}</span>
+      <span>${m.opened} <span class="rate">${(m.opened/m.delivered*100).toFixed(1)}%</span></span>
+      <span>${m.clicked} <span class="rate">${(m.clicked/m.delivered*100).toFixed(1)}%</span></span>
+      <span>${m.responded} <span class="rate">${(m.responded/m.delivered*100).toFixed(1)}%</span></span>
+    </div>`).join('');
+
+  hbar('mailOpen',MAILS.map(m=>m.industry.slice(0,18)),MAILS.map(m=>+(m.opened/m.delivered*100).toFixed(1)),['#7c3aed','#6d28d9','#5b21b6','#4c1d95'],v=>v+'%');
+  hbar('mailResp',MAILS.map(m=>m.industry.slice(0,18)),MAILS.map(m=>+(m.responded/m.delivered*100).toFixed(1)),['#22c55e','#16a34a','#15803d','#166534'],v=>v+'%');
+}
+
+function renderSales(){
+  const byPoc={};
+  SALES.forEach(s=>{byPoc[s.poc]=(byPoc[s.poc]||0)+s.amt;});
+  const pocs=Object.entries(byPoc).sort((a,b)=>b[1]-a[1]);
+  hbar('salesPoc',pocs.map(p=>p[0]),pocs.map(p=>p[1]),['#22c55e','#16a34a','#15803d','#166534'],fmt);
+
+  const byDate={};
+  SALES.forEach(s=>{byDate[s.date]=(byDate[s.date]||0)+s.amt;});
+  const dates=Object.keys(byDate).sort();
+  barChart('salesDate',dates.map(d=>fdate(d)),[{label:'Revenue',data:dates.map(d=>byDate[d]),color:'#22c55e',vf:fmt}],180);
+
+  document.getElementById('salesTable').innerHTML=SALES.map(s=>`<tr>
+    <td style="font-family:monospace;color:#a78bfa">${s.ref}</td>
+    <td>${fdate(s.date)}</td>
+    <td style="color:#fff">${s.client}</td>
+    <td><span class="badge poc">${s.poc}</span></td>
+    <td style="color:#888">${s.type}</td>
+    <td style="text-align:right;font-family:monospace;color:#22c55e;font-weight:600">${fmt(s.amt)}</td>
+  </tr>`).join('');
+}
+
+function renderAds(){
+  document.getElementById('adsTable').innerHTML=ADS.map(a=>`<tr>
+    <td>${fdate(a.date)}</td>
+    <td style="color:#fff">${a.client}</td>
+    <td><span class="badge ${a.type.toLowerCase()}">${a.type}</span></td>
+    <td><span class="badge poc">${a.poc}</span></td>
+    <td><span class="badge ${a.lead.toLowerCase()}">${a.lead}</span></td>
+    <td><span class="badge ${a.conv==='Yes'?'yes':a.conv==='No'?'no':''}">${a.conv}</span></td>
+    <td style="text-align:right;font-family:monospace;color:#22c55e">${a.val?fmt(a.val):'—'}</td>
+  </tr>`).join('');
+}
+
+function renderInmails(){
+  document.getElementById('inmailTable').innerHTML=INMAILS.map(m=>`<tr>
+    <td style="color:#888">${m.n}</td>
+    <td><span class="badge ${m.ind==='FM'?'inbound':'ccbd'}">${m.ind}</span></td>
+    <td style="color:#fff">${m.company}</td>
+    <td style="color:#aaa">${m.role}</td>
+    <td style="color:#a78bfa">${m.poc}</td>
+  </tr>`).join('');
+}
+
+function renderAll(){
+  renderOverview();
+  renderMails();
+  renderSales();
+  renderAds();
+  renderInmails();
+  document.getElementById('lu').textContent='Updated '+new Date().toLocaleTimeString();
+}
+
+// ── TABS ──────────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.tp').forEach(x=>x.classList.remove('on'));
+  t.classList.add('on');
+  document.getElementById('tp-'+t.dataset.tab).classList.add('on');
+  setTimeout(renderAll,30);
+}));
+
+document.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('[data-r]').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+}));
+
+// ── BOOT ──────────────────────────────────────────────────
+window.addEventListener('load',()=>{
+  renderAll();
+  if(SHEET_URL){
+    (async()=>{
+      try{
+        const ctrl=new AbortController();
+        setTimeout(()=>ctrl.abort(),12000);
+        const res=await fetch(SHEET_URL+'?t='+Date.now(),{cache:'no-store',signal:ctrl.signal});
+        if(!res.ok)throw new Error('bad');
+        const raw=JSON.parse(await res.text());
+
+        // Parse Sales_Log
+        if(raw['Sales_Log']){
+          const rows=raw['Sales_Log'].slice(1);
+          const parsed=[];
+          rows.forEach(r=>{
+            if(!r[0])return;
+            const d=r[3]||r[2];
+            const ds=d instanceof Date?d.toISOString().slice(0,10):typeof d==='string'?d.slice(0,10):'';
+            if(!ds)return;
+            parsed.push({ref:String(r[0]),date:ds,client:String(r[5]||'').trim(),poc:String(r[4]||'').trim(),type:String(r[1]||''),amt:parseFloat(r[6])||0});
+          });
+          if(parsed.length>0){SALES.length=0;parsed.forEach(p=>SALES.push(p));}
+        }
+
+        // Parse Mails
+        if(raw['Mails']){
+          const rows=raw['Mails'].slice(3);
+          const parsed=[];
+          rows.forEach(r=>{
+            if(!r[0]||typeof r[0]!=='string')return;
+            if(typeof r[1]!=='number'||!r[1])return;
+            parsed.push({industry:r[0].trim(),delivered:Math.round(r[1]),opened:Math.round(r[2]||0),clicked:Math.round(r[3]||0),responded:Math.round(r[4]||0)});
+          });
+          if(parsed.length>0){MAILS.length=0;parsed.forEach(p=>MAILS.push(p));}
+        }
+
+        // Parse Ads_Log
+        if(raw['Ads_Log']){
+          const rows=raw['Ads_Log'].slice(1);
+          const parsed=[];
+          rows.forEach(r=>{
+            if(!r[1])return;
+            const d=r[3];
+            const ds=d instanceof Date?d.toISOString().slice(0,10):typeof d==='string'?d.slice(0,10):'';
+            if(!ds)return;
+            parsed.push({date:ds,client:String(r[1]||'').trim(),type:String(r[7]||''),poc:String(r[8]||'').trim(),lead:String(r[12]||''),conv:String(r[11]||'—'),val:parseFloat(r[10])||null});
+          });
+          if(parsed.length>0){ADS.length=0;parsed.forEach(p=>ADS.push(p));}
+        }
+
+        // Parse InMails
+        if(raw['InMails ']){
+          const rows=raw['InMails '].slice(1);
+          const parsed=[];
+          rows.forEach((r,i)=>{
+            if(!r[2])return;
+            parsed.push({n:i+1,ind:String(r[1]||'').trim(),company:String(r[2]||'').trim(),role:String(r[3]||'').trim(),poc:String(r[4]||'').trim()});
+          });
+          if(parsed.length>0){INMAILS.length=0;parsed.forEach(p=>INMAILS.push(p));}
+        }
+
+        document.getElementById('stxt').textContent='live · google sheets';
+        renderAll();
+      }catch(e){
+        console.warn('Live fetch failed:',e.message);
+        document.getElementById('stxt').textContent='cached data';
+      }
+    })();
+  }
+  setInterval(renderAll,5*60*1000);
+});
+</script>
+</body>
+</html>
