@@ -353,23 +353,33 @@ function hbar(id,labels,values,colors,vf){
 
 // ── RENDER FUNCTIONS ──────────────────────────────────────
 function renderOverview(){
+  const sales=filteredSales(), ads=filteredAds();
+  // Update summary metrics
+  const totalSales=sales.reduce((a,s)=>a+s.amt,0);
+  const totalOrders=sales.length;
+  document.getElementById('mSales').textContent=fmt(totalSales)||'—';
+  document.getElementById('mOrders').textContent=totalOrders+' orders';
+  const totalLeads=ads.length;
+  const converted=ads.filter(a=>a.conv==='Yes').length;
+  document.getElementById('mLeads').textContent=totalLeads;
+  document.getElementById('mConv').textContent=converted+' converted · '+(totalLeads?Math.round(converted/totalLeads*100):0)+'%';
   // Sales by date
   const byDate={};
-  SALES.forEach(s=>{byDate[s.date]=(byDate[s.date]||0)+s.amt;});
+  sales.forEach(s=>{byDate[s.date]=(byDate[s.date]||0)+s.amt;});
   const dates=Object.keys(byDate).sort();
   barChart('ovSales',dates.map(d=>fdate(d)),[{label:'Sales',data:dates.map(d=>byDate[d]),color:'#22c55e',vf:fmt}],220);
 
   // Ads type
-  const types={Inbound:ADS.filter(a=>a.type==='Inbound').length,CCBD:ADS.filter(a=>a.type==='CCBD').length};
+  const types={Inbound:ads.filter(a=>a.type==='Inbound').length,CCBD:ads.filter(a=>a.type==='CCBD').length};
   hbar('ovAdsType',Object.keys(types),Object.values(types),['#3b82f6','#7c3aed']);
 
   // Conversion
-  const conv={'Converted':ADS.filter(a=>a.conv==='Yes').length,'Not Converted':ADS.filter(a=>a.conv==='No').length,'Pending':ADS.filter(a=>a.conv==='—').length};
+  const conv={'Converted':ads.filter(a=>a.conv==='Yes').length,'Not Converted':ads.filter(a=>a.conv==='No').length,'Pending':ads.filter(a=>a.conv==='—').length};
   hbar('ovAdsConv',Object.keys(conv),Object.values(conv),['#22c55e','#ef4444','#888']);
 
   // Sales by POC
   const byPoc={};
-  SALES.forEach(s=>{byPoc[s.poc]=(byPoc[s.poc]||0)+s.amt;});
+  sales.forEach(s=>{byPoc[s.poc]=(byPoc[s.poc]||0)+s.amt;});
   const pocs=Object.entries(byPoc).sort((a,b)=>b[1]-a[1]);
   hbar('ovPoc',pocs.map(p=>p[0]),pocs.map(p=>p[1]),['#a78bfa','#7c3aed','#6d28d9','#5b21b6'],fmt);
 }
@@ -389,17 +399,30 @@ function renderMails(){
 }
 
 function renderSales(){
+  const sales=filteredSales();
+  // Update sales metrics
+  const total=sales.reduce((a,s)=>a+s.amt,0);
+  const avg=sales.length?total/sales.length:0;
+  const topPocEntry=Object.entries(sales.reduce((a,s)=>{a[s.poc]=(a[s.poc]||0)+s.amt;return a;},{})).sort((a,b)=>b[1]-a[1])[0];
+  const biggest=sales.reduce((a,s)=>s.amt>a.amt?s:a,{amt:0,client:'—'});
+  document.querySelector('#tp-sales .mg .mc:nth-child(1) .mv').textContent=fmt(total)||'—';
+  document.querySelector('#tp-sales .mg .mc:nth-child(1) .ms').textContent=sales.length+' orders';
+  document.querySelector('#tp-sales .mg .mc:nth-child(2) .mv').textContent=fmt(avg)||'—';
+  if(topPocEntry){document.querySelector('#tp-sales .mg .mc:nth-child(3) .mv').textContent=topPocEntry[0];document.querySelector('#tp-sales .mg .mc:nth-child(3) .ms').textContent=fmt(topPocEntry[1]);}
+  document.querySelector('#tp-sales .mg .mc:nth-child(4) .mv').textContent=fmt(biggest.amt)||'—';
+  document.querySelector('#tp-sales .mg .mc:nth-child(4) .ms').textContent=biggest.client.slice(0,18);
+
   const byPoc={};
-  SALES.forEach(s=>{byPoc[s.poc]=(byPoc[s.poc]||0)+s.amt;});
+  sales.forEach(s=>{byPoc[s.poc]=(byPoc[s.poc]||0)+s.amt;});
   const pocs=Object.entries(byPoc).sort((a,b)=>b[1]-a[1]);
   hbar('salesPoc',pocs.map(p=>p[0]),pocs.map(p=>p[1]),['#22c55e','#16a34a','#15803d','#166534'],fmt);
 
   const byDate={};
-  SALES.forEach(s=>{byDate[s.date]=(byDate[s.date]||0)+s.amt;});
+  sales.forEach(s=>{byDate[s.date]=(byDate[s.date]||0)+s.amt;});
   const dates=Object.keys(byDate).sort();
   barChart('salesDate',dates.map(d=>fdate(d)),[{label:'Revenue',data:dates.map(d=>byDate[d]),color:'#22c55e',vf:fmt}],180);
 
-  document.getElementById('salesTable').innerHTML=SALES.map(s=>`<tr>
+  document.getElementById('salesTable').innerHTML=sales.map(s=>`<tr>
     <td style="font-family:monospace;color:#a78bfa">${s.ref}</td>
     <td>${fdate(s.date)}</td>
     <td style="color:#fff">${s.client}</td>
@@ -410,7 +433,20 @@ function renderSales(){
 }
 
 function renderAds(){
-  document.getElementById('adsTable').innerHTML=ADS.map(a=>`<tr>
+  const ads=filteredAds();
+  // Update ads metrics
+  const inbound=ads.filter(a=>a.type==='Inbound').length;
+  const ccbd=ads.filter(a=>a.type==='CCBD').length;
+  const conv=ads.filter(a=>a.conv==='Yes').length;
+  document.querySelector('#tp-ads .mg .mc:nth-child(1) .mv').textContent=ads.length;
+  document.querySelector('#tp-ads .mg .mc:nth-child(2) .mv').textContent=inbound;
+  document.querySelector('#tp-ads .mg .mc:nth-child(2) .ms').textContent=ads.length?(Math.round(inbound/ads.length*100))+'% of leads':'—';
+  document.querySelector('#tp-ads .mg .mc:nth-child(3) .mv').textContent=ccbd;
+  document.querySelector('#tp-ads .mg .mc:nth-child(3) .ms').textContent=ads.length?(Math.round(ccbd/ads.length*100))+'% of leads':'—';
+  document.querySelector('#tp-ads .mg .mc:nth-child(4) .mv').textContent=conv;
+  document.querySelector('#tp-ads .mg .mc:nth-child(4) .ms').textContent=ads.length?(Math.round(conv/ads.length*100))+'% conv rate':'—';
+
+  document.getElementById('adsTable').innerHTML=ads.map(a=>`<tr>
     <td>${fdate(a.date)}</td>
     <td style="color:#fff">${a.client}</td>
     <td><span class="badge ${a.type.toLowerCase()}">${a.type}</span></td>
@@ -440,6 +476,19 @@ function renderAll(){
   document.getElementById('lu').textContent='Updated '+new Date().toLocaleTimeString();
 }
 
+// ── FILTER HELPERS ───────────────────────────────────────
+function getRange(){
+  return{f:document.getElementById('df').value, t:document.getElementById('dt').value};
+}
+function inRange(date){
+  const{f,t}=getRange();
+  if(f&&date<f)return false;
+  if(t&&date>t)return false;
+  return true;
+}
+function filteredSales(){return SALES.filter(s=>inRange(s.date));}
+function filteredAds(){return ADS.filter(a=>inRange(a.date));}
+
 // ── TABS ──────────────────────────────────────────────────
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
@@ -449,10 +498,25 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
   setTimeout(renderAll,30);
 }));
 
+// Date range buttons
 document.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>{
   document.querySelectorAll('[data-r]').forEach(x=>x.classList.remove('on'));
   b.classList.add('on');
+  const rv=b.dataset.r;
+  if(rv==='all'){
+    document.getElementById('df').value='';
+    document.getElementById('dt').value='';
+  } else {
+    const allDates=[...SALES.map(s=>s.date),...ADS.map(a=>a.date)].sort();
+    const latest=allDates[allDates.length-1]||new Date().toISOString().slice(0,10);
+    const fd=new Date(latest);fd.setDate(fd.getDate()-(+rv-1));
+    document.getElementById('df').value=fd.toISOString().slice(0,10);
+    document.getElementById('dt').value=latest;
+  }
+  renderAll();
 }));
+document.getElementById('df').addEventListener('change',()=>{document.querySelectorAll('[data-r]').forEach(x=>x.classList.remove('on'));renderAll();});
+document.getElementById('dt').addEventListener('change',()=>{document.querySelectorAll('[data-r]').forEach(x=>x.classList.remove('on'));renderAll();});
 
 // ── BOOT ──────────────────────────────────────────────────
 window.addEventListener('load',()=>{
