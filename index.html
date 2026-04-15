@@ -805,8 +805,8 @@ window.addEventListener('load',function(){
             }).filter(Boolean);
             if(parsed.length>0)SALES=parsed;
           }
-          if(raw['Ads_Log']){
-            var parsed2=raw['Ads_Log'].slice(1).filter(function(r){return r[1];}).map(function(r){
+
+          if(raw['Ads_Log']){var parsed2=raw['Ads_Log'].slice(1).filter(function(r){return r[1];}).map(function(r){
               var d=r[3],ds=d instanceof Date?d.toISOString().slice(0,10):typeof d==='string'?d.slice(0,10):'';
               return ds?{date:ds,client:String(r[1]||'').trim(),type:String(r[7]||''),poc:String(r[8]||'').trim(),lead:String(r[12]||''),conv:String(r[11]||'—'),val:parseFloat(r[10])||null}:null;
             }).filter(Boolean);
