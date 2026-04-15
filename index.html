@@ -86,6 +86,7 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
       <button class="qb on" data-r="all">All</button>
       <button class="qb" data-r="30">30d</button>
       <button class="qb" data-r="7">7d</button>
+      <button class="qb" data-r="today">Today</button>
       <span style="font-size:11px;color:var(--m);font-family:monospace;" id="fi">—</span>
     </div>
   </div>
@@ -606,17 +607,23 @@ document.querySelectorAll('[data-mtype]').forEach(function(b){
 });
 
 // ── DATE CONTROLS ─────────────────────────────────────────
+function todayStr(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 document.querySelectorAll('[data-r]').forEach(function(b){b.addEventListener('click',function(){
   document.querySelectorAll('[data-r]').forEach(function(x){x.classList.remove('on');});
   b.classList.add('on');
   var rv=b.dataset.r;
-  if(rv==='all'){document.getElementById('df').value='';document.getElementById('dt').value='';}
-  else{
-    var allDates=SALES.map(function(s){return s.date;}).concat(ADS.map(function(a){return a.date;})).sort();
-    var latest=allDates[allDates.length-1]||new Date().toISOString().slice(0,10);
-    var fd2=new Date(latest);fd2.setDate(fd2.getDate()-(+rv-1));
+  if(rv==='all'){
+    document.getElementById('df').value='';
+    document.getElementById('dt').value='';
+  } else if(rv==='today'){
+    var td=todayStr();
+    document.getElementById('df').value=td;
+    document.getElementById('dt').value=td;
+  } else {
+    var td2=todayStr();
+    var fd2=new Date(td2);fd2.setDate(fd2.getDate()-(+rv-1));
     document.getElementById('df').value=fd2.toISOString().slice(0,10);
-    document.getElementById('dt').value=latest;
+    document.getElementById('dt').value=td2;
   }
   renderAll();
 });});
@@ -845,17 +852,25 @@ window.addEventListener('load',function(){
               var batch=String(r[1]||'').toLowerCase();
               var isPrimary=(batch.indexOf('previous merge')<0);
               var d=r[3],ds='';
-              if(typeof d==='string'){
-                // "Date(2026,3,8)" format from Google Sheets
-                var dm=d.match(/Date\((\d+),(\d+),(\d+)\)/);
-                if(dm){var dd=new Date(+dm[1],+dm[2],+dm[3]);ds=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');}
-                // ISO string "2026-04-08T..." or "2026-04-08 ..."
-                else if(d.match(/^\d{4}-\d{2}-\d{2}/))ds=d.slice(0,10);
-                // DD/MM/YYYY
-                else if(d.match(/^\d{2}\/\d{2}\/\d{4}/)){var p=d.split('/');ds=p[2]+'-'+p[1]+'-'+p[0];}
-              }
-              else if(d&&d.toISOString)ds=d.toISOString().slice(0,10);
-              else if(typeof d==='number'&&d>40000){var ep=new Date(Date.UTC(1899,11,30));ep.setUTCDate(ep.getUTCDate()+Math.floor(d));ds=ep.toISOString().slice(0,10);}
+              try{
+                if(d===null||d===undefined||d===''){}
+                else if(typeof d==='string'){
+                  var dm=d.match(/Date\((\d+),(\d+),(\d+)\)/);
+                  if(dm){var dd=new Date(+dm[1],+dm[2],+dm[3]);ds=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');}
+                  else if(/^\d{4}-\d{2}-\d{2}/.test(d))ds=d.slice(0,10);
+                  else if(/^\d{2}\/\d{2}\/\d{4}/.test(d)){var pts=d.split('/');ds=pts[2]+'-'+pts[1]+'-'+pts[0];}
+                  else if(/^\d{2}-\d{2}-\d{4}/.test(d)){var pts2=d.split('-');ds=pts2[2]+'-'+pts2[1]+'-'+pts2[0];}
+                  else{var parsed=new Date(d);if(!isNaN(parsed))ds=parsed.getFullYear()+'-'+String(parsed.getMonth()+1).padStart(2,'0')+'-'+String(parsed.getDate()).padStart(2,'0');}
+                }
+                else if(typeof d==='number'){
+                  if(d>40000){var ep=new Date(Date.UTC(1899,11,30));ep.setUTCDate(ep.getUTCDate()+Math.floor(d));ds=ep.toISOString().slice(0,10);}
+                  else if(d>1000000000){var ed=new Date(d);ds=ed.getFullYear()+'-'+String(ed.getMonth()+1).padStart(2,'0')+'-'+String(ed.getDate()).padStart(2,'0');}
+                }
+                else if(d&&typeof d==='object'){
+                  if(d.toISOString)ds=d.toISOString().slice(0,10);
+                  else{var od=new Date(d);if(!isNaN(od))ds=od.getFullYear()+'-'+String(od.getMonth()+1).padStart(2,'0')+'-'+String(od.getDate()).padStart(2,'0');}
+                }
+              }catch(e2){}
               if(!ds||ds<'2020-01-01')return;
               if(!bd2[ds])bd2[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};
               bd2[ds][key]++;
@@ -874,7 +889,11 @@ window.addEventListener('load',function(){
             ML_FOLLOWUP=Object.values(bdF).sort(function(a,b){return a.date.localeCompare(b.date);});
             if(nd.length>0){ML_BY_DATE.length=0;nd.forEach(function(d){ML_BY_DATE.push(d);});}
             if(ni.length>0){ML_BY_IND.length=0;ni.forEach(function(i){ML_BY_IND.push(i);});}
-            console.log('ML: primary del='+ML_PRIMARY.reduce(function(a,d){return a+d.del;},0)+' followup del='+ML_FOLLOWUP.reduce(function(a,d){return a+d.del;},0));
+            // Debug — open browser console to see this
+            var sample=raw['Master_Log'].slice(1,4);
+            console.log('ML raw sample r[3] dates:', sample.map(function(r){return {type:typeof r[3],val:r[3]};}));
+            console.log('ML parsed dates:', nd.slice(0,5).map(function(d){return d.date;}));
+            console.log('ML: primary del='+ML_PRIMARY.reduce(function(a,d){return a+d.del;},0)+' followup del='+ML_FOLLOWUP.reduce(function(a,d){return a+d.del;},0)+' total rows='+nd.length);
           }
                     if(raw['Sales_Log']){
             var parsed=raw['Sales_Log'].slice(1).filter(function(r){return r[0];}).map(function(r){
