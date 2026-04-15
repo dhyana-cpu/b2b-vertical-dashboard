@@ -295,7 +295,17 @@ function getT(){return document.getElementById('dt').value;}
 function inR(date){var f=getF(),t=getT();if(f&&date<f)return false;if(t&&date>t)return false;return true;}
 function fSales(){return SALES.filter(function(s){return inR(s.date);});}
 function fAds(){return ADS.filter(function(a){return inR(a.date);});}
-function fML(){return ML_BY_DATE.filter(function(d){return inR(d.date);});}
+function fML(){
+  var f=getF(),t=getT();
+  // If no filter set, return all
+  if(!f&&!t)return ML_BY_DATE;
+  // Return only rows within range — empty array if none match (don't fall back)
+  return ML_BY_DATE.filter(function(d){
+    if(f&&d.date<f)return false;
+    if(t&&d.date>t)return false;
+    return true;
+  });
+}
 
 // ── CHARTS ────────────────────────────────────────────────
 function barChart(id,labels,datasets,h){
@@ -353,8 +363,7 @@ function hbar(id,labels,values,colors,vf){
 // ── MAIN RENDER ───────────────────────────────────────────
 function renderAll(){
   var sales=fSales(), ads=fAds(), ml=fML();
-  // Use all ML if filter returns nothing (dates may not overlap)
-  var mlRows=ml.length>0?ml:ML_BY_DATE;
+  var mlRows=ml;
 
   // ── TOP SUMMARY ──
   var tSalesAmt=sales.reduce(function(a,s){return a+s.amt;},0);
