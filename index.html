@@ -104,6 +104,8 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
     <div class="tab" data-tab="sales">Sales</div>
     <div class="tab" data-tab="ads">Ads</div>
     <div class="tab" data-tab="inmails">InMails</div>
+    <div class="tab" data-tab="bd">Active Conversations</div>
+    <div class="tab" data-tab="samples">Sample Data</div>
   </div>
 
   <!-- OVERVIEW -->
@@ -208,6 +210,100 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
       <table class="tbl"><thead><tr><th>#</th><th>Industry</th><th>Company</th><th>Role</th><th>Contact</th></tr></thead><tbody id="iTable"></tbody></table>
     </div></div>
   </div>
+  <!-- ACTIVE CONVERSATIONS (BD Sheet) -->
+  <div class="tp" id="tp-bd">
+    <div class="mg" style="grid-template-columns:repeat(4,1fr);">
+      <div class="mc ye"><div class="ml">Total Leads</div><div class="mv" id="bdTotal">—</div><div class="ms" id="bdSub">in range</div></div>
+      <div class="mc re"><div class="ml">Cold</div><div class="mv" id="bdCold">—</div><div class="ms" id="bdColdR">—</div></div>
+      <div class="mc or"><div class="ml">Hot</div><div class="mv" id="bdHot">—</div><div class="ms" id="bdHotR">—</div></div>
+      <div class="mc gn"><div class="ml">Converted</div><div class="mv" id="bdConv">—</div><div class="ms" id="bdConvR">—</div></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
+      <div class="df" style="gap:6px;">
+        <span class="fl">Phase</span>
+        <select class="di" id="bdPhase">
+          <option value="all">All Phases</option>
+          <option value="Cold">Cold</option>
+          <option value="Hot">Hot</option>
+          <option value="Converted">Converted</option>
+        </select>
+        <span class="fl">Source</span>
+        <select class="di" id="bdSource">
+          <option value="all">All Sources</option>
+          <option value="Shopify">Shopify</option>
+          <option value="CC BD">CC BD</option>
+          <option value="Email">Email</option>
+        </select>
+        <span class="fl">POC</span>
+        <select class="di" id="bdPoc">
+          <option value="all">All POCs</option>
+          <option value="Siya">Siya</option>
+          <option value="Manjari">Manjari</option>
+        </select>
+      </div>
+      <span style="font-size:11px;color:var(--m);font-family:monospace;" id="bdCount"></span>
+    </div>
+    <!-- Pipeline kanban -->
+    <div class="g3" id="bdPipeline" style="margin-bottom:14px;"></div>
+    <div class="g1"><div class="cc">
+      <div class="ch"><div class="ct">All Conversations</div></div>
+      <table class="tbl">
+        <thead><tr><th>Date</th><th>Company</th><th>Contact</th><th>POC</th><th>Source</th><th>Phase</th><th>Follow-up</th><th>Remarks</th></tr></thead>
+        <tbody id="bdTable"></tbody>
+      </table>
+    </div></div>
+  </div>
+
+  <!-- SAMPLE DATA -->
+  <div class="tp" id="tp-samples">
+    <div class="mg" style="grid-template-columns:repeat(4,1fr);">
+      <div class="mc bl"><div class="ml">Total Samples</div><div class="mv" id="smTotal">—</div><div class="ms" id="smSub">in range</div></div>
+      <div class="mc bl"><div class="ml">Unique Clients</div><div class="mv" id="smClients">—</div><div class="ms">recipients</div></div>
+      <div class="mc bl"><div class="ml">Most Sent</div><div class="mv" id="smTopProd" style="font-size:13px">—</div><div class="ms" id="smTopQty">—</div></div>
+      <div class="mc bl"><div class="ml">Requested By</div><div class="mv" id="smTopPoc" style="font-size:14px">—</div><div class="ms">most active</div></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
+      <div class="df" style="gap:6px;">
+        <span class="fl">Product</span>
+        <select class="di" id="smProd" style="min-width:200px;">
+          <option value="all">All Products</option>
+          <option value="Cheesy Jalepeno Dip with Piri Piri Ragi Chips">Cheesy Jalepeno Dip</option>
+          <option value="Peri Peri Ragi Chips">Peri Peri Ragi Chips</option>
+          <option value="Piri piri ragi chips">Piri piri ragi chips</option>
+          <option value="Nacho cheese Jowar puffs">Nacho Cheese Jowar Puffs</option>
+          <option value="Biscuit Sticks with Butterscotch Dip">Biscuit Sticks Butterscotch</option>
+          <option value="Baked Pizza Sticks with a Cheesy Jalapeno Dip">Baked Pizza Sticks</option>
+          <option value="Best Seller Box of 10">Best Seller Box</option>
+          <option value="Cheese Dosa Khakhra">Cheese Dosa Khakhra</option>
+          <option value="Pistachio Dip with Biscuit sticks">Pistachio Dipsters</option>
+        </select>
+        <span class="fl">By</span>
+        <select class="di" id="smBy">
+          <option value="all">All</option>
+          <option value="Siya">Siya</option>
+          <option value="Manjari">Manjari</option>
+          <option value="Faizaan">Faizaan</option>
+          <option value="Raghav">Raghav</option>
+          <option value="Dhyana">Dhyana</option>
+          <option value="Jaydeep">Jaydeep</option>
+          <option value="Meshva">Meshva</option>
+        </select>
+      </div>
+      <span style="font-size:11px;color:var(--m);font-family:monospace;" id="smCount"></span>
+    </div>
+    <div class="g2">
+      <div class="cc"><div class="ch"><div class="ct">Samples by Date</div></div><div class="cw" id="smDateChart" style="min-height:180px"></div></div>
+      <div class="cc"><div class="ch"><div class="ct">Top Products Sampled</div></div><div class="cw" id="smProdChart" style="min-height:180px"></div></div>
+    </div>
+    <div class="g1"><div class="cc">
+      <div class="ch"><div class="ct">All Sample Requests</div></div>
+      <table class="tbl">
+        <thead><tr><th>Date</th><th>Product Sampled</th><th>Client</th><th>Qty</th><th>Requested By</th><th>Dispatch</th></tr></thead>
+        <tbody id="smTable"></tbody>
+      </table>
+    </div></div>
+  </div>
+
 </div>
 <div class="tip" id="tip"></div>
 
@@ -461,6 +557,8 @@ function renderAll(){
   set('iIT',INMAILS.filter(function(i){return i.ind==='IT';}).length);
   document.getElementById('iTable').innerHTML=INMAILS.map(function(m){return '<tr><td style="color:#888">'+m.n+'</td><td><span class="badge '+(m.ind==='FM'?'inbound':'ccbd')+'">'+m.ind+'</span></td><td style="color:#fff">'+m.company+'</td><td style="color:#aaa">'+m.role+'</td><td style="color:#a78bfa">'+m.poc+'</td></tr>';}).join('');
 
+  renderBD();
+  renderSamples();
   document.getElementById('lu').textContent='Updated '+new Date().toLocaleTimeString();
 }
 
@@ -490,6 +588,206 @@ document.querySelectorAll('[data-r]').forEach(function(b){b.addEventListener('cl
 });});
 document.getElementById('df').addEventListener('change',function(){document.querySelectorAll('[data-r]').forEach(function(x){x.classList.remove('on');});renderAll();});
 document.getElementById('dt').addEventListener('change',function(){document.querySelectorAll('[data-r]').forEach(function(x){x.classList.remove('on');});renderAll();});
+
+// ── BD SHEET DATA ────────────────────────────────────────
+var BD=[
+  {date:'2026-04-01',company:'Unfold Opulence',name:'Hasti Shah',contact:'8320364059',location:'Delhi',poc:'Siya',remarks:'preferred qcom',source:'Shopify',phase:'Cold',followup:''},
+  {date:'2026-04-02',company:'Eshanya Estate',name:'Kala Adarsh',contact:'95917 71717',location:'',poc:'Siya',remarks:"Didn't pick up",source:'Shopify',phase:'Cold',followup:''},
+  {date:'2026-04-06',company:'',name:'Shreya Sinha',contact:'',location:'',poc:'Manjari',remarks:'Ordered from website',source:'Shopify',phase:'Cold',followup:''},
+  {date:'2026-04-06',company:'',name:'Shaila Aggarwal',contact:'72900 50059',location:'',poc:'Siya',remarks:'Sent product catalogue',source:'Shopify',phase:'Cold',followup:'2026-04-07'},
+  {date:'2026-04-06',company:'Personal',name:'Shalaka Somani',contact:'95994 50020',location:'Agra',poc:'Siya',remarks:'Converted',source:'Shopify',phase:'Converted',followup:''},
+  {date:'2026-04-06',company:'NSE',name:'Pikasa Bagchi',contact:'98338 92622',location:'',poc:'',remarks:'',source:'',phase:'Unknown',followup:''},
+  {date:'2026-04-07',company:'Emm Ess Impex',name:'Syed Abdullah',contact:'',location:'',poc:'Manjari',remarks:'No product requirement',source:'Shopify',phase:'Cold',followup:''},
+  {date:'2026-04-07',company:'',name:'Suvhandar Das',contact:'747 745 8570',location:'',poc:'Siya',remarks:'Sent quote, no response',source:'CC BD',phase:'Cold',followup:'2026-04-15'},
+  {date:'2026-04-08',company:'Awas Club',name:'Ratndeep Bhagwat',contact:'9512166836',location:'',poc:'Manjari',remarks:'Sent product catalogue. Review pending',source:'Shopify',phase:'Hot',followup:''},
+  {date:'2026-04-08',company:'Pharma',name:'Ashok',contact:'88285 52305',location:'',poc:'Manjari',remarks:'Meeting set up',source:'CC BD',phase:'Hot',followup:''},
+  {date:'2026-04-08',company:'JucyGifts',name:'Sakshi',contact:'73047 74454',location:'Mumbai',poc:'Siya',remarks:'Converted',source:'CC BD',phase:'Converted',followup:''},
+  {date:'2026-04-09',company:'',name:'Dharshini Parekh',contact:'88661 58102',location:'Gujarat',poc:'Siya',remarks:'Lack of product availability',source:'CC BD',phase:'Cold',followup:''},
+  {date:'2026-04-10',company:'Elcita',name:'Franklin',contact:'98866 06706',location:'Bangalore',poc:'Siya',remarks:'Sent a sample box',source:'Email',phase:'Hot',followup:'2026-04-15'},
+  {date:'2026-04-13',company:'',name:'Rakesh',contact:'79773 57432',location:'',poc:'Siya',remarks:'Order value < 5k',source:'Shopify',phase:'Cold',followup:''},
+  {date:'2026-04-13',company:'',name:'Lakshya',contact:'',location:'',poc:'Manjari',remarks:"Need it in 2 days, can't deliver",source:'Shopify',phase:'Converted',followup:''},
+  {date:'2026-04-13',company:'Sodeoxo',name:'Anjali',contact:'',location:'UP',poc:'Siya',remarks:'Sent a sample box',source:'Email',phase:'Hot',followup:''},
+];
+
+// ── SAMPLE DATA ───────────────────────────────────────────
+var SAMPLES=[
+  {date:'2026-04-15',product:'Peri peri ragi chips',client:'Reddyprasahnth Kaveti',qty:1,req_by:'Siya',dispatch:''},
+  {date:'2026-04-15',product:'Nacho cheese Jowar puffs',client:'',qty:1,req_by:'Faizaan',dispatch:''},
+  {date:'2026-04-13',product:'Peri peri ragi chips',client:'Anjali- Sodexo',qty:1,req_by:'Siya',dispatch:''},
+  {date:'2026-04-10',product:'Peri peri ragi chips',client:'Franklin (Elcita)',qty:1,req_by:'Siya',dispatch:'Delhivery'},
+  {date:'2026-04-10',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'',qty:1,req_by:'Faizaan',dispatch:''},
+  {date:'2026-04-09',product:'Best Seller Box of 10',client:'Sakshi (Jucygifts)',qty:1,req_by:'Siya',dispatch:'wefast'},
+  {date:'2026-04-09',product:'Best Seller Box of 10',client:'',qty:1,req_by:'Manjari',dispatch:''},
+  {date:'2026-04-09',product:'Sweet chilli Jowar chips',client:'Dhyana',qty:15,req_by:'Dhyana',dispatch:'kishan'},
+  {date:'2026-04-08',product:'Biscuit Sticks with Butterscotch Dip',client:'Rajan jain',qty:1,req_by:'Faizaan',dispatch:'Delhivery'},
+  {date:'2026-04-06',product:'Baked Pizza Sticks with a Cheesy Jalapeno Dip',client:'Krishna Agencies',qty:2,req_by:'Faizaan',dispatch:'Delhivery'},
+  {date:'2026-04-06',product:'Protein Bhujia Pudina',client:'',qty:1,req_by:'Manjari',dispatch:''},
+  {date:'2026-04-04',product:'Peri Peri Ragi Chips',client:'Kavyam by esha',qty:1,req_by:'Siya',dispatch:'Delhivery'},
+  {date:'2026-04-01',product:'Peri Peri Ragi Chips',client:'Floraza (Khushi Sachdeva)',qty:1,req_by:'Siya',dispatch:'Delhivery'},
+  {date:'2026-04-01',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Krishna Pawar',qty:1,req_by:'Faizaan',dispatch:'Delhivery'},
+  {date:'2026-04-01',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Raju Pawar',qty:1,req_by:'Faizaan',dispatch:'Delhivery'},
+  {date:'2026-03-31',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Rahul',qty:1,req_by:'Raghav',dispatch:'Blue dart'},
+  {date:'2026-03-30',product:'Truffle Peanuts',client:'Ankur Khanna',qty:1,req_by:'Dhyana',dispatch:'Blue dart'},
+  {date:'2026-03-27',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Rikky rathore',qty:1,req_by:'Raghav',dispatch:'Delhivery'},
+  {date:'2026-03-27',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Anil kumar',qty:1,req_by:'Raghav',dispatch:'Delhivery'},
+  {date:'2026-03-27',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Kakkad Sales Agency',qty:1,req_by:'Bhavya',dispatch:'Delhivery'},
+  {date:'2026-03-26',product:'Pistachio Dip with Biscuit sticks',client:'Shubh traders',qty:1,req_by:'Faizaan',dispatch:'Delhivery'},
+  {date:'2026-03-26',product:'Peri peri ragi chips',client:'Rahul Nankani',qty:3,req_by:'Faizaan',dispatch:'Blue dart'},
+  {date:'2026-03-24',product:'Pistachio Dip with Biscuit sticks',client:'Fazil',qty:1,req_by:'Faizaan',dispatch:'Delhivery'},
+  {date:'2026-03-24',product:'Pistachio Dip with Biscuit sticks',client:'Dushyant upadhyaya',qty:1,req_by:'Faizaan',dispatch:'Delhivery'},
+  {date:'2026-03-23',product:'Nacho cheese Jowar puffs',client:'Aasma Iftekhar Ahmed Shaikh',qty:6,req_by:'Faizaan',dispatch:'Delhivery'},
+  {date:'2026-03-23',product:'Peri Peri Ragi Chips',client:'Hemen Sanghavi',qty:1,req_by:'Dhyana',dispatch:'Delhivery'},
+  {date:'2026-03-18',product:'Cheesy jalapeño dips with peri peri ragi chips',client:'Pinnacle',qty:1,req_by:'Manjari',dispatch:'Delhivery'},
+  {date:'2026-03-17',product:'Coffee Cookies',client:'Gaurav',qty:2,req_by:'Jaydeep',dispatch:'Delhivery'},
+  {date:'2026-03-17',product:'Protein Bhujia 2 flavours',client:'Himanshu',qty:2,req_by:'Manjari',dispatch:'Delhivery'},
+  {date:'2026-03-17',product:'Protein Bhujia 2 flavours',client:'Cafe coffee day',qty:1,req_by:'Manjari',dispatch:'Delhivery'},
+  {date:'2026-03-16',product:'Peri peri ragi chips',client:'SEBI BKC',qty:1,req_by:'Manjari',dispatch:'KISHAN'},
+  {date:'2026-03-16',product:'Cheese Dosa Khakhra',client:'Vinod Chajjer',qty:7,req_by:'Dhyana',dispatch:'Blue dart'},
+  {date:'2026-03-13',product:'Protein Bhujia 2 flavours',client:'Landmark services',qty:1,req_by:'Manjari',dispatch:'Delhivery'},
+  {date:'2026-03-06',product:'Cheese Dosa Khakhra',client:'Pratik Vora',qty:2,req_by:'Raghav',dispatch:'Delhivery'},
+  {date:'2026-03-05',product:'Baked Pizza Sticks with Cheesy Jalapeno Dip',client:'TOKRI Luxuryhampers',qty:1,req_by:'Manjari',dispatch:'Delhivery'},
+  {date:'2026-03-02',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Tolia Industries',qty:1,req_by:'Raghav',dispatch:'Delhivery'},
+  {date:'2026-03-02',product:'Himalayan Pink Salt And Pepper',client:'Prajakta',qty:1,req_by:'Manjari',dispatch:'Delhivery'},
+  {date:'2026-02-21',product:'Baked Pizza Sticks With A Cheesy Dip',client:'Vaishnavi vakharia',qty:1,req_by:'Dhyana',dispatch:'kishan'},
+  {date:'2026-02-20',product:'Cheddar Cheese Makhana',client:'Gunjan',qty:1,req_by:'Dhyana',dispatch:'Delhivery'},
+  {date:'2026-02-19',product:'Sweet chilli jowar chips',client:"Aditya's meeting",qty:3,req_by:'Hiral',dispatch:'kishan'},
+  {date:'2026-02-17',product:'Peri Peri Ragi Chips',client:'Sarath',qty:1,req_by:'Manjari',dispatch:'Delhivery'},
+  {date:'2026-02-16',product:'Nacho cheese Jowar puffs',client:'Aasma Iftekhar Ahmed Shaikh',qty:6,req_by:'Jaydeep',dispatch:'Delhivery'},
+  {date:'2026-02-13',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Abhishek Mangwani',qty:1,req_by:'Raghav',dispatch:'Delhivery'},
+  {date:'2026-02-09',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Dhwanita Rupani',qty:1,req_by:'Raghav',dispatch:'Delhivery'},
+  {date:'2026-02-04',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Archit',qty:1,req_by:'Meshva',dispatch:'Delhivery'},
+  {date:'2026-02-02',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Ajay',qty:1,req_by:'Raghav',dispatch:'Delhivery'},
+  {date:'2026-01-30',product:'Peri Peri Ragi Chips',client:'Anthony Peter Paul Dias',qty:1,req_by:'Raghav',dispatch:'Delhivery'},
+  {date:'2026-01-28',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Ram Dayal Gupta Store',qty:1,req_by:'Meshva',dispatch:'Delhivery'},
+  {date:'2026-01-22',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Sahil Garg',qty:1,req_by:'Raghav',dispatch:'Delhivery'},
+  {date:'2026-01-20',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Hitesh',qty:1,req_by:'Raghav',dispatch:'Delhivery'},
+  {date:'2026-01-16',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Sagar Budh',qty:1,req_by:'Raghav',dispatch:'Delhivery'},
+  {date:'2026-01-12',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Yogesh Manjal',qty:1,req_by:'Raghav',dispatch:'Delhivery'},
+  {date:'2026-01-08',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Azeezur Rahman',qty:1,req_by:'Raghav',dispatch:'Blue dart'},
+  {date:'2026-01-07',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Shiva sai Pranay',qty:1,req_by:'Meshva',dispatch:'Delhivery'},
+  {date:'2026-01-05',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Kunal Mehta',qty:1,req_by:'Meshva',dispatch:'Delhivery'},
+];
+
+// Phase colors
+var PHASE_COLOR={Cold:'#3b82f6',Hot:'#f97316',Converted:'#22c55e',Unknown:'#888'};
+
+function fBD(){
+  var f=getF(),t=getT();
+  var phase=document.getElementById('bdPhase').value;
+  var source=document.getElementById('bdSource').value;
+  var poc=document.getElementById('bdPoc').value;
+  return BD.filter(function(b){
+    if(f&&b.date<f)return false;
+    if(t&&b.date>t)return false;
+    if(phase!=='all'&&b.phase!==phase)return false;
+    if(source!=='all'&&b.source.trim()!==source)return false;
+    if(poc!=='all'&&b.poc!==poc)return false;
+    return true;
+  });
+}
+
+function fSamples(){
+  var f=getF(),t=getT();
+  var prod=document.getElementById('smProd').value;
+  var by=document.getElementById('smBy').value;
+  return SAMPLES.filter(function(s){
+    if(f&&s.date<f)return false;
+    if(t&&s.date>t)return false;
+    if(prod!=='all'&&!s.product.toLowerCase().includes(prod.toLowerCase().slice(0,15)))return false;
+    if(by!=='all'&&s.req_by.toLowerCase()!==by.toLowerCase())return false;
+    return true;
+  });
+}
+
+function renderBD(){
+  var bd=fBD();
+  var cold=bd.filter(function(b){return b.phase==='Cold';}).length;
+  var hot=bd.filter(function(b){return b.phase==='Hot';}).length;
+  var conv=bd.filter(function(b){return b.phase==='Converted';}).length;
+  set('bdTotal',bd.length); set('bdSub',bd.length+' leads in range');
+  set('bdCold',cold); set('bdColdR',pct(cold,bd.length||1)+' of leads');
+  set('bdHot',hot); set('bdHotR',pct(hot,bd.length||1)+' of leads');
+  set('bdConv',conv); set('bdConvR',pct(conv,bd.length||1)+' conv rate');
+  set('bdCount',bd.length+' leads shown');
+
+  // Pipeline kanban
+  var phases=['Cold','Hot','Converted'];
+  var phaseLabels={Cold:'❄️ Cold',Hot:'🔥 Hot',Converted:'✅ Converted'};
+  document.getElementById('bdPipeline').innerHTML=phases.map(function(ph){
+    var leads=bd.filter(function(b){return b.phase===ph;});
+    var col=PHASE_COLOR[ph]||'#888';
+    return '<div class="cc" style="border-top:2px solid '+col+';">'+
+      '<div class="ch"><div class="ct">'+phaseLabels[ph]+'</div><span style="background:'+col+'22;color:'+col+';padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;">'+leads.length+'</span></div>'+
+      (leads.length?leads.map(function(b){
+        return '<div style="background:var(--s2);border-radius:8px;padding:10px;margin-bottom:8px;">'+
+          '<div style="font-size:12px;font-weight:600;color:#fff;margin-bottom:3px;">'+(b.company||b.name)+'</div>'+
+          (b.company?'<div style="font-size:11px;color:#aaa;margin-bottom:3px;">'+b.name+'</div>':'')+
+          '<div style="font-size:10px;color:var(--m);display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">'+
+          '<span>📅 '+b.date.slice(5).replace('-','/')+'</span>'+
+          (b.poc?'<span>👤 '+b.poc+'</span>':'')+
+          (b.source?'<span style="background:rgba(124,58,237,.15);color:#a78bfa;padding:1px 5px;border-radius:3px;">'+b.source.trim()+'</span>':'')+
+          '</div>'+
+          (b.remarks?'<div style="font-size:10px;color:#aaa;margin-top:5px;padding-top:5px;border-top:1px solid rgba(255,255,255,.05);">'+b.remarks.slice(0,60)+(b.remarks.length>60?'…':'')+'</div>':'')+
+          (b.followup?'<div style="font-size:10px;color:#eab308;margin-top:3px;">⏰ Follow-up: '+b.followup.slice(5).replace('-','/')+'</div>':'')+
+          '</div>';
+      }).join(''):'<div style="color:var(--m);font-size:12px;text-align:center;padding:16px;">No leads</div>')+
+      '</div>';
+  }).join('');
+
+  // Table
+  document.getElementById('bdTable').innerHTML=bd.length?bd.map(function(b){
+    var col=PHASE_COLOR[b.phase]||'#888';
+    return '<tr>'+
+      '<td>'+fd(b.date)+'</td>'+
+      '<td style="color:#fff">'+(b.company||'—')+'</td>'+
+      '<td style="color:#ddd">'+b.name+'</td>'+
+      '<td><span class="badge poc">'+(b.poc||'—')+'</span></td>'+
+      '<td style="color:#aaa">'+(b.source.trim()||'—')+'</td>'+
+      '<td><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;background:'+col+'22;color:'+col+'">'+b.phase+'</span></td>'+
+      '<td style="color:#eab308;font-size:11px">'+(b.followup?'⏰ '+b.followup.slice(5).replace('-','/'):'—')+'</td>'+
+      '<td style="color:#aaa;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+b.remarks+'</td>'+
+      '</tr>';
+  }).join(''):'<tr><td colspan="8" style="text-align:center;color:#555;padding:20px">No leads in selected range</td></tr>';
+}
+
+function renderSamples(){
+  var sm=fSamples();
+  var clients=new Set(sm.map(function(s){return s.client;}).filter(Boolean));
+  var byProd={};sm.forEach(function(s){if(s.product)byProd[s.product]=(byProd[s.product]||0)+1;});
+  var topProd=Object.entries(byProd).sort(function(a,b){return b[1]-a[1];})[0];
+  var byBy={};sm.forEach(function(s){if(s.req_by)byBy[s.req_by]=(byBy[s.req_by]||0)+1;});
+  var topBy=Object.entries(byBy).sort(function(a,b){return b[1]-a[1];})[0];
+  set('smTotal',sm.length); set('smSub',sm.length+' samples in range');
+  set('smClients',clients.size);
+  set('smTopProd',topProd?topProd[0].slice(0,22):'—'); set('smTopQty',topProd?topProd[1]+' times':'—');
+  set('smTopPoc',topBy?topBy[0]:'—');
+  set('smCount',sm.length+' samples shown');
+
+  // Date chart
+  var byDate={};sm.forEach(function(s){byDate[s.date]=(byDate[s.date]||0)+1;});
+  var dates=Object.keys(byDate).sort();
+  barChart('smDateChart',dates.map(fd),[{label:'Samples',data:dates.map(function(d){return byDate[d];}),color:'#3b82f6',vf:function(v){return v;}}],180);
+
+  // Product chart
+  var topProds=Object.entries(byProd).sort(function(a,b){return b[1]-a[1];}).slice(0,7);
+  hbar('smProdChart',topProds.map(function(p){return p[0].slice(0,22);}),topProds.map(function(p){return p[1];}),['#3b82f6','#6d28d9','#5b21b6','#4c1d95','#1d4ed8','#1e40af','#1e3a8a']);
+
+  // Table
+  document.getElementById('smTable').innerHTML=sm.length?sm.sort(function(a,b){return b.date.localeCompare(a.date);}).map(function(s){
+    return '<tr>'+
+      '<td>'+fd(s.date)+'</td>'+
+      '<td style="color:#fff">'+(s.product||'—')+'</td>'+
+      '<td style="color:#ddd">'+(s.client||'—')+'</td>'+
+      '<td style="font-family:monospace;color:#a78bfa">'+s.qty+'</td>'+
+      '<td><span class="badge poc">'+s.req_by+'</span></td>'+
+      '<td style="color:#aaa">'+(s.dispatch||'—')+'</td>'+
+      '</tr>';
+  }).join(''):'<tr><td colspan="6" style="text-align:center;color:#555;padding:20px">No samples in selected range</td></tr>';
+}
+
+// Wire dropdowns
+['bdPhase','bdSource','bdPoc'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('change',renderBD);});
+['smProd','smBy'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('change',renderSamples);});
 
 // ── BOOT ──────────────────────────────────────────────────
 window.addEventListener('load',function(){
