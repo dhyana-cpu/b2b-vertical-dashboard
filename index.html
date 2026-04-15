@@ -319,7 +319,7 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
 <script>
 const SHEET_URL='https://script.google.com/macros/s/AKfycbzsb5FX-sds7Hv25Cd_crPLtJGqTDWaPDuNz10Z68UvaHjD_US5bLys6ncfkY_Wm1ibzA/exec';
 
-let SALES=[
+var SALES=[
   {ref:'Apr26-001',date:'2026-04-01',client:'Floraza',poc:'Siya',type:'Inst Order',amt:7890.9},
   {ref:'Apr26-024',date:'2026-04-02',client:'Gerson Lehrman Group',poc:'Manjari',type:'Inst Order',amt:16830},
   {ref:'Apr26-044',date:'2026-04-02',client:'Qteam Solution Services',poc:'Dhyana',type:'Inst Order',amt:20500},
@@ -351,7 +351,7 @@ const ML_BY_IND=[
   {ind:'IT (9 Apr)',del:503,open:65,click:5,resp:1,bounce:16},
 ];
 
-let ADS=[
+var ADS=[
   {date:'2026-03-31',client:'Vijay Chaudhary',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'No',val:null},
   {date:'2026-03-31',client:'Rachael',type:'Inbound',poc:'Siya',lead:'Cold',conv:'—',val:null},
   {date:'2026-03-31',client:'Gaunisha Gaanavi',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'No',val:null},
@@ -416,7 +416,7 @@ function fML(){
 function barChart(id,labels,datasets,h){
   var el=document.getElementById(id);if(!el)return;
   h=h||200;
-  var W=el.clientWidth||600,P={t:8,r:10,b:48,l:55},cW=W-P.l-P.r,cH=h-P.t-P.b;
+  var W=Math.max(el.getBoundingClientRect().width,el.clientWidth,el.offsetWidth)||680,P={t:8,r:10,b:48,l:55},cW=W-P.l-P.r,cH=h-P.t-P.b;
   if(!labels||!labels.length){el.innerHTML='<p style="color:#555;padding:20px;font-size:12px;text-align:center">No data in selected range</p>';return;}
   var maxV=0;
   datasets.forEach(function(d){d.data.forEach(function(v){if(v>maxV)maxV=v;});});
@@ -449,7 +449,7 @@ function barChart(id,labels,datasets,h){
 function hbar(id,labels,values,colors,vf){
   var el=document.getElementById(id);if(!el)return;
   if(!labels||!labels.length){el.innerHTML='<p style="color:#555;padding:20px;font-size:12px;text-align:center">No data</p>';return;}
-  var W=el.clientWidth||400,maxV=0;
+  var W=Math.max(el.getBoundingClientRect().width,el.clientWidth,el.offsetWidth)||500,maxV=0;
   values.forEach(function(v){if(v>maxV)maxV=v;});
   if(maxV===0)maxV=1;
   var rowH=32,P={l:115,r:55,t:4},H=labels.length*rowH+P.t*2;
@@ -825,7 +825,9 @@ function renderSamples(){
 
 // ── BOOT ──────────────────────────────────────────────────
 window.addEventListener('load',function(){
-  renderAll();
+  requestAnimationFrame(function(){requestAnimationFrame(function(){
+    renderAll();
+  });});
   if(SHEET_URL){
     (function(){
       var ctrl=new AbortController();setTimeout(function(){ctrl.abort();},12000);
