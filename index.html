@@ -466,9 +466,21 @@ function hbar(id,labels,values,colors,vf){
 }
 
 // ── MAIN RENDER ───────────────────────────────────────────
+function getMLRows(){
+  var f=getF(),t=getT();
+  var mtype=window._mtype||'all';
+  var src= mtype==='primary'?ML_PRIMARY : mtype==='followup'?ML_FOLLOWUP : ML_BY_DATE;
+  if(!src||!src.length)src=ML_BY_DATE;
+  if(!f&&!t)return src;
+  return src.filter(function(d){
+    if(f&&d.date<f)return false;
+    if(t&&d.date>t)return false;
+    return true;
+  });
+}
 function renderAll(){
-  var sales=fSales(), ads=fAds(), ml=fML();
-  var mlRows=ml;
+  var sales=fSales(), ads=fAds();
+  var mlRows=getMLRows();
 
   // ── TOP SUMMARY ──
   var tSalesAmt=sales.reduce(function(a,s){return a+s.amt;},0);
