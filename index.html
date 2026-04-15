@@ -25,7 +25,7 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
 .mg{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:22px;}
 .mc{background:var(--s);border:1px solid var(--b);border-radius:12px;padding:16px;position:relative;overflow:hidden;}
 .mc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ac);}
-.mc.gn::before{background:var(--gr);}.mc.or::before{background:var(--or);}.mc.bl::before{background:var(--bl);}.mc.ye::before{background:var(--ye);}
+.mc.gn::before{background:var(--gr);}.mc.or::before{background:var(--or);}.mc.bl::before{background:var(--bl);}.mc.ye::before{background:var(--ye);}.mc.re::before{background:var(--re);}
 .ml{font-size:10px;color:var(--m);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
 .mv{font-size:22px;font-weight:600;font-family:monospace;color:#fff;}
 .ms{font-size:11px;color:var(--m);margin-top:4px;}
@@ -102,7 +102,7 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
 
   <div class="tabs">
     <div class="tab on" data-tab="ov">Overview</div>
-    <div class="tab" data-tab="mails">Mails</div>
+    <div class="tab" data-tab="mails">Master Log</div>
     <div class="tab" data-tab="sales">Sales</div>
     <div class="tab" data-tab="ads">Ads</div>
     <div class="tab" data-tab="inmails">InMails</div>
@@ -137,27 +137,41 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
     </div>
   </div>
 
-  <!-- MAILS — note: mail data is campaign-level, not date-level from sheet -->
+  <!-- MAILS (Master Log — event level data) -->
   <div class="tp" id="tp-mails">
-    <div class="mg" style="grid-template-columns:repeat(4,1fr);">
-      <div class="mc bl"><div class="ml">Delivered</div><div class="mv" id="mDel">—</div><div class="ms" id="mDelS">— campaigns</div></div>
-      <div class="mc"><div class="ml">Opened</div><div class="mv" id="mOpened">—</div><div class="ms" id="mOpenedR">— open rate</div></div>
-      <div class="mc or"><div class="ml">Clicked</div><div class="mv" id="mClicked">—</div><div class="ms" id="mClickedR">— click rate</div></div>
-      <div class="mc gn"><div class="ml">Responded</div><div class="mv" id="mResponded">—</div><div class="ms" id="mRespondedR">— response rate</div></div>
+    <div class="mg" style="grid-template-columns:repeat(5,1fr);">
+      <div class="mc bl"><div class="ml">Total Delivered</div><div class="mv" id="mDel">—</div><div class="ms" id="mDelS">—</div></div>
+      <div class="mc"><div class="ml">Total Opened</div><div class="mv" id="mOpened">—</div><div class="ms" id="mOpenedR">— open rate</div></div>
+      <div class="mc or"><div class="ml">Total Clicked</div><div class="mv" id="mClicked">—</div><div class="ms" id="mClickedR">— click rate</div></div>
+      <div class="mc gn"><div class="ml">Responded</div><div class="mv" id="mResponded">—</div><div class="ms" id="mRespondedR">— resp rate</div></div>
+      <div class="mc re"><div class="ml">Bounced</div><div class="mv" id="mBounced">—</div><div class="ms" id="mBouncedR">— bounce rate</div></div>
+    </div>
+    <div class="g2">
+      <div class="cc">
+        <div class="ch"><div class="ct">Daily Email Events</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <div class="li"><div class="ld" style="background:#3b82f6;width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:3px"></div><span style="font-size:10px;color:var(--m)">Delivered</span></div>
+            <div class="li"><div class="ld" style="background:#7c3aed;width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:3px"></div><span style="font-size:10px;color:var(--m)">Opened</span></div>
+            <div class="li"><div class="ld" style="background:#f97316;width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:3px"></div><span style="font-size:10px;color:var(--m)">Clicked</span></div>
+            <div class="li"><div class="ld" style="background:#22c55e;width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:3px"></div><span style="font-size:10px;color:var(--m)">Responded</span></div>
+          </div>
+        </div>
+        <div class="cw" id="mailDailyChart" style="min-height:240px"></div>
+      </div>
+      <div class="cc">
+        <div class="ch"><div class="ct">Open Rate by Industry</div></div>
+        <div class="cw" id="mailIndChart" style="min-height:240px"></div>
+      </div>
     </div>
     <div class="g1"><div class="cc">
-      <div class="ch"><div class="ct">Performance by Campaign</div></div>
-      <div class="mail-row mail-hdr"><span>Campaign</span><span>Delivered</span><span>Opened</span><span>Clicked</span><span>Responded</span></div>
-      <div id="mailTable"></div>
-      <div class="mail-row" style="font-weight:600;color:#fff;border-top:1px solid var(--b);margin-top:6px;padding-top:10px;" id="mailTotal"></div>
+      <div class="ch"><div class="ct">Performance by Industry</div></div>
+      <div class="mail-row mail-hdr"><span>Industry</span><span>Delivered</span><span>Opened</span><span>Clicked</span><span>Responded</span></div>
+      <div id="mailIndTable"></div>
+      <div class="mail-row" style="font-weight:600;color:#fff;border-top:1px solid var(--b);margin-top:6px;padding-top:10px;" id="mailIndTotal"></div>
     </div></div>
-    <div class="g2">
-      <div class="cc"><div class="ch"><div class="ct">Open Rate by Campaign</div></div><div class="cw" id="mailOpen" style="min-height:200px"></div></div>
-      <div class="cc"><div class="ch"><div class="ct">Response Rate by Campaign</div></div><div class="cw" id="mailResp" style="min-height:200px"></div></div>
-    </div>
   </div>
 
-  <!-- SALES -->
+    <!-- SALES -->
   <div class="tp" id="tp-sales">
     <div class="mg" style="grid-template-columns:repeat(4,1fr);">
       <div class="mc gn"><div class="ml">Total Revenue</div><div class="mv" id="sTotalRev">—</div><div class="ms" id="sTotalOrd">— orders</div></div>
@@ -210,6 +224,7 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
       </table>
     </div></div>
   </div>
+  <!-- MASTER LOG -->
 </div>
 <div class="tip" id="tip"></div>
 
@@ -277,6 +292,7 @@ let INMAILS=[
 // ── HELPERS ───────────────────────────────────────────────
 function fmt(n){if(!n||isNaN(n)||n===0)return'—';if(n>=100000)return'₹'+(n/100000).toFixed(1)+'L';if(n>=1000)return'₹'+(n/1000).toFixed(0)+'K';return'₹'+Math.round(n);}
 function pct(a,b){return b>0?Math.round(a/b*100)+'%':'0%';}
+function pctN(a,b){return b>0?Math.round(a/b*100):0;}
 function fdate(d){return d?d.slice(5).replace('-','/'):'—';}
 function set(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
 
@@ -353,10 +369,13 @@ function renderAll(){
 
   // ── TOP SUMMARY METRICS (all tied to filter) ──
   const totalSalesAmt=sales.reduce((a,s)=>a+s.amt,0);
-  const totalDel=mails.reduce((a,m)=>a+m.delivered,0);
-  const totalOpen=mails.reduce((a,m)=>a+m.opened,0);
-  const totalResp=mails.reduce((a,m)=>a+m.responded,0);
-  const totalBounce=mails.reduce((a,m)=>a+m.bounced,0);
+  // Use Master Log data for email metrics (filtered by date)
+  const mlFiltered=ML_BY_DATE.filter(d=>{if(getF()&&d.date<getF())return false;if(getT()&&d.date>getT())return false;return true;});
+  const mlRows=mlFiltered.length>0?mlFiltered:ML_BY_DATE;
+  const totalDel=mlRows.reduce((a,r)=>a+r.del,0);
+  const totalOpen=mlRows.reduce((a,r)=>a+r.open,0);
+  const totalResp=mlRows.reduce((a,r)=>a+r.resp,0);
+  const totalBounce=mlRows.reduce((a,r)=>a+r.bounce,0);
   const totalLeads=ads.length;
   const totalConv=ads.filter(a=>a.conv==='Yes').length;
 
@@ -414,24 +433,33 @@ function renderAll(){
   const pocs=Object.entries(byPoc).sort((a,b)=>b[1]-a[1]);
   hbar('ovPoc',pocs.map(p=>p[0]),pocs.map(p=>p[1]),['#a78bfa','#7c3aed','#6d28d9','#5b21b6'],fmt);
 
-  // ── MAILS TAB ──
-  set('mDel', totalDel.toLocaleString()); set('mDelS', mails.length+' campaigns');
-  set('mOpened', totalOpen); set('mOpenedR', pct(totalOpen,totalDel)+' open rate');
-  set('mClicked', totalClick); set('mClickedR', pct(totalClick,totalDel)+' click rate');
-  set('mResponded', totalResp); set('mRespondedR', pct(totalResp,totalDel)+' response rate');
-
-  document.getElementById('mailTable').innerHTML=mails.map(m=>`
-    <div class="mail-row">
-      <span style="color:#eee">${m.industry}</span>
-      <span>${m.delivered}</span>
-      <span>${m.opened} <span class="rate">${pct(m.opened,m.delivered)}</span></span>
-      <span>${m.clicked} <span class="rate">${pct(m.clicked,m.delivered)}</span></span>
-      <span>${m.responded} <span class="rate">${pct(m.responded,m.delivered)}</span></span>
-    </div>`).join('');
-  document.getElementById('mailTotal').innerHTML=`<span>TOTAL</span><span>${totalDel.toLocaleString()}</span><span>${totalOpen} <span class="rate">${pct(totalOpen,totalDel)}</span></span><span>${totalClick} <span class="rate">${pct(totalClick,totalDel)}</span></span><span>${totalResp} <span class="rate">${pct(totalResp,totalDel)}</span></span>`;
-
-  hbar('mailOpen',mails.map(m=>m.industry.slice(0,18)),mails.map(m=>+(pct(m.opened,m.delivered).replace('%',''))),['#7c3aed','#6d28d9','#5b21b6','#4c1d95'],v=>v+'%');
-  hbar('mailResp',mails.map(m=>m.industry.slice(0,18)),mails.map(m=>+(pct(m.responded,m.delivered).replace('%',''))),['#22c55e','#16a34a','#15803d','#166534'],v=>v+'%');
+  // ── MAILS TAB (Master Log — real event data) ──
+  const f=getF(),t=getT();
+  const mlFiltered=ML_BY_DATE.filter(d=>{if(f&&d.date<f)return false;if(t&&d.date>t)return false;return true;});
+  const mlRows=mlFiltered.length>0?mlFiltered:ML_BY_DATE;
+  const mlDel=mlRows.reduce((a,r)=>a+r.del,0);
+  const mlOpen=mlRows.reduce((a,r)=>a+r.open,0);
+  const mlClick=mlRows.reduce((a,r)=>a+r.click,0);
+  const mlResp=mlRows.reduce((a,r)=>a+r.resp,0);
+  const mlBounce=mlRows.reduce((a,r)=>a+r.bounce,0);
+  set('mDel',mlDel.toLocaleString()); set('mDelS',mlRows.length+' days tracked');
+  set('mOpened',mlOpen.toLocaleString()); set('mOpenedR',pct(mlOpen,mlDel)+' open rate');
+  set('mClicked',mlClick.toLocaleString()); set('mClickedR',pct(mlClick,mlDel)+' click rate');
+  set('mResponded',mlResp.toLocaleString()); set('mRespondedR',pct(mlResp,mlDel)+' resp rate');
+  set('mBounced',mlBounce.toLocaleString()); set('mBouncedR',pct(mlBounce,mlDel)+' bounce rate');
+  // Update top summary
+  set('tDel',mlDel.toLocaleString()); set('tOpenR',pct(mlOpen,mlDel)+' open rate');
+  set('tResp',mlResp); set('tRespR',pct(mlResp,mlDel)+' response rate');
+  barChart('mailDailyChart',mlRows.map(r=>fdate(r.date)),[
+    {label:'Delivered',data:mlRows.map(r=>r.del),color:'#3b82f6',vf:v=>v.toLocaleString()},
+    {label:'Opened',data:mlRows.map(r=>r.open),color:'#7c3aed',vf:v=>v.toLocaleString()},
+    {label:'Clicked',data:mlRows.map(r=>r.click),color:'#f97316',vf:v=>v.toLocaleString()},
+    {label:'Responded',data:mlRows.map(r=>r.resp),color:'#22c55e',vf:v=>v.toLocaleString()},
+  ],240);
+  hbar('mailIndChart',ML_BY_IND.map(m=>m.ind),ML_BY_IND.map(m=>+(pct(m.open,m.del).replace('%',''))),['#7c3aed','#6d28d9','#5b21b6','#4c1d95'],v=>v+'% open');
+  const mTD=ML_BY_IND.reduce((a,m)=>a+m.del,0),mTO=ML_BY_IND.reduce((a,m)=>a+m.open,0),mTC=ML_BY_IND.reduce((a,m)=>a+m.click,0),mTR=ML_BY_IND.reduce((a,m)=>a+m.resp,0);
+  document.getElementById('mailIndTable').innerHTML=ML_BY_IND.map(m=>`<div class="mail-row"><span style="color:#eee">${m.ind}</span><span>${m.del.toLocaleString()}</span><span>${m.open.toLocaleString()} <span class="rate">${pct(m.open,m.del)}</span></span><span>${m.click.toLocaleString()} <span class="rate">${pct(m.click,m.del)}</span></span><span>${m.resp.toLocaleString()} <span class="rate">${pct(m.resp,m.del)}</span></span></div>`).join('');
+  document.getElementById('mailIndTotal').innerHTML=`<span>TOTAL</span><span>${mTD.toLocaleString()}</span><span>${mTO.toLocaleString()} <span class="rate">${pct(mTO,mTD)}</span></span><span>${mTC.toLocaleString()} <span class="rate">${pct(mTC,mTD)}</span></span><span>${mTR.toLocaleString()} <span class="rate">${pct(mTR,mTD)}</span></span>`;
 
   // ── SALES TAB ──
   const avg=sales.length?totalSalesAmt/sales.length:0;
@@ -495,7 +523,8 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
   document.querySelectorAll('.tp').forEach(x=>x.classList.remove('on'));
   t.classList.add('on');
   document.getElementById('tp-'+t.dataset.tab).classList.add('on');
-  setTimeout(renderAll,30);
+  // Double RAF ensures DOM is painted before charts measure width
+  requestAnimationFrame(()=>requestAnimationFrame(renderAll));
 }));
 
 // ── DATE RANGE CONTROLS ───────────────────────────────────
@@ -517,6 +546,22 @@ document.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>
 }));
 document.getElementById('df').addEventListener('change',()=>{document.querySelectorAll('[data-r]').forEach(x=>x.classList.remove('on'));renderAll();});
 document.getElementById('dt').addEventListener('change',()=>{document.querySelectorAll('[data-r]').forEach(x=>x.classList.remove('on'));renderAll();});
+
+// ── MASTER LOG DATA (from Master_Log sheet — event level) ──
+const ML_BY_DATE = [
+  {date:'2026-04-08',del:994,open:177,click:26,resp:51,bounce:0},
+  {date:'2026-04-09',del:811,open:150,click:9,resp:5,bounce:0},
+  {date:'2026-04-10',del:1062,open:182,click:17,resp:2,bounce:0},
+  {date:'2026-04-11',del:0,open:27,click:27,resp:0,bounce:0},
+  {date:'2026-04-12',del:0,open:2,click:0,resp:0,bounce:0},
+  {date:'2026-04-13',del:387,open:87,click:9,resp:2,bounce:0},
+];
+const ML_BY_IND = [
+  {ind:'Facility Mgmt',del:1172,open:234,click:52,resp:51,bounce:41},
+  {ind:'Corporates',del:812,open:153,click:15,resp:4,bounce:9},
+  {ind:'IT (8 Apr)',del:767,open:173,click:16,resp:4,bounce:8},
+  {ind:'IT (9 Apr)',del:503,open:65,click:5,resp:1,bounce:16},
+];
 
 // ── BOOT + LIVE FETCH ─────────────────────────────────────
 window.addEventListener('load',()=>{
