@@ -851,7 +851,7 @@ window.addEventListener('load',function(){
               if(!r||!r[6])return;
               var key=smap[String(r[6])];if(!key)return;
               var batch=String(r[3]||'').toLowerCase();
-              var isPrimary=(batch.indexOf('previous merge')<0);
+              var isPrimary=(batch==='previous merge'||batch.trim()==='previous merge');
               // Parse date from col 8 (EventDate) - UTC ISO string, convert to IST
               var d=r[8],ds='';
               if(d&&typeof d==='string'&&d.length>=10){
