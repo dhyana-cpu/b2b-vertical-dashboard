@@ -189,7 +189,17 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
       <div class="cc"><div class="ch"><div class="ct">Daily Revenue</div></div><div class="cw" id="sDateChart" style="min-height:180px"></div></div>
     </div>
     <div class="g1"><div class="cc">
-      <div class="ch"><div class="ct">All Orders</div><span id="sCount" style="font-size:11px;color:var(--m)"></span></div>
+      <div class="ch">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div class="ct">All Orders</div>
+          <span id="sCount" style="font-size:11px;color:var(--m)"></span>
+        </div>
+        <select class="di" id="sSort" style="font-size:11px; padding:4px 8px;">
+          <option value="date-desc">Newest First</option>
+          <option value="amt-desc">Amount: High to Low</option>
+          <option value="amt-asc">Amount: Low to High</option>
+        </select>
+      </div>
       <table class="tbl"><thead><tr><th>Ref</th><th>Date</th><th>Client</th><th>POC</th><th>Type</th><th style="text-align:right">Amount</th></tr></thead><tbody id="sTable"></tbody></table>
     </div></div>
   </div>
@@ -580,7 +590,20 @@ function renderAll(){
   set('sCount',sales.length+' orders in range');
   hbar('sPocChart',pocs.map(function(p){return p[0];}),pocs.map(function(p){return p[1];}),['#22c55e','#16a34a','#15803d','#166534'],fmt);
   barChart('sDateChart',dates.map(fd),[{label:'Revenue',data:dates.map(function(d){return byDate[d];}),color:'#22c55e',vf:fmt}],180);
-  document.getElementById('sTable').innerHTML=sales.length?sales.map(function(s){return '<tr><td style="font-family:monospace;color:#a78bfa">'+s.ref+'</td><td>'+fd(s.date)+'</td><td style="color:#fff">'+s.client+'</td><td><span class="badge poc">'+s.poc+'</span></td><td style="color:#888">'+s.type+'</td><td style="text-align:right;font-family:monospace;color:#22c55e;font-weight:600">'+fmt(s.amt)+'</td></tr>';}).join(''):'<tr><td colspan="6" style="text-align:center;color:#555;padding:20px">No orders in selected range</td></tr>';
+  // Sort the table data based on the dropdown
+  var sortVal = document.getElementById('sSort') ? document.getElementById('sSort').value : 'date-desc';
+  var displaySales = sales.slice(); // Make a copy so we don't mess up other charts
+  
+  if (sortVal === 'amt-desc') {
+    displaySales.sort(function(a,b){ return b.amt - a.amt; }); // High to Low
+  } else if (sortVal === 'amt-asc') {
+    displaySales.sort(function(a,b){ return a.amt - b.amt; }); // Low to High
+  } else {
+    displaySales.sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); }); // Newest First
+  }
+
+  // Render the sorted data
+  document.getElementById('sTable').innerHTML=displaySales.length?displaySales.map(function(s){return '<tr><td style="font-family:monospace;color:#a78bfa">'+s.ref+'</td><td>'+fd(s.date)+'</td><td style="color:#fff">'+s.client+'</td><td><span class="badge poc">'+s.poc+'</span></td><td style="color:#888">'+s.type+'</td><td style="text-align:right;font-family:monospace;color:#22c55e;font-weight:600">'+fmt(s.amt)+'</td></tr>';}).join(''):'<tr><td colspan="6" style="text-align:center;color:#555;padding:20px">No orders in selected range</td></tr>';
 
   // ── ADS ──
   var inbound=ads.filter(function(a){return a.type==='Inbound';}).length;
@@ -848,6 +871,7 @@ function renderSamples(){
 // Wire dropdowns
 ['bdPhase','bdSource','bdPoc'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('change',renderBD);});
 ['smProd','smBy'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('change',renderSamples);});
+var sSortEl = document.getElementById('sSort'); if(sSortEl) sSortEl.addEventListener('change', renderAll);
 
 // ── BOOT ──────────────────────────────────────────────────
 window.addEventListener('load',function(){
