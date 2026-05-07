@@ -908,7 +908,7 @@ window.addEventListener('load',function(){
             console.log('ML loaded: '+nd.length+' days | total del='+nd.reduce(function(a,d){return a+d.del;},0)+' | primary del='+ML_PRIMARY.reduce(function(a,d){return a+d.del;},0));
           }
           if(raw['Sales_Log']){
-            var parsed=raw['Sales_Log'].slice(1).filter(function(r){return r[0];}).map(function(r){
+            var parsed=raw['Sales_Log'].slice(1).filter(function(r){return r[0]&&String(r[1]||'').trim()==='Inst Order';}).map(function(r){
               var dRaw=r[3]||r[2],ds='';
               if(dRaw){
                 var dObj=new Date(dRaw);
