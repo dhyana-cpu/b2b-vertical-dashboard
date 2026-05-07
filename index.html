@@ -554,6 +554,10 @@ function renderAll(){
   document.getElementById('mIndTotal').innerHTML='<span>TOTAL</span><span>'+mTD.toLocaleString()+'</span><span>'+mTO.toLocaleString()+' <span class="rate">'+pct(mTO,mTD)+'</span></span><span>'+mTC.toLocaleString()+' <span class="rate">'+pct(mTC,mTD)+'</span></span><span>'+mTR.toLocaleString()+' <span class="rate">'+pct(mTR,mTD)+'</span></span>';
 
   // ── SALES ──
+  // Calculate missing variables that caused the crash
+  var avg = sales.length ? tSalesAmt / sales.length : 0;
+  var topPoc = pocs[0];
+
   // Sort sales descending by amount, and grab the top 5
   var top5 = sales.slice().sort(function(a,b){return b.amt - a.amt;}).slice(0,5);
 
