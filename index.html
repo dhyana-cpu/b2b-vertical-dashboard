@@ -320,7 +320,6 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
 <script>
 const SHEET_URL='https://script.google.com/macros/s/AKfycbwlZ0Ei--gRGtV3QiKLbZb_zvA23r7_potGuR5qnDSLerHIJYiSi3QJBx0yCoZO7d7jVA/exec'
 const BD_URL='https://script.google.com/macros/s/AKfycbwZOjviZgLXKd0nuXKxiGHUeJ9vrqRHxv3_-Hdc1fX-5UrTSNxiuMV_op4X_ey-7h4iNg/exec'
-const SALES_URL='https://script.google.com/macros/s/AKfycbyNjcsuR8UfA9m81N5dVF-U5Fhvzmk_i8jjmhIqLJwNiGqA2h9j83ZizKyAS8jcP2Cm/exec'
 
 var BD_ROWS=[];
 var SALES=[
@@ -938,28 +937,7 @@ window.addEventListener('load',function(){
     })();
   }
   
-  // Live Sales fetch
-  fetch(SALES_URL+'?t='+Date.now(),{cache:'no-store',redirect:'follow'})
-    .then(function(r){return r.json();})
-    .then(function(sRaw){
-      var rows=(sRaw['Sales_Log']||[]);
-      var parsed=rows.filter(function(r){return r[0]&&r[3]&&r[6];}).map(function(r){
-        var dRaw=r[2]||r[3],ds='';
-        if(dRaw){
-          if(typeof dRaw==='string'&&dRaw.indexOf('/')>-1){
-            var dp=dRaw.split('/');
-            ds='2026-'+String(parseInt(dp[1])).padStart(2,'0')+'-'+String(parseInt(dp[0])).padStart(2,'0');
-          } else {
-            var dObj=new Date(dRaw);
-            if(!isNaN(dObj)){var ist=new Date(dObj.getTime()+5.5*60*60*1000);ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0');}
-          }
-        }
-        return ds?{ref:String(r[0]),date:ds,client:String(r[5]||'').trim(),poc:String(r[4]||'').trim(),type:'Inst Order',amt:parseFloat(String(r[6]).replace(/,/g,''))||0}:null;
-      }).filter(Boolean);
-      if(parsed.length>0){SALES=parsed;renderAll();}
-      console.log('Sales loaded: '+parsed.length+' Inst Orders');
-    })
-    .catch(function(e){console.warn('Sales fetch failed',e);});
+  fetch(BD_URL+'?t='+Date.now(),{cache:'no-store',redirect:'follow'})
     .then(function(r){return r.json();})
     .then(function(bdRaw){
       var rows=(bdRaw['Sheet1']||[]).slice(1);
