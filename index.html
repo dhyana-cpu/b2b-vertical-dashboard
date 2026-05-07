@@ -874,7 +874,7 @@ window.addEventListener('load',function(){
               var hdr=String(r[2]||'').trim();
               var isPrimary=(hdr===firstHeader[ind]);
               // Parse date from col 8 (EventDate) - UTC ISO string, convert to IST
-              var d=r[8],ds='';
+              var d=r[4],ds='';
               if(d&&typeof d==='string'&&d.length>=10){
                 // Add 5.5 hours (IST offset) to get correct local date
                 var utc=new Date(d);
