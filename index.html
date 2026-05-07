@@ -554,13 +554,25 @@ function renderAll(){
   document.getElementById('mIndTotal').innerHTML='<span>TOTAL</span><span>'+mTD.toLocaleString()+'</span><span>'+mTO.toLocaleString()+' <span class="rate">'+pct(mTO,mTD)+'</span></span><span>'+mTC.toLocaleString()+' <span class="rate">'+pct(mTC,mTD)+'</span></span><span>'+mTR.toLocaleString()+' <span class="rate">'+pct(mTR,mTD)+'</span></span>';
 
   // ── SALES ──
-  var avg=sales.length?tSalesAmt/sales.length:0;
-  var topPoc=pocs[0];
-  var biggest=sales.reduce(function(a,s){return s.amt>a.amt?s:a;},{amt:0,client:'—'});
+  // Sort sales descending by amount, and grab the top 5
+  var top5 = sales.slice().sort(function(a,b){return b.amt - a.amt;}).slice(0,5);
+
   set('sTotalRev',fmt(tSalesAmt)||'₹0'); set('sTotalOrd',sales.length+' orders');
   set('sAvg',fmt(avg)||'—');
   set('sTopPoc',topPoc?topPoc[0]:'—'); set('sTopAmt',topPoc?fmt(topPoc[1]):' ');
-  set('sBigAmt',fmt(biggest.amt)||'—'); set('sBigClient',biggest.client?biggest.client.slice(0,20):'—');
+
+  // Build the Top 5 mini-list UI
+  var top5Html = top5.length ? top5.map(function(s) {
+    // Truncate long client names so they don't break the box layout
+    var clientName = s.client ? s.client.slice(0, 18) + (s.client.length > 18 ? '…' : '') : 'Unknown';
+    return '<div style="display:flex; justify-content:space-between; font-size:11px; align-items:center;">' +
+           '<span style="color:#fff;" title="' + (s.client || '') + '">' + clientName + '</span>' +
+           '<span style="color:var(--gr); font-family:monospace; font-weight:600;">' + fmt(s.amt) + '</span>' +
+           '</div>';
+  }).join('') : '<div style="color:#555;font-size:11px;text-align:center;padding:10px 0;">No orders</div>';
+
+  var top5El = document.getElementById('sTop5List');
+  if (top5El) top5El.innerHTML = top5Html;
   set('sCount',sales.length+' orders in range');
   hbar('sPocChart',pocs.map(function(p){return p[0];}),pocs.map(function(p){return p[1];}),['#22c55e','#16a34a','#15803d','#166534'],fmt);
   barChart('sDateChart',dates.map(fd),[{label:'Revenue',data:dates.map(function(d){return byDate[d];}),color:'#22c55e',vf:fmt}],180);
