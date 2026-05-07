@@ -911,7 +911,7 @@ window.addEventListener('load',function(){
           if(raw['Ads_Log']){var parsed2=raw['Ads_Log'].slice(1).filter(function(r){return r[1];}).map(function(r){
               var dRaw2=r[4],ds='';
               if(dRaw2){var dObj2=new Date(dRaw2);if(!isNaN(dObj2)){var ist2=new Date(dObj2.getTime()+5.5*60*60*1000);ds=ist2.getFullYear()+'-'+String(ist2.getMonth()+1).padStart(2,'0')+'-'+String(ist2.getDate()).padStart(2,'0');}else if(typeof dRaw2==='string')ds=dRaw2.slice(0,10);};
-              return ds?{date:ds,client:String(r[1]||'').trim(),type:String(r[7]||''),poc:String(r[8]||'').trim(),lead:String(r[12]||''),conv:String(r[11]||'—'),val:parseFloat(r[10])||null}:null;
+              return ds?{date:ds,client:String(r[1]||'').trim(),type:String(r[8]||''),poc:String(r[9]||'').trim(),lead:String(r[13]||''),conv:String(r[12]||'—'),val:parseFloat(r[11])||null}:null;
             }).filter(Boolean);
             if(parsed2.length>0)ADS=parsed2;
           }
