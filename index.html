@@ -406,6 +406,14 @@ function set(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
 var tipEl=document.getElementById('tip');
 function showTip(e,h){tipEl.innerHTML=h;tipEl.style.display='block';tipEl.style.left=(e.clientX+12)+'px';tipEl.style.top=(e.clientY-30)+'px';}
 function hideTip(){tipEl.style.display='none';}
+// Helper to find the Monday of any given week
+function getWeekMonday(dateStr) {
+  var d = new Date(dateStr);
+  var day = d.getDay();
+  var diff = d.getDate() - day + (day === 0 ? -6 : 1); // Shift Sunday back to Monday
+  d.setDate(diff);
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}  
 
 // ── DATE FILTER ───────────────────────────────────────────
 function getF(){return document.getElementById('df').value;}
