@@ -321,6 +321,7 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
 const SHEET_URL='https://script.google.com/macros/s/AKfycbwlZ0Ei--gRGtV3QiKLbZb_zvA23r7_potGuR5qnDSLerHIJYiSi3QJBx0yCoZO7d7jVA/exec'
 const BD_URL='https://script.google.com/macros/s/AKfycbwZOjviZgLXKd0nuXKxiGHUeJ9vrqRHxv3_-Hdc1fX-5UrTSNxiuMV_op4X_ey-7h4iNg/exec'
 
+var BD_ROWS=[];
 var SALES=[
   {ref:'Apr26-001',date:'2026-04-01',client:'Floraza',poc:'Siya',type:'Inst Order',amt:7890.9},
   {ref:'Apr26-024',date:'2026-04-02',client:'Gerson Lehrman Group',poc:'Manjari',type:'Inst Order',amt:16830},
@@ -718,7 +719,8 @@ function fBD(){
   var phase=document.getElementById('bdPhase').value;
   var source=document.getElementById('bdSource').value;
   var poc=document.getElementById('bdPoc').value;
-  return BD.filter(function(b){
+  var src=BD_ROWS.length>0?BD_ROWS:BD; 
+  return src.filter(function(b){
     if(f&&b.date<f)return false;
     if(t&&b.date>t)return false;
     if(phase!=='all'&&b.phase!==phase)return false;
@@ -935,7 +937,23 @@ window.addEventListener('load',function(){
     })();
   }
   
-  setInterval(renderAll,5*60*1000);
+  fetch(BD_URL+'?t='+Date.now(),{cache:'no-store',redirect:'follow'})
+    .then(function(r){return r.json();})
+    .then(function(bdRaw){
+      var rows=(bdRaw['Sheet1']||[]).slice(1);
+      BD_ROWS=rows.filter(function(r){return r[0]||r[1];}).map(function(r){
+        var dRaw=r[0],ds='';
+        if(dRaw){
+          var dObj=new Date(dRaw);
+          if(!isNaN(dObj)){var ist=new Date(dObj.getTime()+5.5*60*60*1000);ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0');}
+          else if(typeof dRaw==='string'&&dRaw.length>=8){ds=dRaw.replace(/(\d+)\/(\d+)\/(\d+)/,function(m,d,mo,y){return(y.length===2?'20'+y:y)+'-'+mo.padStart(2,'0')+'-'+d.padStart(2,'0');});}
+        }
+        return {date:ds,company:String(r[1]||'').trim(),name:String(r[2]||'').trim(),contact:String(r[3]||'').trim(),location:String(r[4]||'').trim(),poc:String(r[5]||'').trim(),remarks:String(r[6]||'').trim(),source:String(r[7]||'').trim(),phase:String(r[10]||'').trim()||'Unknown',followup:String(r[12]||'').trim()};
+      });
+      console.log('BD loaded: '+BD_ROWS.length+' rows');
+      renderBD();
+    })
+    .catch(function(e){console.warn('BD fetch failed',e);});
 });
 </script>
 </body>
