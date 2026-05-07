@@ -406,15 +406,18 @@ function set(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
 var tipEl=document.getElementById('tip');
 function showTip(e,h){tipEl.innerHTML=h;tipEl.style.display='block';tipEl.style.left=(e.clientX+12)+'px';tipEl.style.top=(e.clientY-30)+'px';}
 function hideTip(){tipEl.style.display='none';}
-// Helper to find the Monday of any given week
+// Helper to find the Monday of any given week safely
 function getWeekMonday(dateStr) {
-  var d = new Date(dateStr);
+  if(!dateStr) return '';
+  var p = dateStr.split('-');
+  if(p.length < 3) return dateStr;
+  var d = new Date(parseInt(p[0]), parseInt(p[1])-1, parseInt(p[2]));
   var day = d.getDay();
-  var diff = d.getDate() - day + (day === 0 ? -6 : 1); // Shift Sunday back to Monday
+  var diff = d.getDate() - day + (day === 0 ? -6 : 1);
   d.setDate(diff);
-  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-}  
-
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+  
 // ── DATE FILTER ───────────────────────────────────────────
 function getF(){return document.getElementById('df').value;}
 function getT(){return document.getElementById('dt').value;}
@@ -607,7 +610,8 @@ function renderAll(){
   if (top5El) top5El.innerHTML = top5Html;
   set('sCount',sales.length+' orders in range');
   hbar('sPocChart',pocs.map(function(p){return p[0];}),pocs.map(function(p){return p[1];}),['#22c55e','#16a34a','#15803d','#166534'],fmt);
-  barChart('sDateChart',dates.map(fd),[{label:'Revenue',data:dates.map(function(d){return byDate[d];}),color:'#22c55e',vf:fmt}],180);
+  // Render weekly chart on Sales tab safely
+  barChart('sDateChart', weekLabels, [{label:'Weekly Revenue', data:weeks.map(function(w){return byWeek[w];}), color:'#22c55e', vf:fmt}], 180);
   // Sort the table data based on the dropdown
   var sortVal = document.getElementById('sSort') ? document.getElementById('sSort').value : 'date-desc';
   var displaySales = sales.slice(); // Make a copy so we don't mess up other charts
