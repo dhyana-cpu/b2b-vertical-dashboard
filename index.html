@@ -859,11 +859,20 @@ window.addEventListener('load',function(){
             // Dates are UTC - must add 5.5h for IST before extracting date
             var smap={'Email Delivered':'del','Email Opened':'open','Email Clicked':'click','RESPONDED':'resp','BOUNCED':'bounce'};
             var bd2={},bi2={},bdP={},bdF={};
-            raw['Master_Log'].slice(1).forEach(function(r){
-              if(!r||!r[6])return;
-              var key=smap[String(r[6])];if(!key)return;
-              var batch=String(r[3]||'').toLowerCase();
-              var isPrimary=(batch==='previous merge'||batch.trim()==='previous merge');
+            // First pass: find earliest header per industry to identify primary
+            var firstHeader={};
+            raw['Master_Log'].forEach(function(r){
+              if(!r||!r[0])return;
+              var ind=String(r[0]).trim();
+              var hdr=String(r[2]||'').trim();
+              if(!firstHeader[ind])firstHeader[ind]=hdr;
+            });
+            raw['Master_Log'].forEach(function(r){
+              if(!r||!r[3])return;
+              var key=smap[String(r[3])];if(!key)return;
+              var ind=String(r[0]||'').trim();
+              var hdr=String(r[2]||'').trim();
+              var isPrimary=(hdr===firstHeader[ind]);
               // Parse date from col 8 (EventDate) - UTC ISO string, convert to IST
               var d=r[8],ds='';
               if(d&&typeof d==='string'&&d.length>=10){
