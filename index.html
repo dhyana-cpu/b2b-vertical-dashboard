@@ -536,10 +536,20 @@ function renderAll(){
   setFbar('fbResp','fpResp',mlResp,mlDel);
   setFbar('fbBounce','fpBounce',mlBounce,mlDel);
 
-  var byDate={};sales.forEach(function(s){byDate[s.date]=(byDate[s.date]||0)+s.amt;});
-  var dates=Object.keys(byDate).sort();
-  barChart('ovSales',dates.map(fd),[{label:'Sales',data:dates.map(function(d){return byDate[d];}),color:'#22c55e',vf:fmt}],220);
+  // Group sales by Week instead of by Day
+  var byWeek={};
+  sales.forEach(function(s){
+    var weekStart = getWeekMonday(s.date);
+    byWeek[weekStart] = (byWeek[weekStart]||0) + s.amt;
+  });
+  var weeks = Object.keys(byWeek).sort();
+  
+  // Create labels like "Wk 04/06" so it's clear it's a weekly view
+  var weekLabels = weeks.map(function(w) { return 'Wk ' + fd(w); });
 
+  // Render the weekly chart
+  barChart('ovSales', weekLabels, [{label:'Weekly Sales', data:weeks.map(function(w){return byWeek[w];}), color:'#22c55e', vf:fmt}], 220);
+  
   var types={Inbound:ads.filter(function(a){return a.type==='Inbound';}).length,CCBD:ads.filter(function(a){return a.type==='CCBD';}).length};
   var tKeys=Object.keys(types).filter(function(k){return types[k]>0;});
   hbar('ovAdsType',tKeys,tKeys.map(function(k){return types[k];}),['#3b82f6','#7c3aed']);
