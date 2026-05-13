@@ -1071,31 +1071,39 @@ window.addEventListener('load',function(){
     fetch(SAMPLES_URL + '?t=' + Date.now(), {cache: 'no-store', redirect: 'follow'})
       .then(function(r) { return r.json(); })
       .then(function(raw) {
-        var rows = (raw['Samples'] || []).slice(1); // Skip header row
+        var rows = (raw['Samples'] || []).slice(1); 
         console.log("Raw Sample rows fetched: ", rows.length);
         
         var parsed = rows.map(function(r) {
-          if (!r[3]) return null; // Skip if no date exists in Column D
+          if (!r[3]) return null; // Skip if completely empty
           
           var dRaw = r[3], ds = '';
           
-          // Bulletproof Date Parsing (Handles both Text and Native Google Sheet Dates)
-          if (dRaw instanceof Date || Object.prototype.toString.call(dRaw) === '[object Date]') {
-             var ist = new Date(dRaw.getTime() + 5.5 * 60 * 60 * 1000);
-             ds = ist.getFullYear() + '-' + String(ist.getMonth() + 1).padStart(2, '0') + '-' + String(ist.getDate()).padStart(2, '0');
-          } else if (typeof dRaw === 'string') {
-             if (dRaw.includes('/')) {
-                 var parts = dRaw.split('/');
-                 // Convert DD/MM/YY or DD/MM/YYYY to YYYY-MM-DD
-                 var y = parts[2].length === 2 ? '20' + parts[2] : parts[2];
-                 ds = y + '-' + parts[1].padStart(2, '0') + '-' + parts[0].padStart(2, '0');
-             } else {
-                 ds = dRaw.slice(0, 10);
-             }
+          try {
+            // Bulletproof Date Parsing
+            if (dRaw instanceof Date || Object.prototype.toString.call(dRaw) === '[object Date]') {
+               var ist = new Date(dRaw.getTime() + 5.5 * 60 * 60 * 1000);
+               ds = ist.getFullYear() + '-' + String(ist.getMonth() + 1).padStart(2, '0') + '-' + String(ist.getDate()).padStart(2, '0');
+            } else if (typeof dRaw === 'string') {
+               if (dRaw.includes('/')) {
+                   var parts = dRaw.split('/');
+                   // CRITICAL FIX: Make sure the split actually created 3 parts before checking length
+                   if (parts.length >= 3) {
+                       var y = parts[2].length === 2 ? '20' + parts[2] : parts[2];
+                       ds = y + '-' + parts[1].padStart(2, '0') + '-' + parts[0].padStart(2, '0');
+                   } else {
+                       ds = dRaw.slice(0, 10);
+                   }
+               } else {
+                   ds = dRaw.slice(0, 10);
+               }
+            }
+          } catch(err) {
+            return null; // If date parsing fails completely, just skip this row
           }
 
           var prod = String(r[8] || r[4] || '').trim(); // Check Col I or Col E
-          if (!prod) return null; // Skip if no product is listed
+          if (!prod) return null;
 
           return {
             date: ds,
@@ -1109,10 +1117,10 @@ window.addEventListener('load',function(){
 
         if (parsed.length > 0) {
           SAMPLES = parsed; 
-          renderAll(); // Re-render everything to update the top 'Total Records' count too
+          renderAll(); 
           console.log('Live Samples successfully parsed: ' + parsed.length);
         } else {
-          console.log('No samples passed the filter! Check if your columns shifted.');
+          console.log('No samples passed the filter!');
         }
       })
       .catch(function(e) { console.warn('Samples fetch failed', e); });
