@@ -715,7 +715,7 @@ function fBD(){
   var phase=document.getElementById('bdPhase').value;
   var source=document.getElementById('bdSource').value;
   var poc=document.getElementById('bdPoc').value;
-  var src=BD_ROWS.length>0?BD_ROWS:BD; 
+  var src=BD_ROWS;
   return src.filter(function(b){
     if(f&&b.date<f)return false;
     if(t&&b.date>t)return false;
