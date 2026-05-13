@@ -440,7 +440,7 @@ function fML(){
 function barChart(id,labels,datasets,h){
   var el=document.getElementById(id);if(!el)return;
   h=h||200;
-  var W=Math.max(el.getBoundingClientRect().width,el.clientWidth,el.offsetWidth)||680,P={t:8,r:10,b:48,l:55},cW=W-P.l-P.r,cH=h-P.t-P.b;
+  var W=Math.max(el.getBoundingClientRect().width,el.clientWidth,el.offsetWidth)||680,P={t:8,r:10,b:75,l:55},cW=W-P.l-P.r,cH=h-P.t-P.b;
   if(!labels||!labels.length){el.innerHTML='<p style="color:#555;padding:20px;font-size:12px;text-align:center">No data in selected range</p>';return;}
   var maxV=0;
   datasets.forEach(function(d){d.data.forEach(function(v){if(v>maxV)maxV=v;});});
@@ -455,15 +455,15 @@ function barChart(id,labels,datasets,h){
   }
   datasets.forEach(function(d,di){
     labels.forEach(function(lbl,i){
-      var v=d.data[i]||0,bH=Math.max((v/maxV)*cH,0);
-      var x=P.l+i*(cW/labels.length)+(cW/labels.length-datasets.length*bW)/2+di*bW,y=P.t+cH-bH;
-      var tv=d.vf?d.vf(v):fmt(v);
-      s+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bW.toFixed(1)+'" height="'+bH.toFixed(1)+'" fill="'+d.color+'" rx="3" opacity=".88" style="cursor:pointer" onmouseenter="showTip(event,\'<b>'+lbl+'</b><br>'+(d.label||'')+': '+tv+'\')" onmouseleave="hideTip()"/>';
-    });
+    var x=(P.l+i*(cW/labels.length)+(cW/labels.length)/2)|0;
+    var txtY = P.t + cH + 14; // Anchors text exactly 14px below the axis line
+    s+='<text x="'+x+'" y="'+txtY+'" text-anchor="end" fill="#aaa" font-size="9" font-family="system-ui" transform="rotate(-35,'+x+','+txtY+')">'+lbl+'</text>';
+  });
   });
   labels.forEach(function(lbl,i){
     var x=(P.l+i*(cW/labels.length)+(cW/labels.length)/2)|0;
-    s+='<text x="'+x+'" y="'+(h-5)+'" text-anchor="end" fill="#aaa" font-size="9" font-family="system-ui" transform="rotate(-35,'+x+','+(h-5)+')">'+lbl+'</text>';
+    var ty = (h - P.b + 14); 
+    s+='<text x="'+x+'" y="'+ty+'" text-anchor="end" fill="#aaa" font-size="9" font-family="system-ui" transform="rotate(-40,'+x+','+ty+')">'+lbl+'</text>';
   });
   s+='<line x1="'+P.l+'" y1="'+P.t+'" x2="'+P.l+'" y2="'+(P.t+cH)+'" stroke="#333" stroke-width="1"/>';
   s+='<line x1="'+P.l+'" y1="'+(P.t+cH)+'" x2="'+(P.l+cW)+'" y2="'+(P.t+cH)+'" stroke="#333" stroke-width="1"/>';
@@ -546,9 +546,14 @@ function renderAll(){
     byWeek[weekStart] = (byWeek[weekStart]||0) + s.amt;
   });
   var weeks = Object.keys(byWeek).sort();
-  
-  // Create labels like "Wk 04/06" so it's clear it's a weekly view
-  var weekLabels = weeks.map(function(w) { return 'Wk ' + fd(w); });
+  // Create labels like "May 11 - May 17"
+  var weekLabels = weeks.map(function(w) { 
+    var parts = w.split('-');
+    var d1 = new Date(parts[0], parts[1]-1, parts[2]);
+    var d2 = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate() + 6);
+    var m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return m[d1.getMonth()] + ' ' + d1.getDate() + ' - ' + m[d2.getMonth()] + ' ' + d2.getDate();
+  });
 
   // Render the weekly chart
   barChart('ovSales', weekLabels, [{label:'Weekly Sales', data:weeks.map(function(w){return byWeek[w];}), color:'#22c55e', vf:fmt}], 220);
