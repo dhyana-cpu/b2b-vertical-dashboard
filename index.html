@@ -867,36 +867,36 @@ function renderBD(){
       '</div>';
   }).join('');
 
-  // Table
- // Table Rendering with Local-Only Dropdown
-document.getElementById('bdTable').innerHTML = bd.length ? bd.map(function(b) {
-  var col = PHASE_COLOR[b.phase] || '#888';
-  
-  // Create a unique key for this lead based on Company + Name
-  var leadKey = 'conv_' + (b.company + b.name).replace(/\s+/g, '_');
-  
-  // Check browser memory for a saved status
-  var savedStatus = localStorage.getItem(leadKey) || '';
+  // Table Rendering with Local-Only Dropdown
+  document.getElementById('bdTable').innerHTML = bd.length ? bd.map(function(b) {
+    var col = PHASE_COLOR[b.phase] || '#888';
+    
+    // Create a unique key for this lead based on Company + Name
+    var leadKey = 'conv_' + (b.company + b.name).replace(/\s+/g, '_');
+    
+    // Check browser memory for a saved status
+    var savedStatus = localStorage.getItem(leadKey) || '';
 
-  return '<tr>' +
-    '<td>' + fd(b.date) + '</td>' +
-    '<td style="color:#fff">' + (b.company || '—') + '</td>' +
-    '<td style="color:#ddd">' + b.name + '</td>' +
-    '<td><span class="badge poc">' + (b.poc || '—') + '</span></td>' +
-    '<td style="color:#aaa">' + (b.source.trim() || '—') + '</td>' +
-    '<td><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;background:' + col + '22;color:' + col + '">' + b.phase + '</span></td>' +
-    '<td>' +
-      '<select class="di" style="font-size:10px; padding:2px 4px; height:22px; width:70px; background:var(--s2); border-color:var(--b);" ' +
-      'onchange="saveLocalStatus(\'' + leadKey + '\', this.value)">' +
-        '<option value="" ' + (savedStatus === '' ? 'selected' : '') + '>—</option>' +
-        '<option value="Yes" ' + (savedStatus === 'Yes' ? 'selected' : '') + '>Yes</option>' +
-        '<option value="No" ' + (savedStatus === 'No' ? 'selected' : '') + '>No</option>' +
-      '</select>' +
-    '</td>' +
-    '<td style="color:#eab308;font-size:11px">' + (b.followup ? '⏰ ' + b.followup.slice(5).replace('-', '/') : '—') + '</td>' +
-    '<td style="color:#aaa;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + b.remarks + '</td>' +
-    '</tr>';
-}).join('') : '<tr><td colspan="9" style="text-align:center;color:#555;padding:20px">No leads found</td></tr>';
+    return '<tr>' +
+      '<td>' + fd(b.date) + '</td>' +
+      '<td style="color:#fff">' + (b.company || '—') + '</td>' +
+      '<td style="color:#ddd">' + b.name + '</td>' +
+      '<td><span class="badge poc">' + (b.poc || '—') + '</span></td>' +
+      '<td style="color:#aaa">' + (b.source.trim() || '—') + '</td>' +
+      '<td><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;background:' + col + '22;color:' + col + '">' + b.phase + '</span></td>' +
+      '<td>' +
+        '<select class="di" style="font-size:10px; padding:2px 4px; height:22px; width:70px; background:var(--s2); border-color:var(--b);" ' +
+        'onchange="saveLocalStatus(\'' + leadKey + '\', this.value)">' +
+          '<option value="" ' + (savedStatus === '' ? 'selected' : '') + '>—</option>' +
+          '<option value="Yes" ' + (savedStatus === 'Yes' ? 'selected' : '') + '>Yes</option>' +
+          '<option value="No" ' + (savedStatus === 'No' ? 'selected' : '') + '>No</option>' +
+        '</select>' +
+      '</td>' +
+      '<td style="color:#eab308;font-size:11px">' + (b.followup ? '⏰ ' + b.followup.slice(5).replace('-', '/') : '—') + '</td>' +
+      '<td style="color:#aaa;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + b.remarks + '</td>' +
+      '</tr>';
+  }).join('') : '<tr><td colspan="9" style="text-align:center;color:#555;padding:20px">No leads found</td></tr>';
+}
 
 function renderSamples(){
   var sm=fSamples();
@@ -1170,10 +1170,9 @@ window.addEventListener('load',function(){
           console.log('No samples passed the filter!');
         }
       })
-      .catch(function(e) { console.warn('Samples fetch failed', e); });
-   });
+ .catch(function(e) { console.warn('Samples fetch failed', e); });
   }
- </script>
-
+});
+</script>
 </body>
-</html>  
+</html>
