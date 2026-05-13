@@ -1075,19 +1075,35 @@ window.addEventListener('load',function(){
         console.log("Raw Sample rows fetched: ", rows.length);
         
         var parsed = rows.map(function(r) {
-          if (!r[3]) return null; // Skip if completely empty
+          // 1. STRICT POC FILTER (Cleans up 99% of the garbage rows)
+          var reqByRaw = String(r[2] || '').trim();
+          var reqByLower = reqByRaw.toLowerCase();
           
+          var allowed = ['siya', 'manjari', 'mahi', 'dhyana'];
+          var matchedPOC = '';
+          
+          for (var i = 0; i < allowed.length; i++) {
+            if (reqByLower.includes(allowed[i])) {
+              // Format name cleanly (e.g., "siya" -> "Siya")
+              matchedPOC = allowed[i].charAt(0).toUpperCase() + allowed[i].slice(1);
+              break;
+            }
+          }
+          
+          // If it's not one of our 4 people, throw the row away entirely!
+          if (!matchedPOC) return null;
+
+          // 2. PARSE THE DATE
           var dRaw = r[3], ds = '';
+          if (!dRaw) return null;
           
           try {
-            // Bulletproof Date Parsing
             if (dRaw instanceof Date || Object.prototype.toString.call(dRaw) === '[object Date]') {
                var ist = new Date(dRaw.getTime() + 5.5 * 60 * 60 * 1000);
                ds = ist.getFullYear() + '-' + String(ist.getMonth() + 1).padStart(2, '0') + '-' + String(ist.getDate()).padStart(2, '0');
             } else if (typeof dRaw === 'string') {
                if (dRaw.includes('/')) {
                    var parts = dRaw.split('/');
-                   // CRITICAL FIX: Make sure the split actually created 3 parts before checking length
                    if (parts.length >= 3) {
                        var y = parts[2].length === 2 ? '20' + parts[2] : parts[2];
                        ds = y + '-' + parts[1].padStart(2, '0') + '-' + parts[0].padStart(2, '0');
@@ -1098,10 +1114,15 @@ window.addEventListener('load',function(){
                    ds = dRaw.slice(0, 10);
                }
             }
+            
+            // Extra safety: if the date is just random text like "ERY B", drop it
+            if (!ds.includes('-')) return null; 
+            
           } catch(err) {
-            return null; // If date parsing fails completely, just skip this row
+            return null;
           }
 
+          // 3. PARSE PRODUCT
           var prod = String(r[8] || r[4] || '').trim(); // Check Col I or Col E
           if (!prod) return null;
 
@@ -1110,7 +1131,7 @@ window.addEventListener('load',function(){
             product: prod,
             client: String(r[11] || '').trim(), // Col L
             qty: parseInt(r[10] || r[5]) || 1,  // Col K or F
-            req_by: String(r[2] || '').trim(),  // Col C
+            req_by: matchedPOC,                 // Cleanly formatted name
             dispatch: ''
           };
         }).filter(Boolean);
