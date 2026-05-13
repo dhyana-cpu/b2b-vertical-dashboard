@@ -330,7 +330,7 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
 <script>
 const SHEET_URL='https://script.google.com/macros/s/AKfycbwlZ0Ei--gRGtV3QiKLbZb_zvA23r7_potGuR5qnDSLerHIJYiSi3QJBx0yCoZO7d7jVA/exec'
 const BD_URL='https://script.google.com/macros/s/AKfycbwZOjviZgLXKd0nuXKxiGHUeJ9vrqRHxv3_-Hdc1fX-5UrTSNxiuMV_op4X_ey-7h4iNg/exec'
-
+const SAMPLES_URL='https://script.google.com/macros/s/AKfycbyXk1rfhfq0yAa1e3gN4jK5_6jIiAM2Q3pwZfSRtgz6UzqB3C5chDYtQ4uWIyMuCU9x/exec';
 var BD_ROWS=[];
 var SALES=[
   {ref:'Apr26-001',date:'2026-04-01',client:'Floraza',poc:'Siya',type:'Inst Order',amt:7890.9},
@@ -1066,7 +1066,45 @@ window.addEventListener('load',function(){
     })
     .catch(function(e){console.warn('Sales fetch failed',e);});
   // ------------------------------------------
+// --- LIVE SAMPLES FETCH ---
+  if (typeof SAMPLES_URL !== 'undefined') {
+    fetch(SAMPLES_URL + '?t=' + Date.now(), {cache: 'no-store', redirect: 'follow'})
+      .then(function(r) { return r.json(); })
+      .then(function(raw) {
+        var rows = (raw['Samples'] || []).slice(1); // Skip header row
+        var parsed = rows.filter(function(r) { return r[0] && r[1]; }).map(function(r) {
+          
+          // Format Date (Assuming Date is in Column A / index 0)
+          var dRaw = r[0], ds = '';
+          if (dRaw) {
+            var dObj = new Date(dRaw);
+            if (!isNaN(dObj)) {
+              var ist = new Date(dObj.getTime() + 5.5 * 60 * 60 * 1000);
+              ds = ist.getFullYear() + '-' + String(ist.getMonth() + 1).padStart(2, '0') + '-' + String(ist.getDate()).padStart(2, '0');
+            } else if (typeof dRaw === 'string') {
+              ds = dRaw.slice(0, 10);
+            }
+          }
 
+          // Map columns (Adjust these indices if your sheet layout is different!)
+          return ds ? {
+            date: ds,
+            product: String(r[1] || '').trim(), // Column B
+            client: String(r[2] || '').trim(),  // Column C
+            qty: parseInt(r[3]) || 1,           // Column D
+            req_by: String(r[4] || '').trim(),  // Column E
+            dispatch: String(r[5] || '').trim() // Column F
+          } : null;
+        }).filter(Boolean);
+
+        if (parsed.length > 0) {
+          SAMPLES = parsed; // Overwrite the hardcoded array
+          renderSamples();  // Re-render just the samples tab
+          console.log('Live Samples loaded: ' + parsed.length);
+        }
+      })
+      .catch(function(e) { console.warn('Samples fetch failed', e); });
+  }
 });
 </script>
 </body>
