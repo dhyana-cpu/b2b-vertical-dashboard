@@ -1170,9 +1170,11 @@ window.addEventListener('load',function(){
           console.log('No samples passed the filter!');
         }
       })
- .catch(function(e) { console.warn('Samples fetch failed', e); });
+})
+      .catch(function(e) { console.warn('Samples fetch failed', e); });
   }
 });
+} /* <--- THIS IS THE MISSING BRACKET! IT CLOSES THE OPEN FUNCTION */
 </script>
 </body>
 </html>
