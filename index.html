@@ -156,12 +156,15 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
     <div class="g2">
       <div class="cc">
         <div class="ch">
-          <div class="ct">Daily Email Events</div>
-          <div class="lg">
-            <div class="li"><div class="ld" style="background:#3b82f6"></div>Delivered</div>
-            <div class="li"><div class="ld" style="background:#7c3aed"></div>Opened</div>
-            <div class="li"><div class="ld" style="background:#f97316"></div>Clicked</div>
-            <div class="li"><div class="ld" style="background:#22c55e"></div>Responded</div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="ct">Daily Email Events</div>
+            <select class="di" id="mEventFilter" style="font-size:11px; padding:4px 8px;">
+              <option value="all">All Events</option>
+              <option value="del">Delivered</option>
+              <option value="open">Opened</option>
+              <option value="click">Clicked</option>
+              <option value="resp">Responded</option>
+            </select>
           </div>
         </div>
         <div class="cw" id="mDailyChart" style="min-height:240px"></div>
@@ -589,12 +592,17 @@ function renderAll(){
   set('mResp',mlResp.toLocaleString()); set('mRespR',pct(mlResp,mlDel)+' resp rate');
   set('mBounce',mlBounce.toLocaleString()); set('mBounceR',pct(mlBounce,mlDel)+' bounce rate');
 
-  barChart('mDailyChart',mlRows.map(function(r){return fd(r.date);}),
-    [{label:'Delivered',data:mlRows.map(function(r){return r.del;}),color:'#3b82f6',vf:function(v){return v.toLocaleString();}},
-     {label:'Opened',data:mlRows.map(function(r){return r.open;}),color:'#7c3aed',vf:function(v){return v.toLocaleString();}},
-     {label:'Clicked',data:mlRows.map(function(r){return r.click;}),color:'#f97316',vf:function(v){return v.toLocaleString();}},
-     {label:'Responded',data:mlRows.map(function(r){return r.resp;}),color:'#22c55e',vf:function(v){return v.toLocaleString();}}],240);
-
+  var evFilter = document.getElementById('mEventFilter') ? document.getElementById('mEventFilter').value : 'all';
+  var allEventDatasets = [
+    {id:'del', label:'Delivered',data:mlRows.map(function(r){return r.del;}),color:'#3b82f6',vf:function(v){return v.toLocaleString();}},
+    {id:'open', label:'Opened',data:mlRows.map(function(r){return r.open;}),color:'#7c3aed',vf:function(v){return v.toLocaleString();}},
+    {id:'click', label:'Clicked',data:mlRows.map(function(r){return r.click;}),color:'#f97316',vf:function(v){return v.toLocaleString();}},
+    {id:'resp', label:'Responded',data:mlRows.map(function(r){return r.resp;}),color:'#22c55e',vf:function(v){return v.toLocaleString();}}
+  ];
+  
+  var chartDatasets = evFilter === 'all' ? allEventDatasets : allEventDatasets.filter(function(d){ return d.id === evFilter; });
+  
+  barChart('mDailyChart',mlRows.map(function(r){return fd(r.date);}), chartDatasets, 240);
   hbar('mIndChart',ML_BY_IND.map(function(m){return m.ind;}),
     ML_BY_IND.map(function(m){return +(pct(m.open,m.del).replace('%',''));}),
     ['#7c3aed','#6d28d9','#5b21b6','#4c1d95'],function(v){return v+'% open';});
