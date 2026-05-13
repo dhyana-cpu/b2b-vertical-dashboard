@@ -482,6 +482,24 @@ function barChart(id,labels,datasets,h){
   s+='<line x1="'+P.l+'" y1="'+(P.t+cH)+'" x2="'+(P.l+cW)+'" y2="'+(P.t+cH)+'" stroke="#333" stroke-width="1"/>';
   s+='</svg>';el.innerHTML=s;
 }
+  function hbar(id,labels,values,colors,vf){
+  var el=document.getElementById(id);if(!el)return;
+  if(!labels||!labels.length){el.innerHTML='<p style="color:#555;padding:20px;font-size:12px;text-align:center">No data</p>';return;}
+  var W=Math.max(el.getBoundingClientRect().width,el.clientWidth,el.offsetWidth)||500,maxV=0;
+  values.forEach(function(v){if(v>maxV)maxV=v;});
+  if(maxV===0)maxV=1;
+  var rowH=32,P={l:115,r:55,t:4},H=labels.length*rowH+P.t*2;
+  var s='<svg width="'+W+'" height="'+H+'" xmlns="http://www.w3.org/2000/svg">';
+  labels.forEach(function(lbl,i){
+    var y=P.t+i*rowH,bW=((values[i]||0)/maxV)*(W-P.l-P.r);
+    var col=Array.isArray(colors)?colors[i%colors.length]:colors;
+    var tv=vf?vf(values[i]):''+Math.round(values[i]);
+    s+='<text x="'+(P.l-7)+'" y="'+(y+rowH/2+4)+'" text-anchor="end" fill="#aaa" font-size="10" font-family="system-ui">'+lbl+'</text>';
+    s+='<rect x="'+P.l+'" y="'+(y+5)+'" width="'+Math.max(bW,3).toFixed(1)+'" height="'+(rowH-12)+'" fill="'+col+'" rx="3" opacity=".85" style="cursor:pointer" onmouseenter="showTip(event,\''+lbl+': '+tv+'\')" onmouseleave="hideTip()"/>';
+    s+='<text x="'+(P.l+bW+7)+'" y="'+(y+rowH/2+4)+'" fill="#ccc" font-size="10" font-family="system-ui">'+tv+'</text>';
+  });
+  s+='</svg>';el.innerHTML=s;
+}
 
 // ── MAIN RENDER ───────────────────────────────────────────
 function getMLRows(){
