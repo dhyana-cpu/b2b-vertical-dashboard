@@ -268,7 +268,7 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
     <div class="g1"><div class="cc">
       <div class="ch"><div class="ct">All Conversations</div></div>
       <table class="tbl">
-        <thead><tr><th>Date</th><th>Company</th><th>Contact</th><th>POC</th><th>Source</th><th>Phase</th><th>Follow-up</th><th>Remarks</th></tr></thead>
+        <thead><tr><th>Date</th><th>Company</th><th>Contact</th><th>POC</th><th>Source</th><th>Phase</th><th style="width:100px">Converted?</th><th>Follow-up</th><th>Remarks</th></tr></thead>
         <tbody id="bdTable"></tbody>
       </table>
     </div></div>
@@ -328,10 +328,12 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
 <div class="tip" id="tip"></div>
 
 <script>
-const SHEET_URL='https://script.google.com/macros/s/AKfycbwlZ0Ei--gRGtV3QiKLbZb_zvA23r7_potGuR5qnDSLerHIJYiSi3QJBx0yCoZO7d7jVA/exec'
-const BD_URL='https://script.google.com/macros/s/AKfycbwZOjviZgLXKd0nuXKxiGHUeJ9vrqRHxv3_-Hdc1fX-5UrTSNxiuMV_op4X_ey-7h4iNg/exec'
+const SHEET_URL='https://script.google.com/macros/s/AKfycbwlZ0Ei--gRGtV3QiKLbZb_zvA23r7_potGuR5qnDSLerHIJYiSi3QJBx0yCoZO7d7jVA/exec';
+const BD_URL='https://script.google.com/macros/s/AKfycbwZOjviZgLXKd0nuXKxiGHUeJ9vrqRHxv3_-Hdc1fX-5UrTSNxiuMV_op4X_ey-7h4iNg/exec';
+const SALES_URL='https://script.google.com/macros/s/AKfycbyNjcsuR8UfA9m81N5dVF-U5Fhvzmk_i8jjmhIqLJwNiGqA2h9j83ZizKyAS8jcP2Cm/exec';
 const SAMPLES_URL='https://script.google.com/macros/s/AKfycbyXk1rfhfq0yAa1e3gN4jK5_6jIiAM2Q3pwZfSRtgz6UzqB3C5chDYtQ4uWIyMuCU9x/exec';
-var BD_ROWS=[];
+
+var BD_ROWS=[], ML_PRIMARY=[], ML_FOLLOWUP=[];
 var SALES=[
   {ref:'Apr26-001',date:'2026-04-01',client:'Floraza',poc:'Siya',type:'Inst Order',amt:7890.9},
   {ref:'Apr26-024',date:'2026-04-02',client:'Gerson Lehrman Group',poc:'Manjari',type:'Inst Order',amt:16830},
@@ -348,7 +350,8 @@ var SALES=[
   {ref:'Apr26-269',date:'2026-04-13',client:'Mistins',poc:'Manjari',type:'Inst Order',amt:18447},
 ];
 
-// Master Log — real event-level data from the sheet
+var SAMPLES=[];
+
 const ML_BY_DATE=[
   {date:'2026-04-08',del:994,open:177,click:26,resp:51,bounce:0},
   {date:'2026-04-09',del:811,open:150,click:9,resp:5,bounce:0},
@@ -406,7 +409,6 @@ function set(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
 var tipEl=document.getElementById('tip');
 function showTip(e,h){tipEl.innerHTML=h;tipEl.style.display='block';tipEl.style.left=(e.clientX+12)+'px';tipEl.style.top=(e.clientY-30)+'px';}
 function hideTip(){tipEl.style.display='none';}
-// Helper to find the Monday of any given week safely
 function getWeekMonday(dateStr) {
   if(!dateStr) return '';
   var p = dateStr.split('-');
@@ -417,7 +419,15 @@ function getWeekMonday(dateStr) {
   d.setDate(diff);
   return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
 }
-  
+function saveLocalStatus(key, value) {
+  localStorage.setItem(key, value);
+  var originalTxt = document.getElementById('stxt').textContent;
+  document.getElementById('stxt').textContent = 'selection saved locally';
+  setTimeout(function() {
+    document.getElementById('stxt').textContent = originalTxt;
+  }, 1500);
+}
+
 // ── DATE FILTER ───────────────────────────────────────────
 function getF(){return document.getElementById('df').value;}
 function getT(){return document.getElementById('dt').value;}
@@ -426,9 +436,7 @@ function fSales(){return SALES.filter(function(s){return inR(s.date);});}
 function fAds(){return ADS.filter(function(a){return inR(a.date);});}
 function fML(){
   var f=getF(),t=getT();
-  // If no filter set, return all
   if(!f&&!t)return ML_BY_DATE;
-  // Return only rows within range — empty array if none match (don't fall back)
   return ML_BY_DATE.filter(function(d){
     if(f&&d.date<f)return false;
     if(t&&d.date>t)return false;
@@ -448,7 +456,6 @@ function barChart(id,labels,datasets,h){
   var bW=Math.min((cW/labels.length)*0.8/datasets.length,34);
   var s='<svg width="'+W+'" height="'+h+'" xmlns="http://www.w3.org/2000/svg">';
   
-  // Smart formatter: Use ₹ for sales charts, normal numbers for emails/events
   var isMoney = id.toLowerCase().includes('sales') || id.toLowerCase().includes('rev');
   var axisFmt = function(n) { 
     if(n===0) return '0'; 
@@ -474,15 +481,15 @@ function barChart(id,labels,datasets,h){
   });
   labels.forEach(function(lbl,i){
     var x=(P.l+i*(cW/labels.length)+(cW/labels.length)/2)|0;
-    var ty = h - 8; // Anchor point adjustment
-    // Angle adjusted to -45 to prevent labels from overlapping each other
+    var ty = h - 8; 
     s+='<text x="'+x+'" y="'+ty+'" text-anchor="end" fill="#aaa" font-size="9" font-family="system-ui" transform="rotate(-45,'+x+','+ty+')">'+lbl+'</text>';
   });
   s+='<line x1="'+P.l+'" y1="'+P.t+'" x2="'+P.l+'" y2="'+(P.t+cH)+'" stroke="#333" stroke-width="1"/>';
   s+='<line x1="'+P.l+'" y1="'+(P.t+cH)+'" x2="'+(P.l+cW)+'" y2="'+(P.t+cH)+'" stroke="#333" stroke-width="1"/>';
   s+='</svg>';el.innerHTML=s;
 }
-  function hbar(id,labels,values,colors,vf){
+
+function hbar(id,labels,values,colors,vf){
   var el=document.getElementById(id);if(!el)return;
   if(!labels||!labels.length){el.innerHTML='<p style="color:#555;padding:20px;font-size:12px;text-align:center">No data</p>';return;}
   var W=Math.max(el.getBoundingClientRect().width,el.clientWidth,el.offsetWidth)||500,maxV=0;
@@ -514,11 +521,11 @@ function getMLRows(){
     return true;
   });
 }
+
 function renderAll(){
   var sales=fSales(), ads=fAds();
   var mlRows=getMLRows();
 
-  // ── TOP SUMMARY ──
   var tSalesAmt=sales.reduce(function(a,s){return a+s.amt;},0);
   var mlDel=mlRows.reduce(function(a,r){return a+r.del;},0);
   var mlOpen=mlRows.reduce(function(a,r){return a+r.open;},0);
@@ -534,7 +541,6 @@ function renderAll(){
   set('tInmail',INMAILS.length); set('tInmailS','FM: '+INMAILS.filter(function(i){return i.ind==='FM';}).length+' · IT: '+INMAILS.filter(function(i){return i.ind==='IT';}).length);
   set('fi',(sales.length+ads.length)+' records');
 
-  // ── OVERVIEW ──
   set('fcDel',mlDel.toLocaleString());
   set('fcOpen',mlOpen); set('fcOpenR',pct(mlOpen,mlDel));
   set('fcClick',mlClick); set('fcClickR',pct(mlClick,mlDel));
@@ -551,14 +557,12 @@ function renderAll(){
   setFbar('fbResp','fpResp',mlResp,mlDel);
   setFbar('fbBounce','fpBounce',mlBounce,mlDel);
 
-  // Group sales by Week instead of by Day
   var byWeek={};
   sales.forEach(function(s){
     var weekStart = getWeekMonday(s.date);
     byWeek[weekStart] = (byWeek[weekStart]||0) + s.amt;
   });
   var weeks = Object.keys(byWeek).sort();
-  // Create labels like "May 11 - May 17"
   var weekLabels = weeks.map(function(w) { 
     var parts = w.split('-');
     var d1 = new Date(parts[0], parts[1]-1, parts[2]);
@@ -567,7 +571,6 @@ function renderAll(){
     return m[d1.getMonth()] + ' ' + d1.getDate() + ' - ' + m[d2.getMonth()] + ' ' + d2.getDate();
   });
 
-  // Render the weekly chart
   barChart('ovSales', weekLabels, [{label:'Weekly Sales', data:weeks.map(function(w){return byWeek[w];}), color:'#22c55e', vf:fmt}], 220);
   
   var types={Inbound:ads.filter(function(a){return a.type==='Inbound';}).length,CCBD:ads.filter(function(a){return a.type==='CCBD';}).length};
@@ -580,7 +583,6 @@ function renderAll(){
   var pocs=Object.entries(byPoc).sort(function(a,b){return b[1]-a[1];});
   hbar('ovPoc',pocs.map(function(p){return p[0];}),pocs.map(function(p){return p[1];}),['#a78bfa','#7c3aed','#6d28d9','#5b21b6'],fmt);
 
-  // ── MAILS (Master Log) ──
   set('mDel',mlDel.toLocaleString()); set('mDelS',mlRows.length+' days');
   set('mOpen',mlOpen.toLocaleString()); set('mOpenR',pct(mlOpen,mlDel)+' open rate');
   set('mClick',mlClick.toLocaleString()); set('mClickR',pct(mlClick,mlDel)+' click rate');
@@ -601,21 +603,15 @@ function renderAll(){
   document.getElementById('mIndTable').innerHTML=ML_BY_IND.map(function(m){return '<div class="mrow"><span style="color:#eee">'+m.ind+'</span><span>'+m.del.toLocaleString()+'</span><span>'+m.open.toLocaleString()+' <span class="rate">'+pct(m.open,m.del)+'</span></span><span>'+m.click.toLocaleString()+' <span class="rate">'+pct(m.click,m.del)+'</span></span><span>'+m.resp.toLocaleString()+' <span class="rate">'+pct(m.resp,m.del)+'</span></span></div>';}).join('');
   document.getElementById('mIndTotal').innerHTML='<span>TOTAL</span><span>'+mTD.toLocaleString()+'</span><span>'+mTO.toLocaleString()+' <span class="rate">'+pct(mTO,mTD)+'</span></span><span>'+mTC.toLocaleString()+' <span class="rate">'+pct(mTC,mTD)+'</span></span><span>'+mTR.toLocaleString()+' <span class="rate">'+pct(mTR,mTD)+'</span></span>';
 
-  // ── SALES ──
-  // Calculate missing variables that caused the crash
   var avg = sales.length ? tSalesAmt / sales.length : 0;
   var topPoc = pocs[0];
-
-  // Sort sales descending by amount, and grab the top 5
   var top5 = sales.slice().sort(function(a,b){return b.amt - a.amt;}).slice(0,5);
 
   set('sTotalRev',fmt(tSalesAmt)||'₹0'); set('sTotalOrd',sales.length+' orders');
   set('sAvg',fmt(avg)||'—');
   set('sTopPoc',topPoc?topPoc[0]:'—'); set('sTopAmt',topPoc?fmt(topPoc[1]):' ');
 
-  // Build the Top 5 mini-list UI
   var top5Html = top5.length ? top5.map(function(s) {
-    // Truncate long client names so they don't break the box layout
     var clientName = s.client ? s.client.slice(0, 18) + (s.client.length > 18 ? '…' : '') : 'Unknown';
     return '<div style="display:flex; justify-content:space-between; font-size:11px; align-items:center;">' +
            '<span style="color:#fff;" title="' + (s.client || '') + '">' + clientName + '</span>' +
@@ -627,24 +623,21 @@ function renderAll(){
   if (top5El) top5El.innerHTML = top5Html;
   set('sCount',sales.length+' orders in range');
   hbar('sPocChart',pocs.map(function(p){return p[0];}),pocs.map(function(p){return p[1];}),['#22c55e','#16a34a','#15803d','#166534'],fmt);
-  // Render weekly chart on Sales tab safely
   barChart('sDateChart', weekLabels, [{label:'Weekly Revenue', data:weeks.map(function(w){return byWeek[w];}), color:'#22c55e', vf:fmt}], 180);
-  // Sort the table data based on the dropdown
+  
   var sortVal = document.getElementById('sSort') ? document.getElementById('sSort').value : 'date-desc';
-  var displaySales = sales.slice(); // Make a copy so we don't mess up other charts
+  var displaySales = sales.slice(); 
   
   if (sortVal === 'amt-desc') {
-    displaySales.sort(function(a,b){ return b.amt - a.amt; }); // High to Low
+    displaySales.sort(function(a,b){ return b.amt - a.amt; }); 
   } else if (sortVal === 'amt-asc') {
-    displaySales.sort(function(a,b){ return a.amt - b.amt; }); // Low to High
+    displaySales.sort(function(a,b){ return a.amt - b.amt; }); 
   } else {
-    displaySales.sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); }); // Newest First
+    displaySales.sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); }); 
   }
 
-  // Render the sorted data
   document.getElementById('sTable').innerHTML=displaySales.length?displaySales.map(function(s){return '<tr><td style="font-family:monospace;color:#a78bfa">'+s.ref+'</td><td>'+fd(s.date)+'</td><td style="color:#fff">'+s.client+'</td><td><span class="badge poc">'+s.poc+'</span></td><td style="color:#888">'+s.type+'</td><td style="text-align:right;font-family:monospace;color:#22c55e;font-weight:600">'+fmt(s.amt)+'</td></tr>';}).join(''):'<tr><td colspan="6" style="text-align:center;color:#555;padding:20px">No orders in selected range</td></tr>';
 
-  // ── ADS ──
   var inbound=ads.filter(function(a){return a.type==='Inbound';}).length;
   var ccbd=ads.filter(function(a){return a.type==='CCBD';}).length;
   set('aTotal',totalLeads); set('aInbound',inbound); set('aInboundR',pct(inbound,totalLeads||1)+' of leads');
@@ -653,7 +646,6 @@ function renderAll(){
   set('aCount',ads.length+' leads in range');
   document.getElementById('aTable').innerHTML=ads.length?ads.map(function(a){return '<tr><td>'+fd(a.date)+'</td><td style="color:#fff">'+a.client+'</td><td><span class="badge '+a.type.toLowerCase()+'">'+a.type+'</span></td><td><span class="badge poc">'+a.poc+'</span></td><td><span class="badge '+a.lead.toLowerCase()+'">'+a.lead+'</span></td><td><span class="badge '+(a.conv==='Yes'?'yes':a.conv==='No'?'no':'')+'">'+(a.conv||'—')+'</span></td><td style="text-align:right;font-family:monospace;color:#22c55e">'+(a.val?fmt(a.val):'—')+'</td></tr>';}).join(''):'<tr><td colspan="7" style="text-align:center;color:#555;padding:20px">No leads in selected range</td></tr>';
 
-  // ── INMAILS ──
   set('iTotal',INMAILS.length);
   set('iFM',INMAILS.filter(function(i){return i.ind==='FM';}).length);
   set('iIT',INMAILS.filter(function(i){return i.ind==='IT';}).length);
@@ -664,7 +656,6 @@ function renderAll(){
   document.getElementById('lu').textContent='Updated '+new Date().toLocaleTimeString();
 }
 
-// ── TABS ──────────────────────────────────────────────────
 document.querySelectorAll('.tab').forEach(function(t){t.addEventListener('click',function(){
   document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on');});
   document.querySelectorAll('.tp').forEach(function(x){x.classList.remove('on');});
@@ -673,7 +664,6 @@ document.querySelectorAll('.tab').forEach(function(t){t.addEventListener('click'
   setTimeout(renderAll,30);
 });});
 
-// ── Mail type toggle ─────────────────────────────────────
 window._mtype='all';
 document.querySelectorAll('[data-mtype]').forEach(function(b){
   b.addEventListener('click',function(){
@@ -686,7 +676,6 @@ document.querySelectorAll('[data-mtype]').forEach(function(b){
   });
 });
 
-// ── DATE CONTROLS ─────────────────────────────────────────
 function todayStr(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 document.querySelectorAll('[data-r]').forEach(function(b){b.addEventListener('click',function(){
   document.querySelectorAll('[data-r]').forEach(function(x){x.classList.remove('on');});
@@ -709,85 +698,6 @@ document.querySelectorAll('[data-r]').forEach(function(b){b.addEventListener('cl
 });});
 document.getElementById('df').addEventListener('change',function(){document.querySelectorAll('[data-r]').forEach(function(x){x.classList.remove('on');});renderAll();});
 document.getElementById('dt').addEventListener('change',function(){document.querySelectorAll('[data-r]').forEach(function(x){x.classList.remove('on');});renderAll();});
-
-// ── BD SHEET DATA ────────────────────────────────────────
-var BD=[
-  {date:'2026-04-01',company:'Unfold Opulence',name:'Hasti Shah',contact:'8320364059',location:'Delhi',poc:'Siya',remarks:'preferred qcom',source:'Shopify',phase:'Cold',followup:''},
-  {date:'2026-04-02',company:'Eshanya Estate',name:'Kala Adarsh',contact:'95917 71717',location:'',poc:'Siya',remarks:"Didn't pick up",source:'Shopify',phase:'Cold',followup:''},
-  {date:'2026-04-06',company:'',name:'Shreya Sinha',contact:'',location:'',poc:'Manjari',remarks:'Ordered from website',source:'Shopify',phase:'Cold',followup:''},
-  {date:'2026-04-06',company:'',name:'Shaila Aggarwal',contact:'72900 50059',location:'',poc:'Siya',remarks:'Sent product catalogue',source:'Shopify',phase:'Cold',followup:'2026-04-07'},
-  {date:'2026-04-06',company:'Personal',name:'Shalaka Somani',contact:'95994 50020',location:'Agra',poc:'Siya',remarks:'Converted',source:'Shopify',phase:'Converted',followup:''},
-  {date:'2026-04-06',company:'NSE',name:'Pikasa Bagchi',contact:'98338 92622',location:'',poc:'',remarks:'',source:'',phase:'Unknown',followup:''},
-  {date:'2026-04-07',company:'Emm Ess Impex',name:'Syed Abdullah',contact:'',location:'',poc:'Manjari',remarks:'No product requirement',source:'Shopify',phase:'Cold',followup:''},
-  {date:'2026-04-07',company:'',name:'Suvhandar Das',contact:'747 745 8570',location:'',poc:'Siya',remarks:'Sent quote, no response',source:'CC BD',phase:'Cold',followup:'2026-04-15'},
-  {date:'2026-04-08',company:'Awas Club',name:'Ratndeep Bhagwat',contact:'9512166836',location:'',poc:'Manjari',remarks:'Sent product catalogue. Review pending',source:'Shopify',phase:'Hot',followup:''},
-  {date:'2026-04-08',company:'Pharma',name:'Ashok',contact:'88285 52305',location:'',poc:'Manjari',remarks:'Meeting set up',source:'CC BD',phase:'Hot',followup:''},
-  {date:'2026-04-08',company:'JucyGifts',name:'Sakshi',contact:'73047 74454',location:'Mumbai',poc:'Siya',remarks:'Converted',source:'CC BD',phase:'Converted',followup:''},
-  {date:'2026-04-09',company:'',name:'Dharshini Parekh',contact:'88661 58102',location:'Gujarat',poc:'Siya',remarks:'Lack of product availability',source:'CC BD',phase:'Cold',followup:''},
-  {date:'2026-04-10',company:'Elcita',name:'Franklin',contact:'98866 06706',location:'Bangalore',poc:'Siya',remarks:'Sent a sample box',source:'Email',phase:'Hot',followup:'2026-04-15'},
-  {date:'2026-04-13',company:'',name:'Rakesh',contact:'79773 57432',location:'',poc:'Siya',remarks:'Order value < 5k',source:'Shopify',phase:'Cold',followup:''},
-  {date:'2026-04-13',company:'',name:'Lakshya',contact:'',location:'',poc:'Manjari',remarks:"Need it in 2 days, can't deliver",source:'Shopify',phase:'Converted',followup:''},
-  {date:'2026-04-13',company:'Sodeoxo',name:'Anjali',contact:'',location:'UP',poc:'Siya',remarks:'Sent a sample box',source:'Email',phase:'Hot',followup:''},
-];
-
-// ── SAMPLE DATA ───────────────────────────────────────────
-var SAMPLES=[
-  {date:'2026-04-15',product:'Peri peri ragi chips',client:'Reddyprasahnth Kaveti',qty:1,req_by:'Siya',dispatch:''},
-  {date:'2026-04-15',product:'Nacho cheese Jowar puffs',client:'',qty:1,req_by:'Faizaan',dispatch:''},
-  {date:'2026-04-13',product:'Peri peri ragi chips',client:'Anjali- Sodexo',qty:1,req_by:'Siya',dispatch:''},
-  {date:'2026-04-10',product:'Peri peri ragi chips',client:'Franklin (Elcita)',qty:1,req_by:'Siya',dispatch:'Delhivery'},
-  {date:'2026-04-10',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'',qty:1,req_by:'Faizaan',dispatch:''},
-  {date:'2026-04-09',product:'Best Seller Box of 10',client:'Sakshi (Jucygifts)',qty:1,req_by:'Siya',dispatch:'wefast'},
-  {date:'2026-04-09',product:'Best Seller Box of 10',client:'',qty:1,req_by:'Manjari',dispatch:''},
-  {date:'2026-04-09',product:'Sweet chilli Jowar chips',client:'Dhyana',qty:15,req_by:'Dhyana',dispatch:'kishan'},
-  {date:'2026-04-08',product:'Biscuit Sticks with Butterscotch Dip',client:'Rajan jain',qty:1,req_by:'Faizaan',dispatch:'Delhivery'},
-  {date:'2026-04-06',product:'Baked Pizza Sticks with a Cheesy Jalapeno Dip',client:'Krishna Agencies',qty:2,req_by:'Faizaan',dispatch:'Delhivery'},
-  {date:'2026-04-06',product:'Protein Bhujia Pudina',client:'',qty:1,req_by:'Manjari',dispatch:''},
-  {date:'2026-04-04',product:'Peri Peri Ragi Chips',client:'Kavyam by esha',qty:1,req_by:'Siya',dispatch:'Delhivery'},
-  {date:'2026-04-01',product:'Peri Peri Ragi Chips',client:'Floraza (Khushi Sachdeva)',qty:1,req_by:'Siya',dispatch:'Delhivery'},
-  {date:'2026-04-01',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Krishna Pawar',qty:1,req_by:'Faizaan',dispatch:'Delhivery'},
-  {date:'2026-04-01',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Raju Pawar',qty:1,req_by:'Faizaan',dispatch:'Delhivery'},
-  {date:'2026-03-31',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Rahul',qty:1,req_by:'Raghav',dispatch:'Blue dart'},
-  {date:'2026-03-30',product:'Truffle Peanuts',client:'Ankur Khanna',qty:1,req_by:'Dhyana',dispatch:'Blue dart'},
-  {date:'2026-03-27',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Rikky rathore',qty:1,req_by:'Raghav',dispatch:'Delhivery'},
-  {date:'2026-03-27',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Anil kumar',qty:1,req_by:'Raghav',dispatch:'Delhivery'},
-  {date:'2026-03-27',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Kakkad Sales Agency',qty:1,req_by:'Bhavya',dispatch:'Delhivery'},
-  {date:'2026-03-26',product:'Pistachio Dip with Biscuit sticks',client:'Shubh traders',qty:1,req_by:'Faizaan',dispatch:'Delhivery'},
-  {date:'2026-03-26',product:'Peri peri ragi chips',client:'Rahul Nankani',qty:3,req_by:'Faizaan',dispatch:'Blue dart'},
-  {date:'2026-03-24',product:'Pistachio Dip with Biscuit sticks',client:'Fazil',qty:1,req_by:'Faizaan',dispatch:'Delhivery'},
-  {date:'2026-03-24',product:'Pistachio Dip with Biscuit sticks',client:'Dushyant upadhyaya',qty:1,req_by:'Faizaan',dispatch:'Delhivery'},
-  {date:'2026-03-23',product:'Nacho cheese Jowar puffs',client:'Aasma Iftekhar Ahmed Shaikh',qty:6,req_by:'Faizaan',dispatch:'Delhivery'},
-  {date:'2026-03-23',product:'Peri Peri Ragi Chips',client:'Hemen Sanghavi',qty:1,req_by:'Dhyana',dispatch:'Delhivery'},
-  {date:'2026-03-18',product:'Cheesy jalapeño dips with peri peri ragi chips',client:'Pinnacle',qty:1,req_by:'Manjari',dispatch:'Delhivery'},
-  {date:'2026-03-17',product:'Coffee Cookies',client:'Gaurav',qty:2,req_by:'Jaydeep',dispatch:'Delhivery'},
-  {date:'2026-03-17',product:'Protein Bhujia 2 flavours',client:'Himanshu',qty:2,req_by:'Manjari',dispatch:'Delhivery'},
-  {date:'2026-03-17',product:'Protein Bhujia 2 flavours',client:'Cafe coffee day',qty:1,req_by:'Manjari',dispatch:'Delhivery'},
-  {date:'2026-03-16',product:'Peri peri ragi chips',client:'SEBI BKC',qty:1,req_by:'Manjari',dispatch:'KISHAN'},
-  {date:'2026-03-16',product:'Cheese Dosa Khakhra',client:'Vinod Chajjer',qty:7,req_by:'Dhyana',dispatch:'Blue dart'},
-  {date:'2026-03-13',product:'Protein Bhujia 2 flavours',client:'Landmark services',qty:1,req_by:'Manjari',dispatch:'Delhivery'},
-  {date:'2026-03-06',product:'Cheese Dosa Khakhra',client:'Pratik Vora',qty:2,req_by:'Raghav',dispatch:'Delhivery'},
-  {date:'2026-03-05',product:'Baked Pizza Sticks with Cheesy Jalapeno Dip',client:'TOKRI Luxuryhampers',qty:1,req_by:'Manjari',dispatch:'Delhivery'},
-  {date:'2026-03-02',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Tolia Industries',qty:1,req_by:'Raghav',dispatch:'Delhivery'},
-  {date:'2026-03-02',product:'Himalayan Pink Salt And Pepper',client:'Prajakta',qty:1,req_by:'Manjari',dispatch:'Delhivery'},
-  {date:'2026-02-21',product:'Baked Pizza Sticks With A Cheesy Dip',client:'Vaishnavi vakharia',qty:1,req_by:'Dhyana',dispatch:'kishan'},
-  {date:'2026-02-20',product:'Cheddar Cheese Makhana',client:'Gunjan',qty:1,req_by:'Dhyana',dispatch:'Delhivery'},
-  {date:'2026-02-19',product:'Sweet chilli jowar chips',client:"Aditya's meeting",qty:3,req_by:'Hiral',dispatch:'kishan'},
-  {date:'2026-02-17',product:'Peri Peri Ragi Chips',client:'Sarath',qty:1,req_by:'Manjari',dispatch:'Delhivery'},
-  {date:'2026-02-16',product:'Nacho cheese Jowar puffs',client:'Aasma Iftekhar Ahmed Shaikh',qty:6,req_by:'Jaydeep',dispatch:'Delhivery'},
-  {date:'2026-02-13',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Abhishek Mangwani',qty:1,req_by:'Raghav',dispatch:'Delhivery'},
-  {date:'2026-02-09',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Dhwanita Rupani',qty:1,req_by:'Raghav',dispatch:'Delhivery'},
-  {date:'2026-02-04',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Archit',qty:1,req_by:'Meshva',dispatch:'Delhivery'},
-  {date:'2026-02-02',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Ajay',qty:1,req_by:'Raghav',dispatch:'Delhivery'},
-  {date:'2026-01-30',product:'Peri Peri Ragi Chips',client:'Anthony Peter Paul Dias',qty:1,req_by:'Raghav',dispatch:'Delhivery'},
-  {date:'2026-01-28',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Ram Dayal Gupta Store',qty:1,req_by:'Meshva',dispatch:'Delhivery'},
-  {date:'2026-01-22',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Sahil Garg',qty:1,req_by:'Raghav',dispatch:'Delhivery'},
-  {date:'2026-01-20',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Hitesh',qty:1,req_by:'Raghav',dispatch:'Delhivery'},
-  {date:'2026-01-16',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Sagar Budh',qty:1,req_by:'Raghav',dispatch:'Delhivery'},
-  {date:'2026-01-12',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Yogesh Manjal',qty:1,req_by:'Raghav',dispatch:'Delhivery'},
-  {date:'2026-01-08',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Azeezur Rahman',qty:1,req_by:'Raghav',dispatch:'Blue dart'},
-  {date:'2026-01-07',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Shiva sai Pranay',qty:1,req_by:'Meshva',dispatch:'Delhivery'},
-  {date:'2026-01-05',product:'Cheesy Jalepeno Dip with Piri Piri Ragi Chips',client:'Kunal Mehta',qty:1,req_by:'Meshva',dispatch:'Delhivery'},
-];
 
 // Phase colors
 var PHASE_COLOR={Cold:'#3b82f6',Hot:'#f97316',Converted:'#22c55e',Unknown:'#888'};
@@ -832,7 +742,6 @@ function renderBD(){
   set('bdConv',conv); set('bdConvR',pct(conv,bd.length||1)+' conv rate');
   set('bdCount',bd.length+' leads shown');
 
-  // Pipeline kanban
   var phases=['Cold','Hot','Converted'];
   var phaseLabels={Cold:'❄️ Cold',Hot:'🔥 Hot',Converted:'✅ Converted'};
   document.getElementById('bdPipeline').innerHTML=phases.map(function(ph){
@@ -856,20 +765,30 @@ function renderBD(){
       '</div>';
   }).join('');
 
-  // Table
-  document.getElementById('bdTable').innerHTML=bd.length?bd.map(function(b){
-    var col=PHASE_COLOR[b.phase]||'#888';
-    return '<tr>'+
-      '<td>'+fd(b.date)+'</td>'+
-      '<td style="color:#fff">'+(b.company||'—')+'</td>'+
-      '<td style="color:#ddd">'+b.name+'</td>'+
-      '<td><span class="badge poc">'+(b.poc||'—')+'</span></td>'+
-      '<td style="color:#aaa">'+(b.source.trim()||'—')+'</td>'+
-      '<td><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;background:'+col+'22;color:'+col+'">'+b.phase+'</span></td>'+
-      '<td style="color:#eab308;font-size:11px">'+(b.followup?'⏰ '+b.followup.slice(5).replace('-','/'):'—')+'</td>'+
-      '<td style="color:#aaa;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+b.remarks+'</td>'+
+  document.getElementById('bdTable').innerHTML = bd.length ? bd.map(function(b) {
+    var col = PHASE_COLOR[b.phase] || '#888';
+    var leadKey = 'conv_' + (b.company + b.name).replace(/\s+/g, '_');
+    var savedStatus = localStorage.getItem(leadKey) || '';
+
+    return '<tr>' +
+      '<td>' + fd(b.date) + '</td>' +
+      '<td style="color:#fff">' + (b.company || '—') + '</td>' +
+      '<td style="color:#ddd">' + b.name + '</td>' +
+      '<td><span class="badge poc">' + (b.poc || '—') + '</span></td>' +
+      '<td style="color:#aaa">' + (b.source.trim() || '—') + '</td>' +
+      '<td><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;background:' + col + '22;color:' + col + '">' + b.phase + '</span></td>' +
+      '<td>' +
+        '<select class="di" style="font-size:10px; padding:2px 4px; height:22px; width:70px; background:var(--s2); border-color:var(--b);" ' +
+        'onchange="saveLocalStatus(\'' + leadKey + '\', this.value)">' +
+          '<option value="" ' + (savedStatus === '' ? 'selected' : '') + '>—</option>' +
+          '<option value="Yes" ' + (savedStatus === 'Yes' ? 'selected' : '') + '>Yes</option>' +
+          '<option value="No" ' + (savedStatus === 'No' ? 'selected' : '') + '>No</option>' +
+        '</select>' +
+      '</td>' +
+      '<td style="color:#eab308;font-size:11px">' + (b.followup ? '⏰ ' + b.followup.slice(5).replace('-', '/') : '—') + '</td>' +
+      '<td style="color:#aaa;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + b.remarks + '</td>' +
       '</tr>';
-  }).join(''):'<tr><td colspan="8" style="text-align:center;color:#555;padding:20px">No leads in selected range</td></tr>';
+  }).join('') : '<tr><td colspan="9" style="text-align:center;color:#555;padding:20px">No leads found</td></tr>';
 }
 
 function renderSamples(){
@@ -885,16 +804,13 @@ function renderSamples(){
   set('smTopPoc',topBy?topBy[0]:'—');
   set('smCount',sm.length+' samples shown');
 
-  // Date chart
   var byDate={};sm.forEach(function(s){byDate[s.date]=(byDate[s.date]||0)+1;});
   var dates=Object.keys(byDate).sort();
   barChart('smDateChart',dates.map(fd),[{label:'Samples',data:dates.map(function(d){return byDate[d];}),color:'#3b82f6',vf:function(v){return v;}}],180);
 
-  // Product chart
   var topProds=Object.entries(byProd).sort(function(a,b){return b[1]-a[1];}).slice(0,7);
   hbar('smProdChart',topProds.map(function(p){return p[0].slice(0,22);}),topProds.map(function(p){return p[1];}),['#3b82f6','#6d28d9','#5b21b6','#4c1d95','#1d4ed8','#1e40af','#1e3a8a']);
 
-  // Table
   document.getElementById('smTable').innerHTML=sm.length?sm.sort(function(a,b){return b.date.localeCompare(a.date);}).map(function(s){
     return '<tr>'+
       '<td>'+fd(s.date)+'</td>'+
@@ -907,7 +823,6 @@ function renderSamples(){
   }).join(''):'<tr><td colspan="6" style="text-align:center;color:#555;padding:20px">No samples in selected range</td></tr>';
 }
 
-// Wire dropdowns
 ['bdPhase','bdSource','bdPoc'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('change',renderBD);});
 ['smProd','smBy'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('change',renderSamples);});
 var sSortEl = document.getElementById('sSort'); if(sSortEl) sSortEl.addEventListener('change', renderAll);
@@ -918,47 +833,31 @@ window.addEventListener('load',function(){
     renderAll();
   });});
   
-  if (SHEET_URL) {
+  if (typeof SHEET_URL !== 'undefined' && SHEET_URL) {
     (function() {
       var ctrl = new AbortController();
-      var timeoutId = setTimeout(function() { ctrl.abort(); }, 60000); // Increased timeout for Google Apps Script
+      var timeoutId = setTimeout(function() { ctrl.abort(); }, 60000);
 
-      fetch(SHEET_URL + '?t=' + Date.now(), {
-        cache: 'no-store',
-        signal: ctrl.signal,
-        redirect: 'follow' // CRITICAL: Required for Google Apps Script redirects
-      })
-        .then(function(r) {
-          if (!r.ok) throw new Error('Network response was not ok: ' + r.status);
-          return r.json();
-        })
+      fetch(SHEET_URL + '?t=' + Date.now(), { cache: 'no-store', signal: ctrl.signal, redirect: 'follow' })
+        .then(function(r) { return r.json(); })
         .then(function(raw) {
           clearTimeout(timeoutId);
-
-          // ── Master_Log (slim 3 cols: industry, status, date) ──
           if(raw['Master_Log']){
-            // Full rows: [0]=Industry,[3]=Batch,[6]=Status,[8]=EventDate (UTC ISO)
-            // Dates are UTC - must add 5.5h for IST before extracting date
             var smap={'Email Delivered':'del','Email Opened':'open','Email Clicked':'click','RESPONDED':'resp','BOUNCED':'bounce'};
             var bd2={},bi2={},bdP={},bdF={};
-            // First pass: find earliest header per industry to identify primary
             var firstHeader={};
             raw['Master_Log'].forEach(function(r){
               if(!r||!r[0])return;
               var ind=String(r[0]).trim();
-              var hdr=String(r[2]||'').trim();
-              if(!firstHeader[ind])firstHeader[ind]=hdr;
+              if(!firstHeader[ind])firstHeader[ind]=String(r[2]||'').trim();
             });
             raw['Master_Log'].forEach(function(r){
               if(!r||!r[3])return;
               var key=smap[String(r[3])];if(!key)return;
               var ind=String(r[0]||'').trim();
-              var hdr=String(r[2]||'').trim();
-              var isPrimary=(hdr===firstHeader[ind]);
-              // Parse date from col 8 (EventDate) - UTC ISO string, convert to IST
+              var isPrimary=(String(r[2]||'').trim()===firstHeader[ind]);
               var d=r[4],ds='';
               if(d&&typeof d==='string'&&d.length>=10){
-                // Add 5.5 hours (IST offset) to get correct local date
                 var utc=new Date(d);
                 if(!isNaN(utc)){
                   var ist=new Date(utc.getTime()+5.5*60*60*1000);
@@ -970,21 +869,15 @@ window.addEventListener('load',function(){
               bd2[ds][key]++;
               if(isPrimary){if(!bdP[ds])bdP[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};bdP[ds][key]++;}
               else{if(!bdF[ds])bdF[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};bdF[ds][key]++;}
-              var ind=String(r[0]||'').trim()
-                .replace(/^N\(\d+\)[-–]\s*/,'').replace(/^O\(\d+\)[-–]\s*/,'')
-                .replace(/^[NO][-–]\s*/,'').replace(/^0[-–]\s*/,'')
-                .replace(/[-–]\s*\d+\/\d+\/\d+\s*$/,'').trim();
-              if(!ind)return;
-              if(!bi2[ind])bi2[ind]={ind:ind,del:0,open:0,click:0,resp:0,bounce:0};
-              bi2[ind][key]++;
+              var ind_cl=String(r[0]||'').trim().replace(/^N\(\d+\)[-–]\s*/,'').replace(/^O\(\d+\)[-–]\s*/,'').replace(/^[NO][-–]\s*/,'').replace(/^0[-–]\s*/,'').replace(/[-–]\s*\d+\/\d+\/\d+\s*$/,'').trim();
+              if(!ind_cl)return;
+              if(!bi2[ind_cl])bi2[ind_cl]={ind:ind_cl,del:0,open:0,click:0,resp:0,bounce:0};
+              bi2[ind_cl][key]++;
             });
-            var nd=Object.values(bd2).sort(function(a,b){return a.date.localeCompare(b.date);});
-            var ni=Object.values(bi2).filter(function(i){return i.del>0;});
+            ML_BY_DATE.length=0; Object.values(bd2).sort(function(a,b){return a.date.localeCompare(b.date);}).forEach(function(d){ML_BY_DATE.push(d);});
+            ML_BY_IND.length=0; Object.values(bi2).filter(function(i){return i.del>0;}).forEach(function(i){ML_BY_IND.push(i);});
             ML_PRIMARY=Object.values(bdP).sort(function(a,b){return a.date.localeCompare(b.date);});
             ML_FOLLOWUP=Object.values(bdF).sort(function(a,b){return a.date.localeCompare(b.date);});
-            if(nd.length>0){ML_BY_DATE.length=0;nd.forEach(function(d){ML_BY_DATE.push(d);});}
-            if(ni.length>0){ML_BY_IND.length=0;ni.forEach(function(i){ML_BY_IND.push(i);});}
-            console.log('ML loaded: '+nd.length+' days | total del='+nd.reduce(function(a,d){return a+d.del;},0)+' | primary del='+ML_PRIMARY.reduce(function(a,d){return a+d.del;},0));
           }
           if(raw['Sales_Log']){
             var parsed=raw['Sales_Log'].slice(1).filter(function(r){return r[0]&&String(r[1]||'').trim()==='Inst Order';}).map(function(r){
@@ -998,8 +891,8 @@ window.addEventListener('load',function(){
             }).filter(Boolean);
             if(parsed.length>0)SALES=parsed;
           }
-
-          if(raw['Ads_Log']){var parsed2=raw['Ads_Log'].slice(1).filter(function(r){return r[1];}).map(function(r){
+          if(raw['Ads_Log']){
+            var parsed2=raw['Ads_Log'].slice(1).filter(function(r){return r[1];}).map(function(r){
               var dRaw2=r[4],ds='';
               if(dRaw2){var dObj2=new Date(dRaw2);if(!isNaN(dObj2)){var ist2=new Date(dObj2.getTime()+5.5*60*60*1000);ds=ist2.getFullYear()+'-'+String(ist2.getMonth()+1).padStart(2,'0')+'-'+String(ist2.getDate()).padStart(2,'0');}else if(typeof dRaw2==='string')ds=dRaw2.slice(0,10);};
               return ds?{date:ds,client:String(r[1]||'').trim(),type:String(r[8]||''),poc:String(r[9]||'').trim(),lead:String(r[13]||''),conv:String(r[12]||'—'),val:parseFloat(r[11])||null}:null;
@@ -1008,19 +901,13 @@ window.addEventListener('load',function(){
           }
           document.getElementById('stxt').textContent='live · google sheets';
           renderAll();
-        })
-        .catch(function(err){
-          console.error("Dashboard Sync Error:", err);
-          document.getElementById('stxt').textContent='cached data (fetch failed)';
-        });
+        }).catch(function(err){ document.getElementById('stxt').textContent='cached data (fetch failed)'; });
     })();
   }
   
-  fetch(BD_URL+'?t='+Date.now(),{cache:'no-store',redirect:'follow'})
-    .then(function(r){return r.json();})
-    .then(function(bdRaw){
-      var rows=(bdRaw['Sheet1']||[]).slice(1);
-      BD_ROWS=rows.filter(function(r){return r[0]||r[1];}).map(function(r){
+  if (typeof BD_URL !== 'undefined' && BD_URL) {
+    fetch(BD_URL+'?t='+Date.now(),{cache:'no-store',redirect:'follow'}).then(function(r){return r.json();}).then(function(bdRaw){
+      BD_ROWS=(bdRaw['Sheet1']||[]).slice(1).filter(function(r){return r[0]||r[1];}).map(function(r){
         var dRaw=r[0],ds='';
         if(dRaw){
           var dObj=new Date(dRaw);
@@ -1029,27 +916,19 @@ window.addEventListener('load',function(){
         }
         return {date:ds,company:String(r[1]||'').trim(),name:String(r[2]||'').trim(),contact:String(r[3]||'').trim(),location:String(r[4]||'').trim(),poc:String(r[5]||'').trim(),remarks:String(r[6]||'').trim(),source:String(r[7]||'').trim(),phase:String(r[10]||'').trim()||'Unknown',followup:String(r[12]||'').trim()};
       });
-      console.log('BD loaded: '+BD_ROWS.length+' rows');
       renderBD();
-    })
-    .catch(function(e){console.warn('BD fetch failed',e);});
+    }).catch(function(e){});
+  }
 
-  // --- LIVE SALES FETCH (Safely Isolated) ---
-  fetch('https://script.google.com/macros/s/AKfycbyNjcsuR8UfA9m81N5dVF-U5Fhvzmk_i8jjmhIqLJwNiGqA2h9j83ZizKyAS8jcP2Cm/exec?t='+Date.now(),{cache:'no-store',redirect:'follow'})
-    .then(function(r){return r.json();})
-    .then(function(sRaw){
-      var rows=(sRaw['Sales_Log']||[]);
-      var parsed=rows.filter(function(r){
-        // Strict filters: Must have data, must be 'Inst Order', and POC must NOT be 'Aditi'
-        var isInst = String(r[1]||'').trim().toLowerCase() === 'inst order';
-        var notAditi = String(r[4]||'').trim().toLowerCase() !== 'aditi';
-        return r[0] && r[3] && r[6] && isInst && notAditi;
+  if (typeof SALES_URL !== 'undefined' && SALES_URL) {
+    fetch(SALES_URL+'?t='+Date.now(),{cache:'no-store',redirect:'follow'}).then(function(r){return r.json();}).then(function(sRaw){
+      var parsed=(sRaw['Sales_Log']||[]).filter(function(r){
+        return r[0] && r[3] && r[6] && String(r[1]||'').trim().toLowerCase() === 'inst order' && String(r[4]||'').trim().toLowerCase() !== 'aditi';
       }).map(function(r){
         var dRaw=r[2]||r[3],ds='';
         if(dRaw){
           if(typeof dRaw==='string'&&dRaw.indexOf('/')>-1){
-            var dp=dRaw.split('/');
-            ds='2026-'+String(parseInt(dp[1])).padStart(2,'0')+'-'+String(parseInt(dp[0])).padStart(2,'0');
+            var dp=dRaw.split('/'); ds='2026-'+String(parseInt(dp[1])).padStart(2,'0')+'-'+String(parseInt(dp[0])).padStart(2,'0');
           } else {
             var dObj=new Date(dRaw);
             if(!isNaN(dObj)){var ist=new Date(dObj.getTime()+5.5*60*60*1000);ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0');}
@@ -1057,75 +936,41 @@ window.addEventListener('load',function(){
         }
         return ds?{ref:String(r[0]),date:ds,client:String(r[5]||'').trim(),poc:String(r[4]||'').trim(),type:'Inst Order',amt:parseFloat(String(r[6]).replace(/,/g,''))||0}:null;
       }).filter(Boolean);
-      
-      // If we successfully got live data, overwrite the hardcoded SALES array and re-render
-      if(parsed.length > 0){
-        SALES = parsed;
-        renderAll();
-      }
-    })
-    .catch(function(e){console.warn('Sales fetch failed',e);});
-  // ------------------------------------------
-  // --- LIVE SAMPLES FETCH ---
-  if (typeof SAMPLES_URL !== 'undefined') {
-    fetch(SAMPLES_URL + '?t=' + Date.now(), {cache: 'no-store', redirect: 'follow'})
-      .then(function(r) { return r.json(); })
-      .then(function(raw) {
-        var rows = (raw['Samples'] || []).slice(1); 
-        console.log("Raw Sample rows fetched: ", rows.length);
-        
-        var parsed = rows.map(function(r) {
-          if (!r[3]) return null; // Skip if completely empty
-          
-          var dRaw = r[3], ds = '';
-          
-          try {
-            // Bulletproof Date Parsing
-            if (dRaw instanceof Date || Object.prototype.toString.call(dRaw) === '[object Date]') {
-               var ist = new Date(dRaw.getTime() + 5.5 * 60 * 60 * 1000);
-               ds = ist.getFullYear() + '-' + String(ist.getMonth() + 1).padStart(2, '0') + '-' + String(ist.getDate()).padStart(2, '0');
-            } else if (typeof dRaw === 'string') {
-               if (dRaw.includes('/')) {
-                   var parts = dRaw.split('/');
-                   // CRITICAL FIX: Make sure the split actually created 3 parts before checking length
-                   if (parts.length >= 3) {
-                       var y = parts[2].length === 2 ? '20' + parts[2] : parts[2];
-                       ds = y + '-' + parts[1].padStart(2, '0') + '-' + parts[0].padStart(2, '0');
-                   } else {
-                       ds = dRaw.slice(0, 10);
-                   }
-               } else {
-                   ds = dRaw.slice(0, 10);
-               }
-            }
-          } catch(err) {
-            return null; // If date parsing fails completely, just skip this row
-          }
-
-          var prod = String(r[8] || r[4] || '').trim(); // Check Col I or Col E
-          if (!prod) return null;
-
-          return {
-            date: ds,
-            product: prod,
-            client: String(r[11] || '').trim(), // Col L
-            qty: parseInt(r[10] || r[5]) || 1,  // Col K or F
-            req_by: String(r[2] || '').trim(),  // Col C
-            dispatch: ''
-          };
-        }).filter(Boolean);
-
-        if (parsed.length > 0) {
-          SAMPLES = parsed; 
-          renderAll(); 
-          console.log('Live Samples successfully parsed: ' + parsed.length);
-        } else {
-          console.log('No samples passed the filter!');
-        }
-      })
-      .catch(function(e) { console.warn('Samples fetch failed', e); });
+      if(parsed.length > 0){ SALES = parsed; renderAll(); }
+    }).catch(function(e){});
   }
-  });
+
+  if (typeof SAMPLES_URL !== 'undefined' && SAMPLES_URL) {
+    fetch(SAMPLES_URL + '?t=' + Date.now(), {cache: 'no-store', redirect: 'follow'}).then(function(r) { return r.json(); }).then(function(raw) {
+      var parsed = (raw['Samples'] || []).slice(1).map(function(r) {
+        var reqByLower = String(r[2] || '').trim().toLowerCase();
+        var allowed = ['siya', 'manjari', 'mahi', 'dhyana'], matchedPOC = '';
+        for (var i = 0; i < allowed.length; i++) {
+          if (reqByLower.includes(allowed[i])) { matchedPOC = allowed[i].charAt(0).toUpperCase() + allowed[i].slice(1); break; }
+        }
+        if (!matchedPOC) return null;
+        var dRaw = r[3], ds = '';
+        if (!dRaw) return null;
+        try {
+          if (dRaw instanceof Date || Object.prototype.toString.call(dRaw) === '[object Date]') {
+             var ist = new Date(dRaw.getTime() + 5.5 * 60 * 60 * 1000); ds = ist.getFullYear() + '-' + String(ist.getMonth() + 1).padStart(2, '0') + '-' + String(ist.getDate()).padStart(2, '0');
+          } else if (typeof dRaw === 'string') {
+             if (dRaw.includes('/')) {
+                 var parts = dRaw.split('/');
+                 if (parts.length >= 3) { var y = parts[2].length === 2 ? '20' + parts[2] : parts[2]; ds = y + '-' + parts[1].padStart(2, '0') + '-' + parts[0].padStart(2, '0'); } 
+                 else { ds = dRaw.slice(0, 10); }
+             } else { ds = dRaw.slice(0, 10); }
+          }
+          if (!ds.includes('-')) return null; 
+        } catch(err) { return null; }
+        var prod = String(r[8] || r[4] || '').trim(); 
+        if (!prod) return null;
+        return { date: ds, product: prod, client: String(r[11] || '').trim(), qty: parseInt(r[10] || r[5]) || 1, req_by: matchedPOC, dispatch: '' };
+      }).filter(Boolean);
+      if (parsed.length > 0) { SAMPLES = parsed; renderAll(); }
+    }).catch(function(e) { });
+  }
+});
 </script>
 </body>
-</html>  
+</html>
