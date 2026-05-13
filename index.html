@@ -268,7 +268,7 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
     <div class="g1"><div class="cc">
       <div class="ch"><div class="ct">All Conversations</div></div>
       <table class="tbl">
-        <thead><tr><th>Date</th><th>Company</th><th>Contact</th><th>POC</th><th>Source</th><th>Phase</th><th style="width:100px">Converted?</th><th>Follow-up</th><th>Remarks</th></tr></thead>
+        <thead><tr><th>Date</th><th>Company</th><th>Contact</th><th>POC</th><th>Source</th><th>Phase</th><th>Follow-up</th><th>Remarks</th></tr></thead>
         <tbody id="bdTable"></tbody>
       </table>
     </div></div>
@@ -406,17 +406,6 @@ function set(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
 var tipEl=document.getElementById('tip');
 function showTip(e,h){tipEl.innerHTML=h;tipEl.style.display='block';tipEl.style.left=(e.clientX+12)+'px';tipEl.style.top=(e.clientY-30)+'px';}
 function hideTip(){tipEl.style.display='none';}
- function saveLocalStatus(key, value) {
-      localStorage.setItem(key, value);
-      var originalTxt = document.getElementById('stxt').textContent;
-      document.getElementById('stxt').textContent = 'selection saved locally';
-      setTimeout(function() {
-        document.getElementById('stxt').textContent = originalTxt;
-      }, 1500);
-    }
-    ```
-
-Does this help you locate the spots in the file? 
 // Helper to find the Monday of any given week safely
 function getWeekMonday(dateStr) {
   if(!dateStr) return '';
@@ -843,6 +832,7 @@ function renderBD(){
   set('bdConv',conv); set('bdConvR',pct(conv,bd.length||1)+' conv rate');
   set('bdCount',bd.length+' leads shown');
 
+  // Pipeline kanban
   var phases=['Cold','Hot','Converted'];
   var phaseLabels={Cold:'❄️ Cold',Hot:'🔥 Hot',Converted:'✅ Converted'};
   document.getElementById('bdPipeline').innerHTML=phases.map(function(ph){
@@ -866,30 +856,20 @@ function renderBD(){
       '</div>';
   }).join('');
 
-  document.getElementById('bdTable').innerHTML = bd.length ? bd.map(function(b) {
-    var col = PHASE_COLOR[b.phase] || '#888';
-    var leadKey = 'conv_' + (b.company + b.name).replace(/\s+/g, '_');
-    var savedStatus = localStorage.getItem(leadKey) || '';
-
-    return '<tr>' +
-      '<td>' + fd(b.date) + '</td>' +
-      '<td style="color:#fff">' + (b.company || '—') + '</td>' +
-      '<td style="color:#ddd">' + b.name + '</td>' +
-      '<td><span class="badge poc">' + (b.poc || '—') + '</span></td>' +
-      '<td style="color:#aaa">' + (b.source.trim() || '—') + '</td>' +
-      '<td><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;background:' + col + '22;color:' + col + '">' + b.phase + '</span></td>' +
-      '<td>' +
-        '<select class="di" style="font-size:10px; padding:2px 4px; height:22px; width:70px; background:var(--s2); border-color:var(--b);" ' +
-        'onchange="saveLocalStatus(\'' + leadKey + '\', this.value)">' +
-          '<option value="" ' + (savedStatus === '' ? 'selected' : '') + '>—</option>' +
-          '<option value="Yes" ' + (savedStatus === 'Yes' ? 'selected' : '') + '>Yes</option>' +
-          '<option value="No" ' + (savedStatus === 'No' ? 'selected' : '') + '>No</option>' +
-        '</select>' +
-      '</td>' +
-      '<td style="color:#eab308;font-size:11px">' + (b.followup ? '⏰ ' + b.followup.slice(5).replace('-', '/') : '—') + '</td>' +
-      '<td style="color:#aaa;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + b.remarks + '</td>' +
+  // Table
+  document.getElementById('bdTable').innerHTML=bd.length?bd.map(function(b){
+    var col=PHASE_COLOR[b.phase]||'#888';
+    return '<tr>'+
+      '<td>'+fd(b.date)+'</td>'+
+      '<td style="color:#fff">'+(b.company||'—')+'</td>'+
+      '<td style="color:#ddd">'+b.name+'</td>'+
+      '<td><span class="badge poc">'+(b.poc||'—')+'</span></td>'+
+      '<td style="color:#aaa">'+(b.source.trim()||'—')+'</td>'+
+      '<td><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;background:'+col+'22;color:'+col+'">'+b.phase+'</span></td>'+
+      '<td style="color:#eab308;font-size:11px">'+(b.followup?'⏰ '+b.followup.slice(5).replace('-','/'):'—')+'</td>'+
+      '<td style="color:#aaa;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+b.remarks+'</td>'+
       '</tr>';
-  }).join('') : '<tr><td colspan="9" style="text-align:center;color:#555;padding:20px">No leads found</td></tr>';
+  }).join(''):'<tr><td colspan="8" style="text-align:center;color:#555;padding:20px">No leads in selected range</td></tr>';
 }
 
 function renderSamples(){
@@ -905,13 +885,16 @@ function renderSamples(){
   set('smTopPoc',topBy?topBy[0]:'—');
   set('smCount',sm.length+' samples shown');
 
+  // Date chart
   var byDate={};sm.forEach(function(s){byDate[s.date]=(byDate[s.date]||0)+1;});
   var dates=Object.keys(byDate).sort();
   barChart('smDateChart',dates.map(fd),[{label:'Samples',data:dates.map(function(d){return byDate[d];}),color:'#3b82f6',vf:function(v){return v;}}],180);
 
+  // Product chart
   var topProds=Object.entries(byProd).sort(function(a,b){return b[1]-a[1];}).slice(0,7);
   hbar('smProdChart',topProds.map(function(p){return p[0].slice(0,22);}),topProds.map(function(p){return p[1];}),['#3b82f6','#6d28d9','#5b21b6','#4c1d95','#1d4ed8','#1e40af','#1e3a8a']);
 
+  // Table
   document.getElementById('smTable').innerHTML=sm.length?sm.sort(function(a,b){return b.date.localeCompare(a.date);}).map(function(s){
     return '<tr>'+
       '<td>'+fd(s.date)+'</td>'+
@@ -924,6 +907,7 @@ function renderSamples(){
   }).join(''):'<tr><td colspan="6" style="text-align:center;color:#555;padding:20px">No samples in selected range</td></tr>';
 }
 
+// Wire dropdowns
 ['bdPhase','bdSource','bdPoc'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('change',renderBD);});
 ['smProd','smBy'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('change',renderSamples);});
 var sSortEl = document.getElementById('sSort'); if(sSortEl) sSortEl.addEventListener('change', renderAll);
@@ -934,31 +918,47 @@ window.addEventListener('load',function(){
     renderAll();
   });});
   
-  if (typeof SHEET_URL !== 'undefined' && SHEET_URL) {
+  if (SHEET_URL) {
     (function() {
       var ctrl = new AbortController();
-      var timeoutId = setTimeout(function() { ctrl.abort(); }, 60000);
+      var timeoutId = setTimeout(function() { ctrl.abort(); }, 60000); // Increased timeout for Google Apps Script
 
-      fetch(SHEET_URL + '?t=' + Date.now(), { cache: 'no-store', signal: ctrl.signal, redirect: 'follow' })
-        .then(function(r) { return r.json(); })
+      fetch(SHEET_URL + '?t=' + Date.now(), {
+        cache: 'no-store',
+        signal: ctrl.signal,
+        redirect: 'follow' // CRITICAL: Required for Google Apps Script redirects
+      })
+        .then(function(r) {
+          if (!r.ok) throw new Error('Network response was not ok: ' + r.status);
+          return r.json();
+        })
         .then(function(raw) {
           clearTimeout(timeoutId);
+
+          // ── Master_Log (slim 3 cols: industry, status, date) ──
           if(raw['Master_Log']){
+            // Full rows: [0]=Industry,[3]=Batch,[6]=Status,[8]=EventDate (UTC ISO)
+            // Dates are UTC - must add 5.5h for IST before extracting date
             var smap={'Email Delivered':'del','Email Opened':'open','Email Clicked':'click','RESPONDED':'resp','BOUNCED':'bounce'};
             var bd2={},bi2={},bdP={},bdF={};
+            // First pass: find earliest header per industry to identify primary
             var firstHeader={};
             raw['Master_Log'].forEach(function(r){
               if(!r||!r[0])return;
               var ind=String(r[0]).trim();
-              if(!firstHeader[ind])firstHeader[ind]=String(r[2]||'').trim();
+              var hdr=String(r[2]||'').trim();
+              if(!firstHeader[ind])firstHeader[ind]=hdr;
             });
             raw['Master_Log'].forEach(function(r){
               if(!r||!r[3])return;
               var key=smap[String(r[3])];if(!key)return;
               var ind=String(r[0]||'').trim();
-              var isPrimary=(String(r[2]||'').trim()===firstHeader[ind]);
+              var hdr=String(r[2]||'').trim();
+              var isPrimary=(hdr===firstHeader[ind]);
+              // Parse date from col 8 (EventDate) - UTC ISO string, convert to IST
               var d=r[4],ds='';
               if(d&&typeof d==='string'&&d.length>=10){
+                // Add 5.5 hours (IST offset) to get correct local date
                 var utc=new Date(d);
                 if(!isNaN(utc)){
                   var ist=new Date(utc.getTime()+5.5*60*60*1000);
@@ -970,15 +970,21 @@ window.addEventListener('load',function(){
               bd2[ds][key]++;
               if(isPrimary){if(!bdP[ds])bdP[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};bdP[ds][key]++;}
               else{if(!bdF[ds])bdF[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};bdF[ds][key]++;}
-              var ind_cl=String(r[0]||'').trim().replace(/^N\(\d+\)[-–]\s*/,'').replace(/^O\(\d+\)[-–]\s*/,'').replace(/^[NO][-–]\s*/,'').replace(/^0[-–]\s*/,'').replace(/[-–]\s*\d+\/\d+\/\d+\s*$/,'').trim();
-              if(!ind_cl)return;
-              if(!bi2[ind_cl])bi2[ind_cl]={ind:ind_cl,del:0,open:0,click:0,resp:0,bounce:0};
-              bi2[ind_cl][key]++;
+              var ind=String(r[0]||'').trim()
+                .replace(/^N\(\d+\)[-–]\s*/,'').replace(/^O\(\d+\)[-–]\s*/,'')
+                .replace(/^[NO][-–]\s*/,'').replace(/^0[-–]\s*/,'')
+                .replace(/[-–]\s*\d+\/\d+\/\d+\s*$/,'').trim();
+              if(!ind)return;
+              if(!bi2[ind])bi2[ind]={ind:ind,del:0,open:0,click:0,resp:0,bounce:0};
+              bi2[ind][key]++;
             });
-            ML_BY_DATE.length=0; Object.values(bd2).sort(function(a,b){return a.date.localeCompare(b.date);}).forEach(function(d){ML_BY_DATE.push(d);});
-            ML_BY_IND.length=0; Object.values(bi2).filter(function(i){return i.del>0;}).forEach(function(i){ML_BY_IND.push(i);});
+            var nd=Object.values(bd2).sort(function(a,b){return a.date.localeCompare(b.date);});
+            var ni=Object.values(bi2).filter(function(i){return i.del>0;});
             ML_PRIMARY=Object.values(bdP).sort(function(a,b){return a.date.localeCompare(b.date);});
             ML_FOLLOWUP=Object.values(bdF).sort(function(a,b){return a.date.localeCompare(b.date);});
+            if(nd.length>0){ML_BY_DATE.length=0;nd.forEach(function(d){ML_BY_DATE.push(d);});}
+            if(ni.length>0){ML_BY_IND.length=0;ni.forEach(function(i){ML_BY_IND.push(i);});}
+            console.log('ML loaded: '+nd.length+' days | total del='+nd.reduce(function(a,d){return a+d.del;},0)+' | primary del='+ML_PRIMARY.reduce(function(a,d){return a+d.del;},0));
           }
           if(raw['Sales_Log']){
             var parsed=raw['Sales_Log'].slice(1).filter(function(r){return r[0]&&String(r[1]||'').trim()==='Inst Order';}).map(function(r){
@@ -992,8 +998,8 @@ window.addEventListener('load',function(){
             }).filter(Boolean);
             if(parsed.length>0)SALES=parsed;
           }
-          if(raw['Ads_Log']){
-            var parsed2=raw['Ads_Log'].slice(1).filter(function(r){return r[1];}).map(function(r){
+
+          if(raw['Ads_Log']){var parsed2=raw['Ads_Log'].slice(1).filter(function(r){return r[1];}).map(function(r){
               var dRaw2=r[4],ds='';
               if(dRaw2){var dObj2=new Date(dRaw2);if(!isNaN(dObj2)){var ist2=new Date(dObj2.getTime()+5.5*60*60*1000);ds=ist2.getFullYear()+'-'+String(ist2.getMonth()+1).padStart(2,'0')+'-'+String(ist2.getDate()).padStart(2,'0');}else if(typeof dRaw2==='string')ds=dRaw2.slice(0,10);};
               return ds?{date:ds,client:String(r[1]||'').trim(),type:String(r[8]||''),poc:String(r[9]||'').trim(),lead:String(r[13]||''),conv:String(r[12]||'—'),val:parseFloat(r[11])||null}:null;
@@ -1002,13 +1008,19 @@ window.addEventListener('load',function(){
           }
           document.getElementById('stxt').textContent='live · google sheets';
           renderAll();
-        }).catch(function(err){ document.getElementById('stxt').textContent='cached data (fetch failed)'; });
+        })
+        .catch(function(err){
+          console.error("Dashboard Sync Error:", err);
+          document.getElementById('stxt').textContent='cached data (fetch failed)';
+        });
     })();
   }
   
-  if (typeof BD_URL !== 'undefined' && BD_URL) {
-    fetch(BD_URL+'?t='+Date.now(),{cache:'no-store',redirect:'follow'}).then(function(r){return r.json();}).then(function(bdRaw){
-      BD_ROWS=(bdRaw['Sheet1']||[]).slice(1).filter(function(r){return r[0]||r[1];}).map(function(r){
+  fetch(BD_URL+'?t='+Date.now(),{cache:'no-store',redirect:'follow'})
+    .then(function(r){return r.json();})
+    .then(function(bdRaw){
+      var rows=(bdRaw['Sheet1']||[]).slice(1);
+      BD_ROWS=rows.filter(function(r){return r[0]||r[1];}).map(function(r){
         var dRaw=r[0],ds='';
         if(dRaw){
           var dObj=new Date(dRaw);
@@ -1017,19 +1029,27 @@ window.addEventListener('load',function(){
         }
         return {date:ds,company:String(r[1]||'').trim(),name:String(r[2]||'').trim(),contact:String(r[3]||'').trim(),location:String(r[4]||'').trim(),poc:String(r[5]||'').trim(),remarks:String(r[6]||'').trim(),source:String(r[7]||'').trim(),phase:String(r[10]||'').trim()||'Unknown',followup:String(r[12]||'').trim()};
       });
+      console.log('BD loaded: '+BD_ROWS.length+' rows');
       renderBD();
-    }).catch(function(e){});
-  }
+    })
+    .catch(function(e){console.warn('BD fetch failed',e);});
 
-  if (typeof SALES_URL !== 'undefined' && SALES_URL) {
-    fetch(SALES_URL+'?t='+Date.now(),{cache:'no-store',redirect:'follow'}).then(function(r){return r.json();}).then(function(sRaw){
-      var parsed=(sRaw['Sales_Log']||[]).filter(function(r){
-        return r[0] && r[3] && r[6] && String(r[1]||'').trim().toLowerCase() === 'inst order' && String(r[4]||'').trim().toLowerCase() !== 'aditi';
+  // --- LIVE SALES FETCH (Safely Isolated) ---
+  fetch('https://script.google.com/macros/s/AKfycbyNjcsuR8UfA9m81N5dVF-U5Fhvzmk_i8jjmhIqLJwNiGqA2h9j83ZizKyAS8jcP2Cm/exec?t='+Date.now(),{cache:'no-store',redirect:'follow'})
+    .then(function(r){return r.json();})
+    .then(function(sRaw){
+      var rows=(sRaw['Sales_Log']||[]);
+      var parsed=rows.filter(function(r){
+        // Strict filters: Must have data, must be 'Inst Order', and POC must NOT be 'Aditi'
+        var isInst = String(r[1]||'').trim().toLowerCase() === 'inst order';
+        var notAditi = String(r[4]||'').trim().toLowerCase() !== 'aditi';
+        return r[0] && r[3] && r[6] && isInst && notAditi;
       }).map(function(r){
         var dRaw=r[2]||r[3],ds='';
         if(dRaw){
           if(typeof dRaw==='string'&&dRaw.indexOf('/')>-1){
-            var dp=dRaw.split('/'); ds='2026-'+String(parseInt(dp[1])).padStart(2,'0')+'-'+String(parseInt(dp[0])).padStart(2,'0');
+            var dp=dRaw.split('/');
+            ds='2026-'+String(parseInt(dp[1])).padStart(2,'0')+'-'+String(parseInt(dp[0])).padStart(2,'0');
           } else {
             var dObj=new Date(dRaw);
             if(!isNaN(dObj)){var ist=new Date(dObj.getTime()+5.5*60*60*1000);ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0');}
@@ -1037,41 +1057,75 @@ window.addEventListener('load',function(){
         }
         return ds?{ref:String(r[0]),date:ds,client:String(r[5]||'').trim(),poc:String(r[4]||'').trim(),type:'Inst Order',amt:parseFloat(String(r[6]).replace(/,/g,''))||0}:null;
       }).filter(Boolean);
-      if(parsed.length > 0){ SALES = parsed; renderAll(); }
-    }).catch(function(e){});
-  }
-
-  if (typeof SAMPLES_URL !== 'undefined' && SAMPLES_URL) {
-    fetch(SAMPLES_URL + '?t=' + Date.now(), {cache: 'no-store', redirect: 'follow'}).then(function(r) { return r.json(); }).then(function(raw) {
-      var parsed = (raw['Samples'] || []).slice(1).map(function(r) {
-        var reqByLower = String(r[2] || '').trim().toLowerCase();
-        var allowed = ['siya', 'manjari', 'mahi', 'dhyana'], matchedPOC = '';
-        for (var i = 0; i < allowed.length; i++) {
-          if (reqByLower.includes(allowed[i])) { matchedPOC = allowed[i].charAt(0).toUpperCase() + allowed[i].slice(1); break; }
-        }
-        if (!matchedPOC) return null;
-        var dRaw = r[3], ds = '';
-        if (!dRaw) return null;
-        try {
-          if (dRaw instanceof Date || Object.prototype.toString.call(dRaw) === '[object Date]') {
-             var ist = new Date(dRaw.getTime() + 5.5 * 60 * 60 * 1000); ds = ist.getFullYear() + '-' + String(ist.getMonth() + 1).padStart(2, '0') + '-' + String(ist.getDate()).padStart(2, '0');
-          } else if (typeof dRaw === 'string') {
-             if (dRaw.includes('/')) {
-                 var parts = dRaw.split('/');
-                 if (parts.length >= 3) { var y = parts[2].length === 2 ? '20' + parts[2] : parts[2]; ds = y + '-' + parts[1].padStart(2, '0') + '-' + parts[0].padStart(2, '0'); } 
-                 else { ds = dRaw.slice(0, 10); }
-             } else { ds = dRaw.slice(0, 10); }
+      
+      // If we successfully got live data, overwrite the hardcoded SALES array and re-render
+      if(parsed.length > 0){
+        SALES = parsed;
+        renderAll();
+      }
+    })
+    .catch(function(e){console.warn('Sales fetch failed',e);});
+  // ------------------------------------------
+  // --- LIVE SAMPLES FETCH ---
+  if (typeof SAMPLES_URL !== 'undefined') {
+    fetch(SAMPLES_URL + '?t=' + Date.now(), {cache: 'no-store', redirect: 'follow'})
+      .then(function(r) { return r.json(); })
+      .then(function(raw) {
+        var rows = (raw['Samples'] || []).slice(1); 
+        console.log("Raw Sample rows fetched: ", rows.length);
+        
+        var parsed = rows.map(function(r) {
+          if (!r[3]) return null; // Skip if completely empty
+          
+          var dRaw = r[3], ds = '';
+          
+          try {
+            // Bulletproof Date Parsing
+            if (dRaw instanceof Date || Object.prototype.toString.call(dRaw) === '[object Date]') {
+               var ist = new Date(dRaw.getTime() + 5.5 * 60 * 60 * 1000);
+               ds = ist.getFullYear() + '-' + String(ist.getMonth() + 1).padStart(2, '0') + '-' + String(ist.getDate()).padStart(2, '0');
+            } else if (typeof dRaw === 'string') {
+               if (dRaw.includes('/')) {
+                   var parts = dRaw.split('/');
+                   // CRITICAL FIX: Make sure the split actually created 3 parts before checking length
+                   if (parts.length >= 3) {
+                       var y = parts[2].length === 2 ? '20' + parts[2] : parts[2];
+                       ds = y + '-' + parts[1].padStart(2, '0') + '-' + parts[0].padStart(2, '0');
+                   } else {
+                       ds = dRaw.slice(0, 10);
+                   }
+               } else {
+                   ds = dRaw.slice(0, 10);
+               }
+            }
+          } catch(err) {
+            return null; // If date parsing fails completely, just skip this row
           }
-          if (!ds.includes('-')) return null; 
-        } catch(err) { return null; }
-        var prod = String(r[8] || r[4] || '').trim(); 
-        if (!prod) return null;
-        return { date: ds, product: prod, client: String(r[11] || '').trim(), qty: parseInt(r[10] || r[5]) || 1, req_by: matchedPOC, dispatch: '' };
-      }).filter(Boolean);
-      if (parsed.length > 0) { SAMPLES = parsed; renderAll(); }
-    }).catch(function(e) { });
+
+          var prod = String(r[8] || r[4] || '').trim(); // Check Col I or Col E
+          if (!prod) return null;
+
+          return {
+            date: ds,
+            product: prod,
+            client: String(r[11] || '').trim(), // Col L
+            qty: parseInt(r[10] || r[5]) || 1,  // Col K or F
+            req_by: String(r[2] || '').trim(),  // Col C
+            dispatch: ''
+          };
+        }).filter(Boolean);
+
+        if (parsed.length > 0) {
+          SAMPLES = parsed; 
+          renderAll(); 
+          console.log('Live Samples successfully parsed: ' + parsed.length);
+        } else {
+          console.log('No samples passed the filter!');
+        }
+      })
+      .catch(function(e) { console.warn('Samples fetch failed', e); });
   }
-});
+  });
 </script>
 </body>
-</html>
+</html>  
