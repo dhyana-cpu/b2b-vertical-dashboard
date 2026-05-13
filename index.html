@@ -921,7 +921,7 @@ window.addEventListener('load',function(){
   if (SHEET_URL) {
     (function() {
       var ctrl = new AbortController();
-      var timeoutId = setTimeout(function() { ctrl.abort(); }, 25000); // Increased timeout for Google Apps Script
+      var timeoutId = setTimeout(function() { ctrl.abort(); }, 60000); // Increased timeout for Google Apps Script
 
       fetch(SHEET_URL + '?t=' + Date.now(), {
         cache: 'no-store',
