@@ -1066,46 +1066,57 @@ window.addEventListener('load',function(){
     })
     .catch(function(e){console.warn('Sales fetch failed',e);});
   // ------------------------------------------
-// --- LIVE SAMPLES FETCH ---
+  // --- LIVE SAMPLES FETCH ---
   if (typeof SAMPLES_URL !== 'undefined') {
     fetch(SAMPLES_URL + '?t=' + Date.now(), {cache: 'no-store', redirect: 'follow'})
       .then(function(r) { return r.json(); })
       .then(function(raw) {
         var rows = (raw['Samples'] || []).slice(1); // Skip header row
-        var parsed = rows.filter(function(r) { return r[0] && r[1]; }).map(function(r) {
+        console.log("Raw Sample rows fetched: ", rows.length);
+        
+        var parsed = rows.map(function(r) {
+          if (!r[3]) return null; // Skip if no date exists in Column D
           
-          // Format Date (Assuming Date is in Column A / index 0)
-          var dRaw = r[0], ds = '';
-          if (dRaw) {
-            var dObj = new Date(dRaw);
-            if (!isNaN(dObj)) {
-              var ist = new Date(dObj.getTime() + 5.5 * 60 * 60 * 1000);
-              ds = ist.getFullYear() + '-' + String(ist.getMonth() + 1).padStart(2, '0') + '-' + String(ist.getDate()).padStart(2, '0');
-            } else if (typeof dRaw === 'string') {
-              ds = dRaw.slice(0, 10);
-            }
+          var dRaw = r[3], ds = '';
+          
+          // Bulletproof Date Parsing (Handles both Text and Native Google Sheet Dates)
+          if (dRaw instanceof Date || Object.prototype.toString.call(dRaw) === '[object Date]') {
+             var ist = new Date(dRaw.getTime() + 5.5 * 60 * 60 * 1000);
+             ds = ist.getFullYear() + '-' + String(ist.getMonth() + 1).padStart(2, '0') + '-' + String(ist.getDate()).padStart(2, '0');
+          } else if (typeof dRaw === 'string') {
+             if (dRaw.includes('/')) {
+                 var parts = dRaw.split('/');
+                 // Convert DD/MM/YY or DD/MM/YYYY to YYYY-MM-DD
+                 var y = parts[2].length === 2 ? '20' + parts[2] : parts[2];
+                 ds = y + '-' + parts[1].padStart(2, '0') + '-' + parts[0].padStart(2, '0');
+             } else {
+                 ds = dRaw.slice(0, 10);
+             }
           }
 
-          // Map columns (Adjust these indices if your sheet layout is different!)
-          return ds ? {
+          var prod = String(r[8] || r[4] || '').trim(); // Check Col I or Col E
+          if (!prod) return null; // Skip if no product is listed
+
+          return {
             date: ds,
-            product: String(r[1] || '').trim(), // Column B
-            client: String(r[2] || '').trim(),  // Column C
-            qty: parseInt(r[3]) || 1,           // Column D
-            req_by: String(r[4] || '').trim(),  // Column E
-            dispatch: String(r[5] || '').trim() // Column F
-          } : null;
+            product: prod,
+            client: String(r[11] || '').trim(), // Col L
+            qty: parseInt(r[10] || r[5]) || 1,  // Col K or F
+            req_by: String(r[2] || '').trim(),  // Col C
+            dispatch: ''
+          };
         }).filter(Boolean);
 
         if (parsed.length > 0) {
-          SAMPLES = parsed; // Overwrite the hardcoded array
-          renderSamples();  // Re-render just the samples tab
-          console.log('Live Samples loaded: ' + parsed.length);
+          SAMPLES = parsed; 
+          renderAll(); // Re-render everything to update the top 'Total Records' count too
+          console.log('Live Samples successfully parsed: ' + parsed.length);
+        } else {
+          console.log('No samples passed the filter! Check if your columns shifted.');
         }
       })
       .catch(function(e) { console.warn('Samples fetch failed', e); });
   }
-});
 </script>
 </body>
 </html>
