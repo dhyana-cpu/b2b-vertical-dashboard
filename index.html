@@ -72,250 +72,253 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
 </head>
 <body>
 <div class="bar">
-  <div class="logo">SNACKIBLE <em>/ B2B</em></div>
-  <div class="stl"><div class="dot"></div><span id="stxt">ready</span></div>
+  <div class="logo">SNACKIBLE <em>/ B2B</em></div>
+  <div class="stl"><div class="dot"></div><span id="stxt">ready</span></div>
 </div>
 <div class="wrap">
-  <div class="ph">
-    <div><p class="pt">B2B Dashboard</p><p class="ps">Mails · Sales · Ads · InMails · <em id="lu">—</em></p></div>
-    <div class="df">
-      <span class="fl">Range</span>
-      <input type="date" class="di" id="df">
-      <span style="color:var(--m);font-size:11px">→</span>
-      <input type="date" class="di" id="dt">
-      <button class="qb on" data-r="all">All</button>
-      <button class="qb" data-r="30">30d</button>
-      <button class="qb" data-r="7">7d</button>
-      <button class="qb" data-r="today">Today</button>
-      <span style="font-size:11px;color:var(--m);font-family:monospace;" id="fi">—</span>
-    </div>
-  </div>
+  <div class="ph">
+    <div><p class="pt">B2B Dashboard</p><p class="ps">Mails · Sales · Ads · InMails · <em id="lu">—</em></p></div>
+    <div class="df">
+      <span class="fl">Range</span>
+      <input type="date" class="di" id="df">
+      <span style="color:var(--m);font-size:11px">→</span>
+      <input type="date" class="di" id="dt">
+      <button class="qb on" data-r="all">All</button>
+      <button class="qb" data-r="30">30d</button>
+      <button class="qb" data-r="7">7d</button>
+      <button class="qb" data-r="today">Today</button>
+      <span style="font-size:11px;color:var(--m);font-family:monospace;" id="fi">—</span>
+    </div>
+  </div>
 
-  <div class="mg">
-    <div class="mc gn"><div class="ml">Total B2B Sales</div><div class="mv" id="tSales">—</div><div class="ms" id="tOrders">— orders</div></div>
-    <div class="mc bl"><div class="ml">Emails Delivered</div><div class="mv" id="tDel">—</div><div class="ms" id="tOpenR">—</div></div>
-    <div class="mc or"><div class="ml">Email Responses</div><div class="mv" id="tResp">—</div><div class="ms" id="tRespR">—</div></div>
-    <div class="mc ye"><div class="ml">Ads Leads</div><div class="mv" id="tLeads">—</div><div class="ms" id="tConvR">—</div></div>
-    <div class="mc"><div class="ml">InMails Sent</div><div class="mv" id="tInmail">—</div><div class="ms" id="tInmailS">—</div></div>
-  </div>
+  <div class="mg">
+    <div class="mc gn"><div class="ml">Total B2B Sales</div><div class="mv" id="tSales">—</div><div class="ms" id="tOrders">— orders</div></div>
+    <div class="mc bl"><div class="ml">Emails Delivered</div><div class="mv" id="tDel">—</div><div class="ms" id="tOpenR">—</div></div>
+    <div class="mc or"><div class="ml">Email Responses</div><div class="mv" id="tResp">—</div><div class="ms" id="tRespR">—</div></div>
+    <div class="mc ye"><div class="ml">Ads Leads</div><div class="mv" id="tLeads">—</div><div class="ms" id="tConvR">—</div></div>
+    <div class="mc"><div class="ml">InMails Sent</div><div class="mv" id="tInmail">—</div><div class="ms" id="tInmailS">—</div></div>
+  </div>
 
-  <div class="tabs">
-    <div class="tab on" data-tab="ov">Overview</div>
-    <div class="tab" data-tab="sales">Sales</div>
-    <div class="tab" data-tab="mails">Mails</div>
-    <div class="tab" data-tab="ads">Ads</div>
-    <div class="tab" data-tab="inmails">InMails</div>
-    <div class="tab" data-tab="samples">Sample Data</div>
-    <div class="tab" data-tab="bd">Active Conversations</div>
-  </div>
+  <div class="tabs">
+    <div class="tab on" data-tab="ov">Overview</div>
+    <div class="tab" data-tab="sales">Sales</div>
+    <div class="tab" data-tab="mails">Mails</div>
+    <div class="tab" data-tab="ads">Ads</div>
+    <div class="tab" data-tab="inmails">InMails</div>
+    <div class="tab" data-tab="samples">Sample Data</div>
+    <div class="tab" data-tab="bd">Active Conversations</div>
+  </div>
 
-    <div class="tp on" id="tp-ov">
-    <div class="g2">
-      <div class="cc">
-        <div class="ch"><div class="ct">Email Funnel</div></div>
-        <div class="fg">
-          <div class="fc"><div class="fcv" style="color:var(--bl)" id="fcDel">—</div><div class="fcl">Delivered</div><div class="fcr">100%</div></div>
-          <div class="fc"><div class="fcv" style="color:var(--ac2)" id="fcOpen">—</div><div class="fcl">Opened</div><div class="fcr" id="fcOpenR">—</div></div>
-          <div class="fc"><div class="fcv" style="color:var(--or)" id="fcClick">—</div><div class="fcl">Clicked</div><div class="fcr" id="fcClickR">—</div></div>
-          <div class="fc"><div class="fcv" style="color:var(--gr)" id="fcResp">—</div><div class="fcl">Responded</div><div class="fcr" id="fcRespR">—</div></div>
-        </div>
-        <div class="frow"><span class="flbl">Delivered</span><div class="fwrap"><div class="fbar" id="fbDel" style="width:100%;background:#3b82f6">—</div></div><span class="fpct">100%</span></div>
-        <div class="frow"><span class="flbl">Opened</span><div class="fwrap"><div class="fbar" id="fbOpen" style="background:#7c3aed">—</div></div><span class="fpct" id="fpOpen">—</span></div>
-        <div class="frow"><span class="flbl">Clicked</span><div class="fwrap"><div class="fbar" id="fbClick" style="background:#f97316">—</div></div><span class="fpct" id="fpClick">—</span></div>
-        <div class="frow"><span class="flbl">Responded</span><div class="fwrap"><div class="fbar" id="fbResp" style="background:#22c55e">—</div></div><span class="fpct" id="fpResp">—</span></div>
-        <div class="frow"><span class="flbl">Bounced</span><div class="fwrap"><div class="fbar" id="fbBounce" style="background:#ef4444">—</div></div><span class="fpct" id="fpBounce">—</span></div>
-      </div>
-      <div class="cc"><div class="ch"><div class="ct">Sales by Date (₹)</div></div><div class="cw" id="ovSales" style="min-height:220px"></div></div>
-    </div>
-    <div class="g3">
-      <div class="cc"><div class="ch"><div class="ct">Ads — Lead Source</div></div><div class="cw" id="ovAdsType" style="min-height:160px"></div></div>
-      <div class="cc"><div class="ch"><div class="ct">Ads — Conversion</div></div><div class="cw" id="ovAdsConv" style="min-height:160px"></div></div>
-      <div class="cc"><div class="ch"><div class="ct">Sales by POC</div></div><div class="cw" id="ovPoc" style="min-height:160px"></div></div>
-    </div>
-  </div>
+  <div class="tp on" id="tp-ov">
+    <div class="g2">
+      <div class="cc">
+        <div class="ch"><div class="ct">Email Funnel</div></div>
+        <div class="fg">
+          <div class="fc"><div class="fcv" style="color:var(--bl)" id="fcDel">—</div><div class="fcl">Delivered</div><div class="fcr">100%</div></div>
+          <div class="fc"><div class="fcv" style="color:var(--ac2)" id="fcOpen">—</div><div class="fcl">Opened</div><div class="fcr" id="fcOpenR">—</div></div>
+          <div class="fc"><div class="fcv" style="color:var(--or)" id="fcClick">—</div><div class="fcl">Clicked</div><div class="fcr" id="fcClickR">—</div></div>
+          <div class="fc"><div class="fcv" style="color:var(--gr)" id="fcResp">—</div><div class="fcl">Responded</div><div class="fcr" id="fcRespR">—</div></div>
+        </div>
+        <div class="frow"><span class="flbl">Delivered</span><div class="fwrap"><div class="fbar" id="fbDel" style="width:100%;background:#3b82f6">—</div></div><span class="fpct">100%</span></div>
+        <div class="frow"><span class="flbl">Opened</span><div class="fwrap"><div class="fbar" id="fbOpen" style="background:#7c3aed">—</div></div><span class="fpct" id="fpOpen">—</span></div>
+        <div class="frow"><span class="flbl">Clicked</span><div class="fwrap"><div class="fbar" id="fbClick" style="background:#f97316">—</div></div><span class="fpct" id="fpClick">—</span></div>
+        <div class="frow"><span class="flbl">Responded</span><div class="fwrap"><div class="fbar" id="fbResp" style="background:#22c55e">—</div></div><span class="fpct" id="fpResp">—</span></div>
+        <div class="frow"><span class="flbl">Bounced</span><div class="fwrap"><div class="fbar" id="fbBounce" style="background:#ef4444">—</div></div><span class="fpct" id="fpBounce">—</span></div>
+      </div>
+      <div class="cc"><div class="ch"><div class="ct">Sales by Date (₹)</div></div><div class="cw" id="ovSales" style="min-height:220px"></div></div>
+    </div>
+    <div class="g3">
+      <div class="cc"><div class="ch"><div class="ct">Ads — Lead Source</div></div><div class="cw" id="ovAdsType" style="min-height:160px"></div></div>
+      <div class="cc"><div class="ch"><div class="ct">Ads — Conversion</div></div><div class="cw" id="ovAdsConv" style="min-height:160px"></div></div>
+      <div class="cc"><div class="ch"><div class="ct">Sales by POC</div></div><div class="cw" id="ovPoc" style="min-height:160px"></div></div>
+    </div>
+  </div>
 
-    <div class="tp" id="tp-sales">
-    <div class="mg" style="grid-template-columns:repeat(4,1fr);">
-      <div class="mc gn"><div class="ml">Total Revenue</div><div class="mv" id="sTotalRev">—</div><div class="ms" id="sTotalOrd">—</div></div>
-      <div class="mc gn"><div class="ml">Avg Order Value</div><div class="mv" id="sAvg">—</div><div class="ms">per order</div></div>
-      <div class="mc gn"><div class="ml">Top POC</div><div class="mv" id="sTopPoc">—</div><div class="ms" id="sTopAmt">—</div></div>
-      <div class="mc gn"><div class="ml">Top 5 Orders</div><div id="sTop5List" style="margin-top: 4px; display: flex; flex-direction: column; gap: 5px;">—</div></div>
-    </div>
-    <div class="g2">
-      <div class="cc"><div class="ch"><div class="ct">Revenue by POC</div></div><div class="cw" id="sPocChart" style="min-height:180px"></div></div>
-      <div class="cc"><div class="ch"><div class="ct">Daily Revenue</div></div><div class="cw" id="sDateChart" style="min-height:180px"></div></div>
-    </div>
-    <div class="g1"><div class="cc">
-      <div class="ch">
-        <div style="display:flex; align-items:center; gap:10px;">
-          <div class="ct">All Orders</div>
-          <span id="sCount" style="font-size:11px;color:var(--m)"></span>
-        </div>
-        <select class="di" id="sSort" style="font-size:11px; padding:4px 8px;">
-          <option value="date-desc">Newest First</option>
-          <option value="amt-desc">Amount: High to Low</option>
-          <option value="amt-asc">Amount: Low to High</option>
-        </select>
-      </div>
-      <table class="tbl"><thead><tr><th>Ref</th><th>Date</th><th>Client</th><th>POC</th><th>Type</th><th style="text-align:right">Amount</th></tr></thead><tbody id="sTable"></tbody></table>
-    </div></div>
-  </div>
+  <div class="tp" id="tp-sales">
+    <div class="mg" style="grid-template-columns:repeat(4,1fr);">
+      <div class="mc gn"><div class="ml">Total Revenue</div><div class="mv" id="sTotalRev">—</div><div class="ms" id="sTotalOrd">—</div></div>
+      <div class="mc gn"><div class="ml">Avg Order Value</div><div class="mv" id="sAvg">—</div><div class="ms">per order</div></div>
+      <div class="mc gn"><div class="ml">Top POC</div><div class="mv" id="sTopPoc">—</div><div class="ms" id="sTopAmt">—</div></div>
+      <div class="mc gn"><div class="ml">Top 5 Orders</div><div id="sTop5List" style="margin-top: 4px; display: flex; flex-direction: column; gap: 5px;">—</div></div>
+    </div>
+    <div class="g2">
+      <div class="cc"><div class="ch"><div class="ct">Revenue by POC</div></div><div class="cw" id="sPocChart" style="min-height:180px"></div></div>
+      <div class="cc"><div class="ch"><div class="ct">Daily Revenue</div></div><div class="cw" id="sDateChart" style="min-height:180px"></div></div>
+    </div>
+    <div class="g1"><div class="cc">
+      <div class="ch">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div class="ct">All Orders</div>
+          <span id="sCount" style="font-size:11px;color:var(--m)"></span>
+        </div>
+        <select class="di" id="sSort" style="font-size:11px; padding:4px 8px;">
+          <option value="date-desc">Newest First</option>
+          <option value="amt-desc">Amount: High to Low</option>
+          <option value="amt-asc">Amount: Low to High</option>
+        </select>
+      </div>
+      <table class="tbl"><thead><tr><th>Ref</th><th>Date</th><th>Client</th><th>POC</th><th>Type</th><th style="text-align:right">Amount</th></tr></thead><tbody id="sTable"></tbody></table>
+    </div></div>
+  </div>
 
-    <div class="tp" id="tp-mails">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
-      <div class="df" style="gap:6px;">
-        <span class="fl">Mail Type</span>
-        <button class="qb on" id="mTypeAll" data-mtype="all">All Mails</button>
-        <button class="qb" id="mTypePri" data-mtype="primary">🟢 Primary</button>
-        <button class="qb" id="mTypeFol" data-mtype="followup">🔄 Follow-ups</button>
-      </div>
-      <span id="mTypeLabel" style="font-size:11px;color:var(--m);padding:8px 12px;background:var(--s);border:1px solid var(--b);border-radius:8px;">Showing all mails</span>
-    </div>
-    <div class="mg" style="grid-template-columns:repeat(5,1fr);">
-      <div class="mc bl"><div class="ml">Delivered</div><div class="mv" id="mDel">—</div><div class="ms" id="mDelS">—</div></div>
-      <div class="mc"><div class="ml">Opened</div><div class="mv" id="mOpen">—</div><div class="ms" id="mOpenR">—</div></div>
-      <div class="mc or"><div class="ml">Clicked</div><div class="mv" id="mClick">—</div><div class="ms" id="mClickR">—</div></div>
-      <div class="mc gn"><div class="ml">Responded</div><div class="mv" id="mResp">—</div><div class="ms" id="mRespR">—</div></div>
-      <div class="mc re"><div class="ml">Bounced</div><div class="mv" id="mBounce">—</div><div class="ms" id="mBounceR">—</div></div>
-    </div>
-    <div class="g2">
-      <div class="cc">
-        <div class="ch">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <div class="ct">Daily Email Events</div>
-            <select class="di" id="mEventFilter" style="font-size:11px; padding:4px 8px;" onchange="renderAll()">
-              <option value="all">All Events</option>
-              <option value="del">Delivered</option>
-              <option value="open">Opened</option>
-              <option value="click">Clicked</option>
-              <option value="resp">Responded</option>
-            </select>
-          </div>
-        </div>
-        <div class="cw" id="mDailyChart" style="min-height:240px"></div>
-      </div>
-      <div class="cc"><div class="ch"><div class="ct">Open Rate by Industry</div></div><div class="cw" id="mIndChart" style="min-height:240px"></div></div>
-    </div>
-    <div class="g1"><div class="cc">
-      <div class="ch"><div class="ct">Performance by Industry</div></div>
-      <div class="mrow mhdr"><span>Industry</span><span>Delivered</span><span>Opened</span><span>Clicked</span><span>Responded</span></div>
-      <div id="mIndTable"></div>
-      <div class="mrow" style="font-weight:600;color:#fff;border-top:1px solid var(--b);margin-top:6px;padding-top:10px;" id="mIndTotal"></div>
-    </div></div>
-  </div>
+  <div class="tp" id="tp-mails">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+      <div class="df" style="gap:6px;">
+        <span class="fl">Mail Type</span>
+        <button class="qb on" id="mTypeAll" data-mtype="all">All Mails</button>
+        <button class="qb" id="mTypePri" data-mtype="primary">🟢 Primary</button>
+        <button class="qb" id="mTypeFol" data-mtype="followup">🔄 Follow-ups</button>
+      </div>
+      <span id="mTypeLabel" style="font-size:11px;color:var(--m);padding:8px 12px;background:var(--s);border:1px solid var(--b);border-radius:8px;">Showing all mails</span>
+    </div>
+    <div class="mg" style="grid-template-columns:repeat(5,1fr);">
+      <div class="mc bl"><div class="ml">Delivered</div><div class="mv" id="mDel">—</div><div class="ms" id="mDelS">—</div></div>
+      <div class="mc"><div class="ml">Opened</div><div class="mv" id="mOpen">—</div><div class="ms" id="mOpenR">—</div></div>
+      <div class="mc or"><div class="ml">Clicked</div><div class="mv" id="mClick">—</div><div class="ms" id="mClickR">—</div></div>
+      <div class="mc gn"><div class="ml">Responded</div><div class="mv" id="mResp">—</div><div class="ms" id="mRespR">—</div></div>
+      <div class="mc re"><div class="ml">Bounced</div><div class="mv" id="mBounce">—</div><div class="ms" id="mBounceR">—</div></div>
+    </div>
+    <div class="g2">
+      <div class="cc">
+        <div class="ch">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="ct">Daily Email Events</div>
+            <select class="di" id="mEventFilter" style="font-size:11px; padding:4px 8px;" onchange="renderAll()">
+              <option value="all">All Events</option>
+              <option value="del">Delivered</option>
+              <option value="open">Opened</option>
+              <option value="click">Clicked</option>
+              <option value="resp">Responded</option>
+            </select>
+          </div>
+        </div>
+        <div class="cw" id="mDailyChart" style="min-height:240px"></div>
+      </div>
+      <div class="cc"><div class="ch"><div class="ct">Open Rate by Industry</div></div><div class="cw" id="mIndChart" style="min-height:240px"></div></div>
+    </div>
+    <div class="g1"><div class="cc">
+      <div class="ch"><div class="ct">Performance by Industry</div></div>
+      <div class="mrow mhdr"><span>Industry</span><span>Delivered</span><span>Opened</span><span>Clicked</span><span>Responded</span></div>
+      <div id="mIndTable"></div>
+      <div class="mrow" style="font-weight:600;color:#fff;border-top:1px solid var(--b);margin-top:6px;padding-top:10px;" id="mIndTotal"></div>
+    </div></div>
+  </div>
 
-    <div class="tp" id="tp-ads">
-    <div class="mg" style="grid-template-columns:repeat(4,1fr);">
-      <div class="mc ye"><div class="ml">Total Leads</div><div class="mv" id="aTotal">—</div><div class="ms">from ads</div></div>
-      <div class="mc ye"><div class="ml">Inbound</div><div class="mv" id="aInbound">—</div><div class="ms" id="aInboundR">—</div></div>
-      <div class="mc ye"><div class="ml">CCBD</div><div class="mv" id="aCcbd">—</div><div class="ms" id="aCcbdR">—</div></div>
-      <div class="mc gn"><div class="ml">Converted</div><div class="mv" id="aConv">—</div><div class="ms" id="aConvR">—</div></div>
-    </div>
-    <div class="g1"><div class="cc">
-      <div class="ch"><div class="ct">All Leads</div><span id="aCount" style="font-size:11px;color:var(--m)"></span></div>
-      <table class="tbl"><thead><tr><th>Date</th><th>Client</th><th>Source</th><th>POC</th><th>Lead Type</th><th>Converted</th><th style="text-align:right">Order Value</th></tr></thead><tbody id="aTable"></tbody></table>
-    </div></div>
-  </div>
+  <div class="tp" id="tp-ads">
+    <div class="mg" style="grid-template-columns:repeat(4,1fr);">
+      <div class="mc ye"><div class="ml">Total Leads</div><div class="mv" id="aTotal">—</div><div class="ms">from ads</div></div>
+      <div class="mc ye"><div class="ml">Inbound</div><div class="mv" id="aInbound">—</div><div class="ms" id="aInboundR">—</div></div>
+      <div class="mc ye"><div class="ml">CCBD</div><div class="mv" id="aCcbd">—</div><div class="ms" id="aCcbdR">—</div></div>
+      <div class="mc gn"><div class="ml">Converted</div><div class="mv" id="aConv">—</div><div class="ms" id="aConvR">—</div></div>
+    </div>
+    <div class="g1"><div class="cc">
+      <div class="ch"><div class="ct">All Leads</div><span id="aCount" style="font-size:11px;color:var(--m)"></span></div>
+      <table class="tbl"><thead><tr><th>Date</th><th>Client</th><th>Source</th><th>POC</th><th>Lead Type</th><th>Converted</th><th style="text-align:right">Order Value</th></tr></thead><tbody id="aTable"></tbody></table>
+    </div></div>
+  </div>
 
-    <div class="tp" id="tp-inmails">
-    <div class="mg" style="grid-template-columns:repeat(3,1fr);">
-      <div class="mc bl"><div class="ml">Total Contacts</div><div class="mv" id="iTotal">—</div><div class="ms">LinkedIn InMails</div></div>
-      <div class="mc bl"><div class="ml">Facility Mgmt</div><div class="mv" id="iFM">—</div><div class="ms">FM industry</div></div>
-      <div class="mc bl"><div class="ml">IT Industry</div><div class="mv" id="iIT">—</div><div class="ms">IT sector</div></div>
-    </div>
-    <div class="g1"><div class="cc">
-      <div class="ch"><div class="ct">InMail Contact List</div></div>
-      <table class="tbl"><thead><tr><th>#</th><th>Industry</th><th>Company</th><th>Role</th><th>Contact</th></tr></thead><tbody id="iTable"></tbody></table>
-    </div></div>
-  </div>
+  <div class="tp" id="tp-inmails">
+    <div class="mg" style="grid-template-columns:repeat(3,1fr);">
+      <div class="mc bl"><div class="ml">Total Contacts</div><div class="mv" id="iTotal">—</div><div class="ms">LinkedIn InMails</div></div>
+      <div class="mc bl"><div class="ml">Facility Mgmt</div><div class="mv" id="iFM">—</div><div class="ms">FM industry</div></div>
+      <div class="mc bl"><div class="ml">IT Industry</div><div class="mv" id="iIT">—</div><div class="ms">IT sector</div></div>
+    </div>
+    <div class="g1"><div class="cc">
+      <div class="ch"><div class="ct">InMail Contact List</div></div>
+      <table class="tbl"><thead><tr><th>#</th><th>Industry</th><th>Company</th><th>Role</th><th>Contact</th></tr></thead><tbody id="iTable"></tbody></table>
+    </div></div>
+  </div>
 
-    <div class="tp" id="tp-samples">
-    <div class="mg" style="grid-template-columns:repeat(4,1fr);">
-      <div class="mc bl"><div class="ml">Total Samples</div><div class="mv" id="smTotal">—</div><div class="ms" id="smSub">in range</div></div>
-      <div class="mc bl"><div class="ml">Unique Clients</div><div class="mv" id="smClients">—</div><div class="ms">recipients</div></div>
-      <div class="mc bl"><div class="ml">Most Sent</div><div class="mv" id="smTopProd" style="font-size:13px">—</div><div class="ms" id="smTopQty">—</div></div>
-      <div class="mc bl"><div class="ml">Requested By</div><div class="mv" id="smTopPoc" style="font-size:14px">—</div><div class="ms">most active</div></div>
-    </div>
-    <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
-      <div class="df" style="gap:6px;">
-        <span class="fl">Product</span>
-        <select class="di" id="smProd" style="min-width:200px;">
-          <option value="all">All Products</option>
-          <option value="Cheesy Jalepeno Dip with Piri Piri Ragi Chips">Cheesy Jalepeno Dip</option>
-          <option value="Peri Peri Ragi Chips">Peri Peri Ragi Chips</option>
-          <option value="Piri piri ragi chips">Piri piri ragi chips</option>
-          <option value="Nacho cheese Jowar puffs">Nacho Cheese Jowar Puffs</option>
-          <option value="Biscuit Sticks with Butterscotch Dip">Biscuit Sticks Butterscotch</option>
-          <option value="Baked Pizza Sticks with a Cheesy Jalapeno Dip">Baked Pizza Sticks</option>
-          <option value="Best Seller Box of 10">Best Seller Box</option>
-          <option value="Cheese Dosa Khakhra">Cheese Dosa Khakhra</option>
-          <option value="Pistachio Dip with Biscuit sticks">Pistachio Dipsters</option>
-        </select>
-        <span class="fl">By</span>
-        <select class="di" id="smBy">
-          <option value="all">All</option>
-          <option value="Siya">Siya</option>
-          <option value="Mahi">Mahi</option>
-          <option value="Bhoomika">Bhoomika</option>
-          <option value="Dhyana">Dhyana</option>
-        </select>
-      </div>
-      <span style="font-size:11px;color:var(--m);font-family:monospace;" id="smCount"></span>
-    </div>
-    <div class="g2">
-      <div class="cc"><div class="ch"><div class="ct">Samples by Date</div></div><div class="cw" id="smDateChart" style="min-height:180px"></div></div>
-      <div class="cc"><div class="ch"><div class="ct">Top Products Sampled</div></div><div class="cw" id="smProdChart" style="min-height:180px"></div></div>
-    </div>
-    <div class="g1"><div class="cc">
-      <div class="ch"><div class="ct">All Sample Requests</div></div>
-      <table class="tbl">
-        <thead><tr><th>Date</th><th>Product Sampled</th><th>Client</th><th>Qty</th><th>Requested By</th><th>Dispatch</th></tr></thead>
-        <tbody id="smTable"></tbody>
-      </table>
-    </div></div>
-  </div>
+  <div class="tp" id="tp-samples">
+    <div class="mg" style="grid-template-columns:repeat(4,1fr);">
+      <div class="mc bl"><div class="ml">Total Samples</div><div class="mv" id="smTotal">—</div><div class="ms" id="smSub">in range</div></div>
+      <div class="mc bl"><div class="ml">Unique Clients</div><div class="mv" id="smClients">—</div><div class="ms">recipients</div></div>
+      <div class="mc bl"><div class="ml">Most Sent</div><div class="mv" id="smTopProd" style="font-size:13px">—</div><div class="ms" id="smTopQty">—</div></div>
+      <div class="mc bl"><div class="ml">Requested By</div><div class="mv" id="smTopPoc" style="font-size:14px">—</div><div class="ms">most active</div></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
+      <div class="df" style="gap:6px;">
+        <span class="fl">Product</span>
+        <select class="di" id="smProd" style="min-width:200px;">
+          <option value="all">All Products</option>
+          <option value="Cheesy Jalepeno Dip with Piri Piri Ragi Chips">Cheesy Jalepeno Dip</option>
+          <option value="Peri Peri Ragi Chips">Peri Peri Ragi Chips</option>
+          <option value="Piri piri ragi chips">Piri piri ragi chips</option>
+          <option value="Nacho cheese Jowar puffs">Nacho Cheese Jowar Puffs</option>
+          <option value="Biscuit Sticks with Butterscotch Dip">Biscuit Sticks Butterscotch</option>
+          <option value="Baked Pizza Sticks with a Cheesy Jalapeno Dip">Baked Pizza Sticks</option>
+          <option value="Best Seller Box of 10">Best Seller Box</option>
+          <option value="Cheese Dosa Khakhra">Cheese Dosa Khakhra</option>
+          <option value="Pistachio Dip with Biscuit sticks">Pistachio Dipsters</option>
+        </select>
+        <span class="fl">By</span>
+        <select class="di" id="smBy">
+          <option value="all">All</option>
+          <option value="Siya">Siya</option>
+          <option value="Manjari">Manjari</option>
+          <option value="Faizaan">Faizaan</option>
+          <option value="Raghav">Raghav</option>
+          <option value="Dhyana">Dhyana</option>
+          <option value="Jaydeep">Jaydeep</option>
+          <option value="Meshva">Meshva</option>
+        </select>
+      </div>
+      <span style="font-size:11px;color:var(--m);font-family:monospace;" id="smCount"></span>
+    </div>
+    <div class="g2">
+      <div class="cc"><div class="ch"><div class="ct">Samples by Date</div></div><div class="cw" id="smDateChart" style="min-height:180px"></div></div>
+      <div class="cc"><div class="ch"><div class="ct">Top Products Sampled</div></div><div class="cw" id="smProdChart" style="min-height:180px"></div></div>
+    </div>
+    <div class="g1"><div class="cc">
+      <div class="ch"><div class="ct">All Sample Requests</div></div>
+      <table class="tbl">
+        <thead><tr><th>Date</th><th>Product Sampled</th><th>Client</th><th>Qty</th><th>Requested By</th><th>Dispatch</th></tr></thead>
+        <tbody id="smTable"></tbody>
+      </table>
+    </div></div>
+  </div>
 
-    <div class="tp" id="tp-bd">
-    <div class="mg" style="grid-template-columns:repeat(4,1fr);">
-      <div class="mc ye"><div class="ml">Total Leads</div><div class="mv" id="bdTotal">—</div><div class="ms" id="bdSub">in range</div></div>
-      <div class="mc re"><div class="ml">Cold</div><div class="mv" id="bdCold">—</div><div class="ms" id="bdColdR">—</div></div>
-      <div class="mc or"><div class="ml">Hot</div><div class="mv" id="bdHot">—</div><div class="ms" id="bdHotR">—</div></div>
-      <div class="mc gn"><div class="ml">Converted</div><div class="mv" id="bdConv">—</div><div class="ms" id="bdConvR">—</div></div>
-    </div>
-    <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
-      <div class="df" style="gap:6px;">
-        <span class="fl">Phase</span>
-        <select class="di" id="bdPhase">
-          <option value="all">All Phases</option>
-          <option value="Cold">Cold</option>
-          <option value="Hot">Hot</option>
-          <option value="Converted">Converted</option>
-        </select>
-        <span class="fl">Source</span>
-        <select class="di" id="bdSource">
-          <option value="all">All Sources</option>
-          <option value="Shopify">Shopify</option>
-          <option value="CC BD">CC BD</option>
-          <option value="Email">Email</option>
-        </select>
-        <span class="fl">POC</span>
-        <select class="di" id="bdPoc">
-          <option value="all">All POCs</option>
-          <option value="Siya">Siya</option>
-          <option value="Manjari">Manjari</option>
-        </select>
-      </div>
-      <span style="font-size:11px;color:var(--m);font-family:monospace;" id="bdCount"></span>
-    </div>
-        <div class="g3" id="bdPipeline" style="margin-bottom:14px;"></div>
-    <div class="g1"><div class="cc">
-      <div class="ch"><div class="ct">All Conversations</div></div>
-      <table class="tbl">
-        <thead><tr><th>Date</th><th>Company</th><th>Contact</th><th>POC</th><th>Source</th><th>Phase</th><th style="width:100px">Converted?</th><th style="width:40px; text-align:center">✔</th><th>Follow-up</th><th>Remarks</th></tr></thead>
-        <tbody id="bdTable"></tbody>
-      </table>
-    </div></div>
-  </div>
+  <div class="tp" id="tp-bd">
+    <div class="mg" style="grid-template-columns:repeat(4,1fr);">
+      <div class="mc ye"><div class="ml">Total Leads</div><div class="mv" id="bdTotal">—</div><div class="ms" id="bdSub">in range</div></div>
+      <div class="mc re"><div class="ml">Cold</div><div class="mv" id="bdCold">—</div><div class="ms" id="bdColdR">—</div></div>
+      <div class="mc or"><div class="ml">Hot</div><div class="mv" id="bdHot">—</div><div class="ms" id="bdHotR">—</div></div>
+      <div class="mc gn"><div class="ml">Converted</div><div class="mv" id="bdConv">—</div><div class="ms" id="bdConvR">—</div></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
+      <div class="df" style="gap:6px;">
+        <span class="fl">Phase</span>
+        <select class="di" id="bdPhase">
+          <option value="all">All Phases</option>
+          <option value="Cold">Cold</option>
+          <option value="Hot">Hot</option>
+          <option value="Converted">Converted</option>
+        </select>
+        <span class="fl">Source</span>
+        <select class="di" id="bdSource">
+          <option value="all">All Sources</option>
+          <option value="Shopify">Shopify</option>
+          <option value="CC BD">CC BD</option>
+          <option value="Email">Email</option>
+        </select>
+        <span class="fl">POC</span>
+        <select class="di" id="bdPoc">
+          <option value="all">All POCs</option>
+          <option value="Siya">Siya</option>
+          <option value="Manjari">Manjari</option>
+        </select>
+      </div>
+      <span style="font-size:11px;color:var(--m);font-family:monospace;" id="bdCount"></span>
+    </div>
+    <div class="g3" id="bdPipeline" style="margin-bottom:14px;"></div>
+    <div class="g1"><div class="cc">
+      <div class="ch"><div class="ct">All Conversations</div></div>
+      <table class="tbl">
+        <thead><tr><th>Date</th><th>Company</th><th>Contact</th><th>POC</th><th>Source</th><th>Phase</th><th style="width:100px">Converted?</th><th style="width:40px; text-align:center">✔</th><th>Follow-up</th><th>Remarks</th></tr></thead>
+        <tbody id="bdTable"></tbody>
+      </table>
+    </div></div>
+  </div>
 
 </div>
 <div class="tip" id="tip"></div>
@@ -328,70 +331,70 @@ const SAMPLES_URL='https://script.google.com/macros/s/AKfycbyXk1rfhfq0yAa1e3gN4j
 
 var BD_ROWS=[], ML_PRIMARY=[], ML_FOLLOWUP=[];
 var SALES=[
-  {ref:'Apr26-001',date:'2026-04-01',client:'Floraza',poc:'Siya',type:'Inst Order',amt:7890.9},
-  {ref:'Apr26-024',date:'2026-04-02',client:'Gerson Lehrman Group',poc:'Manjari',type:'Inst Order',amt:16830},
-  {ref:'Apr26-044',date:'2026-04-02',client:'Qteam Solution Services',poc:'Dhyana',type:'Inst Order',amt:20500},
-  {ref:'Apr26-066',date:'2026-04-04',client:'PIPELINE INFRASTRUCTURE LTD',poc:'Manjari',type:'Inst Order',amt:5600},
-  {ref:'Apr26-102',date:'2026-04-06',client:'Behind the Scene',poc:'Manjari',type:'Inst Order',amt:66217},
-  {ref:'Apr26-103',date:'2026-04-06',client:'Tohfa Boutique',poc:'Siya',type:'Inst Order',amt:19159},
-  {ref:'Apr26-149',date:'2026-04-07',client:'SHOPKNOT IMPEX INDIA PVT LTD',poc:'Manjari',type:'Inst Order',amt:100800},
-  {ref:'Apr26-165',date:'2026-04-07',client:'Big Basket',poc:'Aditi',type:'Inst Order',amt:16536},
-  {ref:'Apr26-167',date:'2026-04-07',client:'Shalaka Somani',poc:'Siya',type:'Inst Order',amt:13200},
-  {ref:'Apr26-168',date:'2026-04-07',client:'Matrix Pharmacorp Pvt Ltd',poc:'Dhyana',type:'Inst Order',amt:43610},
-  {ref:'Apr26-169',date:'2026-04-08',client:'COMPASS INDIA FOOD SERVICES',poc:'Manjari',type:'Inst Order',amt:21160},
-  {ref:'Apr26-259',date:'2026-04-13',client:'JucyGifts',poc:'Siya',type:'Inst Order',amt:66233.7},
-  {ref:'Apr26-269',date:'2026-04-13',client:'Mistins',poc:'Manjari',type:'Inst Order',amt:18447},
+  {ref:'Apr26-001',date:'2026-04-01',client:'Floraza',poc:'Siya',type:'Inst Order',amt:7890.9},
+  {ref:'Apr26-024',date:'2026-04-02',client:'Gerson Lehrman Group',poc:'Manjari',type:'Inst Order',amt:16830},
+  {ref:'Apr26-044',date:'2026-04-02',client:'Qteam Solution Services',poc:'Dhyana',type:'Inst Order',amt:20500},
+  {ref:'Apr26-066',date:'2026-04-04',client:'PIPELINE INFRASTRUCTURE LTD',poc:'Manjari',type:'Inst Order',amt:5600},
+  {ref:'Apr26-102',date:'2026-04-06',client:'Behind the Scene',poc:'Manjari',type:'Inst Order',amt:66217},
+  {ref:'Apr26-103',date:'2026-04-06',client:'Tohfa Boutique',poc:'Siya',type:'Inst Order',amt:19159},
+  {ref:'Apr26-149',date:'2026-04-07',client:'SHOPKNOT IMPEX INDIA PVT LTD',poc:'Manjari',type:'Inst Order',amt:100800},
+  {ref:'Apr26-165',date:'2026-04-07',client:'Big Basket',poc:'Aditi',type:'Inst Order',amt:16536},
+  {ref:'Apr26-167',date:'2026-04-07',client:'Shalaka Somani',poc:'Siya',type:'Inst Order',amt:13200},
+  {ref:'Apr26-168',date:'2026-04-07',client:'Matrix Pharmacorp Pvt Ltd',poc:'Dhyana',type:'Inst Order',amt:43610},
+  {ref:'Apr26-169',date:'2026-04-08',client:'COMPASS INDIA FOOD SERVICES',poc:'Manjari',type:'Inst Order',amt:21160},
+  {ref:'Apr26-259',date:'2026-04-13',client:'JucyGifts',poc:'Siya',type:'Inst Order',amt:66233.7},
+  {ref:'Apr26-269',date:'2026-04-13',client:'Mistins',poc:'Manjari',type:'Inst Order',amt:18447},
 ];
 
 var SAMPLES=[];
 
 const ML_BY_DATE=[
-  {date:'2026-04-08',del:994,open:177,click:26,resp:51,bounce:0},
-  {date:'2026-04-09',del:811,open:150,click:9,resp:5,bounce:0},
-  {date:'2026-04-10',del:1062,open:182,click:17,resp:2,bounce:0},
-  {date:'2026-04-11',del:0,open:27,click:27,resp:0,bounce:0},
-  {date:'2026-04-12',del:0,open:2,click:0,resp:0,bounce:0},
-  {date:'2026-04-13',del:387,open:87,click:9,resp:2,bounce:0},
+  {date:'2026-04-08',del:994,open:177,click:26,resp:51,bounce:0},
+  {date:'2026-04-09',del:811,open:150,click:9,resp:5,bounce:0},
+  {date:'2026-04-10',del:1062,open:182,click:17,resp:2,bounce:0},
+  {date:'2026-04-11',del:0,open:27,click:27,resp:0,bounce:0},
+  {date:'2026-04-12',del:0,open:2,click:0,resp:0,bounce:0},
+  {date:'2026-04-13',del:387,open:87,click:9,resp:2,bounce:0},
 ];
 const ML_BY_IND=[
-  {ind:'Facility Mgmt',del:1172,open:234,click:52,resp:51,bounce:41},
-  {ind:'Corporates',del:812,open:153,click:15,resp:4,bounce:9},
-  {ind:'IT (8 Apr)',del:767,open:173,click:16,resp:4,bounce:8},
-  {ind:'IT (9 Apr)',del:503,open:65,click:5,resp:1,bounce:16},
+  {ind:'Facility Mgmt',del:1172,open:234,click:52,resp:51,bounce:41},
+  {ind:'Corporates',del:812,open:153,click:15,resp:4,bounce:9},
+  {ind:'IT (8 Apr)',del:767,open:173,click:16,resp:4,bounce:8},
+  {ind:'IT (9 Apr)',del:503,open:65,click:5,resp:1,bounce:16},
 ];
 
 var ADS=[
-  {date:'2026-03-31',client:'Vijay Chaudhary',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'No',val:null},
-  {date:'2026-03-31',client:'Rachael',type:'Inbound',poc:'Siya',lead:'Cold',conv:'—',val:null},
-  {date:'2026-03-31',client:'Gaunisha Gaanavi',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'No',val:null},
-  {date:'2026-03-31',client:'Tanisha Bhatt',type:'Inbound',poc:'Siya',lead:'Warm',conv:'—',val:null},
-  {date:'2026-03-31',client:'Khushi Sachdeva',type:'CCBD',poc:'Siya',lead:'Warm',conv:'Yes',val:7890.9},
-  {date:'2026-04-01',client:'Hasti Shah',type:'Inbound',poc:'Siya',lead:'Cold',conv:'—',val:null},
-  {date:'2026-04-02',client:'Kala Adarsh',type:'Inbound',poc:'Siya',lead:'Cold',conv:'—',val:null},
-  {date:'2026-04-06',client:'Shreya Sinha',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'No',val:null},
-  {date:'2026-04-07',client:'Syed Abdullah',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'No',val:null},
-  {date:'2026-04-06',client:'Shaila Aggarwal',type:'Inbound',poc:'Siya',lead:'Cold',conv:'—',val:null},
-  {date:'2026-04-06',client:'Shalaka Somani',type:'Inbound',poc:'Siya',lead:'Cold',conv:'Yes',val:13200},
-  {date:'2026-04-06',client:'Pikasa Bagchi',type:'Inbound',poc:'Siya',lead:'Cold',conv:'—',val:null},
-  {date:'2026-04-07',client:'Suvhankar Das',type:'CCBD',poc:'Siya',lead:'Cold',conv:'—',val:null},
-  {date:'2026-04-08',client:'Ratndeep Bhagwat',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'—',val:null},
-  {date:'2026-04-06',client:'Gagan Oberoi',type:'CCBD',poc:'Siya',lead:'Warm',conv:'—',val:null},
-  {date:'2026-04-08',client:'Vivek Pandey',type:'CCBD',poc:'Manjari',lead:'Warm',conv:'—',val:null},
-  {date:'2026-04-09',client:'Neeraj Kumar',type:'CCBD',poc:'Siya',lead:'Cold',conv:'—',val:null},
+  {date:'2026-03-31',client:'Vijay Chaudhary',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'No',val:null},
+  {date:'2026-03-31',client:'Rachael',type:'Inbound',poc:'Siya',lead:'Cold',conv:'—',val:null},
+  {date:'2026-03-31',client:'Gaunisha Gaanavi',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'No',val:null},
+  {date:'2026-03-31',client:'Tanisha Bhatt',type:'Inbound',poc:'Siya',lead:'Warm',conv:'—',val:null},
+  {date:'2026-03-31',client:'Khushi Sachdeva',type:'CCBD',poc:'Siya',lead:'Warm',conv:'Yes',val:7890.9},
+  {date:'2026-04-01',client:'Hasti Shah',type:'Inbound',poc:'Siya',lead:'Cold',conv:'—',val:null},
+  {date:'2026-04-02',client:'Kala Adarsh',type:'Inbound',poc:'Siya',lead:'Cold',conv:'—',val:null},
+  {date:'2026-04-06',client:'Shreya Sinha',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'No',val:null},
+  {date:'2026-04-07',client:'Syed Abdullah',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'No',val:null},
+  {date:'2026-04-06',client:'Shaila Aggarwal',type:'Inbound',poc:'Siya',lead:'Cold',conv:'—',val:null},
+  {date:'2026-04-06',client:'Shalaka Somani',type:'Inbound',poc:'Siya',lead:'Cold',conv:'Yes',val:13200},
+  {date:'2026-04-06',client:'Pikasa Bagchi',type:'Inbound',poc:'Siya',lead:'Cold',conv:'—',val:null},
+  {date:'2026-04-07',client:'Suvhankar Das',type:'CCBD',poc:'Siya',lead:'Cold',conv:'—',val:null},
+  {date:'2026-04-08',client:'Ratndeep Bhagwat',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'—',val:null},
+  {date:'2026-04-06',client:'Gagan Oberoi',type:'CCBD',poc:'Siya',lead:'Warm',conv:'—',val:null},
+  {date:'2026-04-08',client:'Vivek Pandey',type:'CCBD',poc:'Manjari',lead:'Warm',conv:'—',val:null},
+  {date:'2026-04-09',client:'Neeraj Kumar',type:'CCBD',poc:'Siya',lead:'Cold',conv:'—',val:null},
 ];
 
 const INMAILS=[
-  {n:1,ind:'FM',company:'CBRE South Asia',role:'Assistant Manager',poc:'Rajesh K Nair'},
-  {n:2,ind:'FM',company:'Quess Corp',role:'GM Procurement',poc:'Shiv Kumara'},
-  {n:3,ind:'FM',company:'Supreme Facility Management',role:'Group Director & CEO',poc:'Dr. Amol Shingate'},
-  {n:4,ind:'FM',company:'ISS Facility Services India',role:'Business Manager',poc:'Bishwanath Bhattacharya'},
-  {n:5,ind:'FM',company:'ISS Facility Services India',role:'HR Executive',poc:'Akshar Oza'},
-  {n:6,ind:'FM',company:'JLL India',role:'Operations Manager',poc:'Vikram Nair'},
-  {n:7,ind:'IT',company:'Infosys',role:'Procurement Lead',poc:'Ramesh Iyer'},
-  {n:8,ind:'IT',company:'TCS',role:'Admin Manager',poc:'Priya Sharma'},
-  {n:9,ind:'IT',company:'Wipro',role:'Facility Head',poc:'Anand Kumar'},
-  {n:10,ind:'IT',company:'HCL Technologies',role:'Corporate Services',poc:'Neha Singh'},
-  {n:11,ind:'FM',company:'Sodexo India',role:'Procurement Manager',poc:'Sanjay Mehta'},
+  {n:1,ind:'FM',company:'CBRE South Asia',role:'Assistant Manager',poc:'Rajesh K Nair'},
+  {n:2,ind:'FM',company:'Quess Corp',role:'GM Procurement',poc:'Shiv Kumara'},
+  {n:3,ind:'FM',company:'Supreme Facility Management',role:'Group Director & CEO',poc:'Dr. Amol Shingate'},
+  {n:4,ind:'FM',company:'ISS Facility Services India',role:'Business Manager',poc:'Bishwanath Bhattacharya'},
+  {n:5,ind:'FM',company:'ISS Facility Services India',role:'HR Executive',poc:'Akshar Oza'},
+  {n:6,ind:'FM',company:'JLL India',role:'Operations Manager',poc:'Vikram Nair'},
+  {n:7,ind:'IT',company:'Infosys',role:'Procurement Lead',poc:'Ramesh Iyer'},
+  {n:8,ind:'IT',company:'TCS',role:'Admin Manager',poc:'Priya Sharma'},
+  {n:9,ind:'IT',company:'Wipro',role:'Facility Head',poc:'Anand Kumar'},
+  {n:10,ind:'IT',company:'HCL Technologies',role:'Corporate Services',poc:'Neha Singh'},
+  {n:11,ind:'FM',company:'Sodexo India',role:'Procurement Manager',poc:'Sanjay Mehta'},
 ];
 
 // ── HELPERS ───────────────────────────────────────────────
@@ -403,22 +406,22 @@ var tipEl=document.getElementById('tip');
 function showTip(e,h){tipEl.innerHTML=h;tipEl.style.display='block';tipEl.style.left=(e.clientX+12)+'px';tipEl.style.top=(e.clientY-30)+'px';}
 function hideTip(){tipEl.style.display='none';}
 function getWeekMonday(dateStr) {
-  if(!dateStr) return '';
-  var p = dateStr.split('-');
-  if(p.length < 3) return dateStr;
-  var d = new Date(parseInt(p[0]), parseInt(p[1])-1, parseInt(p[2]));
-  var day = d.getDay();
-  var diff = d.getDate() - day + (day === 0 ? -6 : 1);
-  d.setDate(diff);
-  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  if(!dateStr) return '';
+  var p = dateStr.split('-');
+  if(p.length < 3) return dateStr;
+  var d = new Date(parseInt(p[0]), parseInt(p[1])-1, parseInt(p[2]));
+  var day = d.getDay();
+  var diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  d.setDate(diff);
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
 }
 function saveLocalStatus(key, value) {
-  localStorage.setItem(key, value);
-  var originalTxt = document.getElementById('stxt').textContent;
-  document.getElementById('stxt').textContent = 'selection saved locally';
-  setTimeout(function() {
-    document.getElementById('stxt').textContent = originalTxt;
-  }, 1500);
+  localStorage.setItem(key, value);
+  var originalTxt = document.getElementById('stxt').textContent;
+  document.getElementById('stxt').textContent = 'selection saved locally';
+  setTimeout(function() {
+    document.getElementById('stxt').textContent = originalTxt;
+  }, 1500);
 }
 
 // ── DATE FILTER ───────────────────────────────────────────
@@ -428,271 +431,271 @@ function inR(date){var f=getF(),t=getT();if(f&&date<f)return false;if(t&&date>t)
 function fSales(){return SALES.filter(function(s){return inR(s.date);});}
 function fAds(){return ADS.filter(function(a){return inR(a.date);});}
 function fML(){
-  var f=getF(),t=getT();
-  if(!f&&t)return ML_BY_DATE;
-  return ML_BY_DATE.filter(function(d){
-    if(f&&d.date<f)return false;
-    if(t&&d.date>t)return false;
-    return true;
-  });
+  var f=getF(),t=getT();
+  if(!f&&!t)return ML_BY_DATE;
+  return ML_BY_DATE.filter(function(d){
+    if(f&&d.date<f)return false;
+    if(t&&d.date>t)return false;
+    return true;
+  });
 }
 
 // ── CHARTS ────────────────────────────────────────────────
 function barChart(id,labels,datasets,h){
-  var el=document.getElementById(id);if(!el)return;
-  h=h||200;
-  var W=Math.max(el.getBoundingClientRect().width,el.clientWidth,el.offsetWidth)||680,P={t:8,r:10,b:65,l:55},cW=W-P.l-P.r,cH=h-P.t-P.b;
-  if(!labels||!labels.length){el.innerHTML='<p style="color:#555;padding:20px;font-size:12px;text-align:center">No data in selected range</p>';return;}
-  var maxV=0;
-  datasets.forEach(function(d){d.data.forEach(function(v){if(v>maxV)maxV=v;});});
-  if(maxV===0)maxV=1;
-  var bW=Math.min((cW/labels.length)*0.8/datasets.length,34);
-  var s='<svg width="'+W+'" height="'+h+'" xmlns="http://www.w3.org/2000/svg">';
-  
-  var isMoney = id.toLowerCase().includes('sales') || id.toLowerCase().includes('rev');
-  var axisFmt = function(n) { 
-    if(n===0) return '0'; 
-    if(isMoney) return fmt(n); 
-    return n>=1000 ? (n/1000).toFixed(1)+'K' : Math.round(n); 
-  };
+  var el=document.getElementById(id);if(!el)return;
+  h=h||200;
+  var W=Math.max(el.getBoundingClientRect().width,el.clientWidth,el.offsetWidth)||680,P={t:8,r:10,b:65,l:55},cW=W-P.l-P.r,cH=h-P.t-P.b;
+  if(!labels||!labels.length){el.innerHTML='<p style="color:#555;padding:20px;font-size:12px;text-align:center">No data in selected range</p>';return;}
+  var maxV=0;
+  datasets.forEach(function(d){d.data.forEach(function(v){if(v>maxV)maxV=v;});});
+  if(maxV===0)maxV=1;
+  var bW=Math.min((cW/labels.length)*0.8/datasets.length,34);
+  var s='<svg width="'+W+'" height="'+h+'" xmlns="http://www.w3.org/2000/svg">';
+  
+  var isMoney = id.toLowerCase().includes('sales') || id.toLowerCase().includes('rev');
+  var axisFmt = function(n) { 
+    if(n===0) return '0'; 
+    if(isMoney) return fmt(n); 
+    return n>=1000 ? (n/1000).toFixed(1)+'K' : Math.round(n); 
+  };
 
-  for(var i=0;i<=4;i++){
-    var y=P.t+cH-(i/4)*cH,v=maxV*i/4;
-    s+='<line x1="'+P.l+'" y1="'+(y|0)+'" x2="'+(P.l+cW)+'" y2="'+(y|0)+'" stroke="rgba(255,255,255,.06)" stroke-width="1"/>';
-    var lbl = datasets[0]&&datasets[0].yf ? datasets[0].yf(v) : axisFmt(v);
-    s+='<text x="'+(P.l-4)+'" y="'+((y+4)|0)+'" text-anchor="end" fill="#777" font-size="9" font-family="system-ui">'+lbl+'</text>';
-  }
-  datasets.forEach(function(d,di){
-    labels.forEach(function(lbl,i){
-      var v=d.data[i]||0,bH=Math.max((v/maxV)*cH,0);
-      var x=P.l+i*(cW/labels.length)+(cW/labels.length-datasets.length*bW)/2+di*bW,y=P.t+cH-bH;
-      var tv=d.vf?d.vf(v, i):axisFmt(v);
-      if (bH > 0) {
-        s+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bW.toFixed(1)+'" height="'+bH.toFixed(1)+'" fill="'+d.color+'" rx="3" opacity=".88" style="cursor:pointer" onmouseenter="showTip(event,\'<b>'+lbl+'</b><br>'+(d.label||'')+': '+tv+'\')" onmouseleave="hideTip()"/>';
-      }
-    });
-  });
-  labels.forEach(function(lbl,i){
-    var x=(P.l+i*(cW/labels.length)+(cW/labels.length)/2)|0;
-    var ty = h - 8; 
-    s+='<text x="'+x+'" y="'+ty+'" text-anchor="end" fill="#aaa" font-size="9" font-family="system-ui" transform="rotate(-45,'+x+','+ty+')">'+lbl+'</text>';
-  });
-  s+='<line x1="'+P.l+'" y1="'+P.t+'" x2="'+P.l+'" y2="'+(P.t+cH)+'" stroke="#333" stroke-width="1"/>';
-  s+='<line x1="'+P.l+'" y1="'+(P.t+cH)+'" x2="'+(P.l+cW)+'" y2="'+(P.t+cH)+'" stroke="#333" stroke-width="1"/>';
-  s+='</svg>';el.innerHTML=s;
+  for(var i=0;i<=4;i++){
+    var y=P.t+cH-(i/4)*cH,v=maxV*i/4;
+    s+='<line x1="'+P.l+'" y1="'+(y|0)+'" x2="'+(P.l+cW)+'" y2="'+(y|0)+'" stroke="rgba(255,255,255,.06)" stroke-width="1"/>';
+    var lbl = datasets[0]&&datasets[0].yf ? datasets[0].yf(v) : axisFmt(v);
+    s+='<text x="'+(P.l-4)+'" y="'+((y+4)|0)+'" text-anchor="end" fill="#777" font-size="9" font-family="system-ui">'+lbl+'</text>';
+  }
+  datasets.forEach(function(d,di){
+    labels.forEach(function(lbl,i){
+      var v=d.data[i]||0,bH=Math.max((v/maxV)*cH,0);
+      var x=P.l+i*(cW/labels.length)+(cW/labels.length-datasets.length*bW)/2+di*bW,y=P.t+cH-bH;
+      var tv=d.vf?d.vf(v, i):axisFmt(v);
+      if (bH > 0) {
+        s+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bW.toFixed(1)+'" height="'+bH.toFixed(1)+'" fill="'+d.color+'" rx="3" opacity=".88" style="cursor:pointer" onmouseenter="showTip(event,\'<b>'+lbl+'</b><br>'+(d.label||'')+': '+tv+'\')" onmouseleave="hideTip()"/>';
+      }
+    });
+  });
+  labels.forEach(function(lbl,i){
+    var x=(P.l+i*(cW/labels.length)+(cW/labels.length)/2)|0;
+    var ty = h - 8; 
+    s+='<text x="'+x+'" y="'+ty+'" text-anchor="end" fill="#aaa" font-size="9" font-family="system-ui" transform="rotate(-45,'+x+','+ty+')">'+lbl+'</text>';
+  });
+  s+='<line x1="'+P.l+'" y1="'+P.t+'" x2="'+P.l+'" y2="'+(P.t+cH)+'" stroke="#333" stroke-width="1"/>';
+  s+='<line x1="'+P.l+'" y1="'+(P.t+cH)+'" x2="'+(P.l+cW)+'" y2="'+(P.t+cH)+'" stroke="#333" stroke-width="1"/>';
+  s+='</svg>';el.innerHTML=s;
 }
 
 function hbar(id,labels,values,colors,vf){
-  var el=document.getElementById(id);if(!el)return;
-  if(!labels||!labels.length){el.innerHTML='<p style="color:#555;padding:20px;font-size:12px;text-align:center">No data</p>';return;}
-  var W=Math.max(el.getBoundingClientRect().width,el.clientWidth,el.offsetWidth)||500,maxV=0;
-  values.forEach(function(v){if(v>maxV)maxV=v;});
-  if(maxV===0)maxV=1;
-  var rowH=32,P={l:115,r:55,t:4},H=labels.length*rowH+P.t*2;
-  var s='<svg width="'+W+'" height="'+H+'" xmlns="http://www.w3.org/2000/svg">';
-  labels.forEach(function(lbl,i){
-    var y=P.t+i*rowH,bW=((values[i]||0)/maxV)*(W-P.l-P.r);
-    var col=Array.isArray(colors)?colors[i%colors.length]:colors;
-    var tv=vf?vf(values[i]):''+Math.round(values[i]);
-    s+='<text x="'+(P.l-7)+'" y="'+(y+rowH/2+4)+'" text-anchor="end" fill="#aaa" font-size="10" font-family="system-ui">'+lbl+'</text>';
-    s+='<rect x="'+P.l+'" y="'+(y+5)+'" width="'+Math.max(bW,3).toFixed(1)+'" height="'+(rowH-12)+'" fill="'+col+'" rx="3" opacity=".85" style="cursor:pointer" onmouseenter="showTip(event,\''+lbl+': '+tv+'\')" onmouseleave="hideTip()"/>';
-    s+='<text x="'+(P.l+bW+7)+'" y="'+(y+rowH/2+4)+'" fill="#ccc" font-size="10" font-family="system-ui">'+tv+'</text>';
-  });
-  s+='</svg>';el.innerHTML=s;
+  var el=document.getElementById(id);if(!el)return;
+  if(!labels||!labels.length){el.innerHTML='<p style="color:#555;padding:20px;font-size:12px;text-align:center">No data</p>';return;}
+  var W=Math.max(el.getBoundingClientRect().width,el.clientWidth,el.offsetWidth)||500,maxV=0;
+  values.forEach(function(v){if(v>maxV)maxV=v;});
+  if(maxV===0)maxV=1;
+  var rowH=32,P={l:115,r:55,t:4},H=labels.length*rowH+P.t*2;
+  var s='<svg width="'+W+'" height="'+H+'" xmlns="http://www.w3.org/2000/svg">';
+  labels.forEach(function(lbl,i){
+    var y=P.t+i*rowH,bW=((values[i]||0)/maxV)*(W-P.l-P.r);
+    var col=Array.isArray(colors)?colors[i%colors.length]:colors;
+    var tv=vf?vf(values[i]):''+Math.round(values[i]);
+    s+='<text x="'+(P.l-7)+'" y="'+(y+rowH/2+4)+'" text-anchor="end" fill="#aaa" font-size="10" font-family="system-ui">'+lbl+'</text>';
+    s+='<rect x="'+P.l+'" y="'+(y+5)+'" width="'+Math.max(bW,3).toFixed(1)+'" height="'+(rowH-12)+'" fill="'+col+'" rx="3" opacity=".85" style="cursor:pointer" onmouseenter="showTip(event,\''+lbl+': '+tv+'\')" onmouseleave="hideTip()"/>';
+    s+='<text x="'+(P.l+bW+7)+'" y="'+(y+rowH/2+4)+'" fill="#ccc" font-size="10" font-family="system-ui">'+tv+'</text>';
+  });
+  s+='</svg>';el.innerHTML=s;
 }
 
 // ── MAIN RENDER ───────────────────────────────────────────
 function getMLRows(){
-  var f=getF(),t=getT();
-  var mtype=window._mtype||'all';
-  var src= mtype==='primary'?ML_PRIMARY : mtype==='followup'?ML_FOLLOWUP : ML_BY_DATE;
-  if(!src||!src.length)src=ML_BY_DATE;
-  if(!f&&!t)return src;
-  return src.filter(function(d){
-    if(f&&d.date<f)return false;
-    if(t&&d.date>t)return false;
-    return true;
-  });
+  var f=getF(),t=getT();
+  var mtype=window._mtype||'all';
+  var src= mtype==='primary'?ML_PRIMARY : mtype==='followup'?ML_FOLLOWUP : ML_BY_DATE;
+  if(!src||!src.length)src=ML_BY_DATE;
+  if(!f&&!t)return src;
+  return src.filter(function(d){
+    if(f&&d.date<f)return false;
+    if(t&&d.date>t)return false;
+    return true;
+  });
 }
 
 function renderAll(){
-  var sales=fSales(), ads=fAds();
-  var mlRows=getMLRows();
+  var sales=fSales(), ads=fAds();
+  var mlRows=getMLRows();
 
-  var tSalesAmt=sales.reduce(function(a,s){return a+s.amt;},0);
-  var mlDel=mlRows.reduce(function(a,r){return a+r.del;},0);
-  var mlOpen=mlRows.reduce(function(a,r){return a+r.open;},0);
-  var mlClick=mlRows.reduce(function(a,r){return a+r.click;},0);
-  var mlResp=mlRows.reduce(function(a,r){return a+r.resp;},0);
-  var mlBounce=mlRows.reduce(function(a,r){return a+r.bounce;},0);
-  var totalLeads=ads.length, totalConv=ads.filter(function(a){return a.conv==='Yes';}).length;
+  var tSalesAmt=sales.reduce(function(a,s){return a+s.amt;},0);
+  var mlDel=mlRows.reduce(function(a,r){return a+r.del;},0);
+  var mlOpen=mlRows.reduce(function(a,r){return a+r.open;},0);
+  var mlClick=mlRows.reduce(function(a,r){return a+r.click;},0);
+  var mlResp=mlRows.reduce(function(a,r){return a+r.resp;},0);
+  var mlBounce=mlRows.reduce(function(a,r){return a+r.bounce;},0);
+  var totalLeads=ads.length, totalConv=ads.filter(function(a){return a.conv==='Yes';}).length;
 
-  set('tSales',fmt(tSalesAmt)||'₹0'); set('tOrders',sales.length+' orders');
-  set('tDel',mlDel.toLocaleString()); set('tOpenR',pct(mlOpen,mlDel)+' open rate');
-  set('tResp',mlResp); set('tRespR',pct(mlResp,mlDel)+' response rate');
-  set('tLeads',totalLeads); set('tConvR',totalConv+' converted · '+pct(totalConv,totalLeads||1));
-  set('tInmail',INMAILS.length); set('tInmailS','FM: '+INMAILS.filter(function(i){return i.ind==='FM';}).length+' · IT: '+INMAILS.filter(function(i){return i.ind==='IT';}).length);
-  set('fi',(sales.length+ads.length)+' records');
+  set('tSales',fmt(tSalesAmt)||'₹0'); set('tOrders',sales.length+' orders');
+  set('tDel',mlDel.toLocaleString()); set('tOpenR',pct(mlOpen,mlDel)+' open rate');
+  set('tResp',mlResp); set('tRespR',pct(mlResp,mlDel)+' response rate');
+  set('tLeads',totalLeads); set('tConvR',totalConv+' converted · '+pct(totalConv,totalLeads||1));
+  set('tInmail',INMAILS.length); set('tInmailS','FM: '+INMAILS.filter(function(i){return i.ind==='FM';}).length+' · IT: '+INMAILS.filter(function(i){return i.ind==='IT';}).length);
+  set('fi',(sales.length+ads.length)+' records');
 
-  set('fcDel',mlDel.toLocaleString());
-  set('fcOpen',mlOpen); set('fcOpenR',pct(mlOpen,mlDel));
-  set('fcClick',mlClick); set('fcClickR',pct(mlClick,mlDel));
-  set('fcResp',mlResp); set('fcRespR',pct(mlResp,mlDel));
-  var setFbar=function(id,pctId,v,total){
-    var el=document.getElementById(id),pel=document.getElementById(pctId);
-    var p=total>0?v/total*100:0;
-    if(el){el.style.width=Math.min(p,100)+'%';el.textContent=v;}
-    if(pel)pel.textContent=pct(v,total);
-  };
-  var fbDelEl=document.getElementById('fbDel');if(fbDelEl)fbDelEl.textContent=mlDel.toLocaleString();
-  setFbar('fbOpen','fpOpen',mlOpen,mlDel);
-  setFbar('fbClick','fpClick',mlClick,mlDel);
-  setFbar('fbResp','fpResp',mlResp,mlDel);
-  setFbar('fbBounce','fpBounce',mlBounce,mlDel);
+  set('fcDel',mlDel.toLocaleString());
+  set('fcOpen',mlOpen); set('fcOpenR',pct(mlOpen,mlDel));
+  set('fcClick',mlClick); set('fcClickR',pct(mlClick,mlDel));
+  set('fcResp',mlResp); set('fcRespR',pct(mlResp,mlDel));
+  var setFbar=function(id,pctId,v,total){
+    var el=document.getElementById(id),pel=document.getElementById(pctId);
+    var p=total>0?v/total*100:0;
+    if(el){el.style.width=Math.min(p,100)+'%';el.textContent=v;}
+    if(pel)pel.textContent=pct(v,total);
+  };
+  var fbDelEl=document.getElementById('fbDel');if(fbDelEl)fbDelEl.textContent=mlDel.toLocaleString();
+  setFbar('fbOpen','fpOpen',mlOpen,mlDel);
+  setFbar('fbClick','fpClick',mlClick,mlDel);
+  setFbar('fbResp','fpResp',mlResp,mlDel);
+  setFbar('fbBounce','fpBounce',mlBounce,mlDel);
 
-  var byWeek={};
-  sales.forEach(function(s){
-    var weekStart = getWeekMonday(s.date);
-    byWeek[weekStart] = (byWeek[weekStart]||0) + s.amt;
-  });
-  var weeks = Object.keys(byWeek).sort();
-  var weekLabels = weeks.map(function(w) { 
-    var parts = w.split('-');
-    var d1 = new Date(parts[0], parts[1]-1, parts[2]);
-    var d2 = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate() + 6);
-    var m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    return m[d1.getMonth()] + ' ' + d1.getDate() + ' - ' + m[d2.getMonth()] + ' ' + d2.getDate();
-  });
+  var byWeek={};
+  sales.forEach(function(s){
+    var weekStart = getWeekMonday(s.date);
+    byWeek[weekStart] = (byWeek[weekStart]||0) + s.amt;
+  });
+  var weeks = Object.keys(byWeek).sort();
+  var weekLabels = weeks.map(function(w) { 
+    var parts = w.split('-');
+    var d1 = new Date(parts[0], parts[1]-1, parts[2]);
+    var d2 = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate() + 6);
+    var m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return m[d1.getMonth()] + ' ' + d1.getDate() + ' - ' + m[d2.getMonth()] + ' ' + d2.getDate();
+  });
 
-  barChart('ovSales', weekLabels, [{label:'Weekly Sales', data:weeks.map(function(w){return byWeek[w];}), color:'#22c55e', vf:fmt}], 220);
-  
-  var types={Inbound:ads.filter(function(a){return a.type==='Inbound';}).length,CCBD:ads.filter(function(a){return a.type==='CCBD';}).length};
-  var tKeys=Object.keys(types).filter(function(k){return types[k]>0;});
-  hbar('ovAdsType',tKeys,tKeys.map(function(k){return types[k];}),['#3b82f6','#7c3aed']);
-  var conv={'Converted':ads.filter(function(a){return a.conv==='Yes';}).length,'Not Converted':ads.filter(function(a){return a.conv==='No';}).length,'Pending':ads.filter(function(a){return a.conv==='—';}).length};
-  var cKeys=Object.keys(conv).filter(function(k){return conv[k]>0;});
-  hbar('ovAdsConv',cKeys,cKeys.map(function(k){return conv[k];}),['#22c55e','#ef4444','#888']);
-  var byPoc={};sales.forEach(function(s){byPoc[s.poc]=(byPoc[s.poc]||0)+s.amt;});
-  var pocs=Object.entries(byPoc).sort(function(a,b){return b[1]-a[1];});
-  hbar('ovPoc',pocs.map(function(p){return p[0];}),pocs.map(function(p){return p[1];}),['#a78bfa','#7c3aed','#6d28d9','#5b21b6'],fmt);
+  barChart('ovSales', weekLabels, [{label:'Weekly Sales', data:weeks.map(function(w){return byWeek[w];}), color:'#22c55e', vf:fmt}], 220);
+  
+  var types={Inbound:ads.filter(function(a){return a.type==='Inbound';}).length,CCBD:ads.filter(function(a){return a.type==='CCBD';}).length};
+  var tKeys=Object.keys(types).filter(function(k){return types[k]>0;});
+  hbar('ovAdsType',tKeys,tKeys.map(function(k){return types[k];}),['#3b82f6','#7c3aed']);
+  var conv={'Converted':ads.filter(function(a){return a.conv==='Yes';}).length,'Not Converted':ads.filter(function(a){return a.conv==='No';}).length,'Pending':ads.filter(function(a){return a.conv==='—';}).length};
+  var cKeys=Object.keys(conv).filter(function(k){return conv[k]>0;});
+  hbar('ovAdsConv',cKeys,cKeys.map(function(k){return conv[k];}),['#22c55e','#ef4444','#888']);
+  var byPoc={};sales.forEach(function(s){byPoc[s.poc]=(byPoc[s.poc]||0)+s.amt;});
+  var pocs=Object.entries(byPoc).sort(function(a,b){return b[1]-a[1];});
+  hbar('ovPoc',pocs.map(function(p){return p[0];}),pocs.map(function(p){return p[1];}),['#a78bfa','#7c3aed','#6d28d9','#5b21b6'],fmt);
 
-  set('mDel',mlDel.toLocaleString()); set('mDelS',mlRows.length+' days');
-  set('mOpen',mlOpen.toLocaleString()); set('mOpenR',pct(mlOpen,mlDel)+' open rate');
-  set('mClick',mlClick.toLocaleString()); set('mClickR',pct(mlClick,mlDel)+' click rate');
-  set('mResp',mlResp.toLocaleString()); set('mRespR',pct(mlResp,mlDel)+' resp rate');
-  set('mBounce',mlBounce.toLocaleString()); set('mBounceR',pct(mlBounce,mlDel)+' bounce rate');
+  set('mDel',mlDel.toLocaleString()); set('mDelS',mlRows.length+' days');
+  set('mOpen',mlOpen.toLocaleString()); set('mOpenR',pct(mlOpen,mlDel)+' open rate');
+  set('mClick',mlClick.toLocaleString()); set('mClickR',pct(mlClick,mlDel)+' click rate');
+  set('mResp',mlResp.toLocaleString()); set('mRespR',pct(mlResp,mlDel)+' resp rate');
+  set('mBounce',mlBounce.toLocaleString()); set('mBounceR',pct(mlBounce,mlDel)+' bounce rate');
 
-  var evFilter = document.getElementById('mEventFilter') ? document.getElementById('mEventFilter').value : 'all';
-  var allEventDatasets = [
-    {id:'del', label:'Delivered', data:mlRows.map(function(r){return r.del;}), color:'#3b82f6', vf:function(v){return v.toLocaleString();}},
-    {id:'open', label:'Opened', data:mlRows.map(function(r){return r.open;}), color:'#7c3aed', vf:function(v, i){ return v.toLocaleString() + ' (' + pct(v, mlRows[i].del) + ' rate)'; }},
-    {id:'click', label:'Clicked', data:mlRows.map(function(r){return r.click;}), color:'#f97316', vf:function(v, i){ return v.toLocaleString() + ' (' + pct(v, mlRows[i].del) + ' rate)'; }},
-    {id:'resp', label:'Responded', data:mlRows.map(function(r){return r.resp;}), color:'#22c55e', vf:function(v, i){ return v.toLocaleString() + ' (' + pct(v, mlRows[i].del) + ' rate)'; }}
-  ];
-  
-  var chartDatasets = evFilter === 'all' ? allEventDatasets : allEventDatasets.filter(function(d){ return d.id === evFilter; });
-  
-  barChart('mDailyChart', mlRows.map(function(r){return fd(r.date);}), chartDatasets, 240);
-  hbar('mIndChart',ML_BY_IND.map(function(m){return m.ind;}),
-    ML_BY_IND.map(function(m){return +(pct(m.open,m.del).replace('%',''));}),
-    ['#7c3aed','#6d28d9','#5b21b6','#4c1d95'],function(v){return v+'% open';});
+  var evFilter = document.getElementById('mEventFilter') ? document.getElementById('mEventFilter').value : 'all';
+  var allEventDatasets = [
+    {id:'del', label:'Delivered', data:mlRows.map(function(r){return r.del;}), color:'#3b82f6', vf:function(v){return v.toLocaleString();}},
+    {id:'open', label:'Opened', data:mlRows.map(function(r){return r.open;}), color:'#7c3aed', vf:function(v, i){ return v.toLocaleString() + ' (' + pct(v, mlRows[i].del) + ' rate)'; }},
+    {id:'click', label:'Clicked', data:mlRows.map(function(r){return r.click;}), color:'#f97316', vf:function(v, i){ return v.toLocaleString() + ' (' + pct(v, mlRows[i].del) + ' rate)'; }},
+    {id:'resp', label:'Responded', data:mlRows.map(function(r){return r.resp;}), color:'#22c55e', vf:function(v, i){ return v.toLocaleString() + ' (' + pct(v, mlRows[i].del) + ' rate)'; }}
+  ];
+  
+  var chartDatasets = evFilter === 'all' ? allEventDatasets : allEventDatasets.filter(function(d){ return d.id === evFilter; });
+  
+  barChart('mDailyChart', mlRows.map(function(r){return fd(r.date);}), chartDatasets, 240);
+  hbar('mIndChart',ML_BY_IND.map(function(m){return m.ind;}),
+    ML_BY_IND.map(function(m){return +(pct(m.open,m.del).replace('%',''));}),
+    ['#7c3aed','#6d28d9','#5b21b6','#4c1d95'],function(v){return v+'% open';});
 
-  var mTD=ML_BY_IND.reduce(function(a,m){return a+m.del;},0),mTO=ML_BY_IND.reduce(function(a,m){return a+m.open;},0),mTC=ML_BY_IND.reduce(function(a,m){return a+m.click;},0),mTR=ML_BY_IND.reduce(function(a,m){return a+m.resp;},0);
-  document.getElementById('mIndTable').innerHTML=ML_BY_IND.map(function(m){return '<div class="mrow"><span style="color:#eee">'+m.ind+'</span><span>'+m.del.toLocaleString()+'</span><span>'+m.open.toLocaleString()+' <span class="rate">'+pct(m.open,m.del)+'</span></span><span>'+m.click.toLocaleString()+' <span class="rate">'+pct(m.click,m.del)+'</span></span><span>'+m.resp.toLocaleString()+' <span class="rate">'+pct(m.resp,m.del)+'</span></span></div>';}).join('');
-  document.getElementById('mIndTotal').innerHTML='<span>TOTAL</span><span>'+mTD.toLocaleString()+'</span><span>'+mTO.toLocaleString()+' <span class="rate">'+pct(mTO,mTD)+'</span></span><span>'+mTC.toLocaleString()+' <span class="rate">'+pct(mTC,mTD)+'</span></span><span>'+mTR.toLocaleString()+' <span class="rate">'+pct(mTR,mTD)+'</span></span>';
+  var mTD=ML_BY_IND.reduce(function(a,m){return a+m.del;},0),mTO=ML_BY_IND.reduce(function(a,m){return a+m.open;},0),mTC=ML_BY_IND.reduce(function(a,m){return a+m.click;},0),mTR=ML_BY_IND.reduce(function(a,m){return a+m.resp;},0);
+  document.getElementById('mIndTable').innerHTML=ML_BY_IND.map(function(m){return '<div class="mrow"><span style="color:#eee">'+m.ind+'</span><span>'+m.del.toLocaleString()+'</span><span>'+m.open.toLocaleString()+' <span class="rate">'+pct(m.open,m.del)+'</span></span><span>'+m.click.toLocaleString()+' <span class="rate">'+pct(m.click,m.del)+'</span></span><span>'+m.resp.toLocaleString()+' <span class="rate">'+pct(m.resp,m.del)+'</span></span></div>';}).join('');
+  document.getElementById('mIndTotal').innerHTML='<span>TOTAL</span><span>'+mTD.toLocaleString()+'</span><span>'+mTO.toLocaleString()+' <span class="rate">'+pct(mTO,mTD)+'</span></span><span>'+mTC.toLocaleString()+' <span class="rate">'+pct(mTC,mTD)+'</span></span><span>'+mTR.toLocaleString()+' <span class="rate">'+pct(mTR,mTD)+'</span></span>';
 
-  var avg = sales.length ? tSalesAmt / sales.length : 0;
-  var topPoc = pocs[0];
-  var top5 = sales.slice().sort(function(a,b){return b.amt - a.amt;}).slice(0,5);
+  var avg = sales.length ? tSalesAmt / sales.length : 0;
+  var topPoc = pocs[0];
+  var top5 = sales.slice().sort(function(a,b){return b.amt - a.amt;}).slice(0,5);
 
-  set('sTotalRev',fmt(tSalesAmt)||'₹0'); set('sTotalOrd',sales.length+' orders');
-  set('sAvg',fmt(avg)||'—');
-  set('sTopPoc',topPoc?topPoc[0]:'—'); set('sTopAmt',topPoc?fmt(topPoc[1]):' ');
+  set('sTotalRev',fmt(tSalesAmt)||'₹0'); set('sTotalOrd',sales.length+' orders');
+  set('sAvg',fmt(avg)||'—');
+  set('sTopPoc',topPoc?topPoc[0]:'—'); set('sTopAmt',topPoc?fmt(topPoc[1]):' ');
 
-  var top5Html = top5.length ? top5.map(function(s) {
-    var clientName = s.client ? s.client.slice(0, 18) + (s.client.length > 18 ? '…' : '') : 'Unknown';
-    return '<div style="display:flex; justify-content:space-between; font-size:11px; align-items:center;">' +
-           '<span style="color:#fff;" title="' + (s.client || '') + '">' + clientName + '</span>' +
-           '<span style="color:var(--gr); font-family:monospace; font-weight:600;">' + fmt(s.amt) + '</span>' +
-           '</div>';
-  }).join('') : '<div style="color:#555;font-size:11px;text-align:center;padding:10px 0;">No orders</div>';
+  var top5Html = top5.length ? top5.map(function(s) {
+    var clientName = s.client ? s.client.slice(0, 18) + (s.client.length > 18 ? '…' : '') : 'Unknown';
+    return '<div style="display:flex; justify-content:space-between; font-size:11px; align-items:center;">' +
+           '<span style="color:#fff;" title="' + (s.client || '') + '">' + clientName + '</span>' +
+           '<span style="color:var(--gr); font-family:monospace; font-weight:600;">' + fmt(s.amt) + '</span>' +
+           '</div>';
+  }).join('') : '<div style="color:#555;font-size:11px;text-align:center;padding:10px 0;">No orders</div>';
 
-  var top5El = document.getElementById('sTop5List');
-  if (top5El) top5El.innerHTML = top5Html;
-  set('sCount',sales.length+' orders in range');
-  hbar('sPocChart',pocs.map(function(p){return p[0];}),pocs.map(function(p){return p[1];}),['#22c55e','#16a34a','#15803d','#166534'],fmt);
-  barChart('sDateChart', weekLabels, [{label:'Weekly Revenue', data:weeks.map(function(w){return byWeek[w];}), color:'#22c55e', vf:fmt}], 180);
-  
-  var sortVal = document.getElementById('sSort') ? document.getElementById('sSort').value : 'date-desc';
-  var displaySales = sales.slice(); 
-  
-  if (sortVal === 'amt-desc') {
-    displaySales.sort(function(a,b){ return b.amt - a.amt; }); 
-  } else if (sortVal === 'amt-asc') {
-    displaySales.sort(function(a,b){ return a.amt - b.amt; }); 
-  } else {
-    displaySales.sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); }); 
-  }
+  var top5El = document.getElementById('sTop5List');
+  if (top5El) top5El.innerHTML = top5Html;
+  set('sCount',sales.length+' orders in range');
+  hbar('sPocChart',pocs.map(function(p){return p[0];}),pocs.map(function(p){return p[1];}),['#22c55e','#16a34a','#15803d','#166534'],fmt);
+  barChart('sDateChart', weekLabels, [{label:'Weekly Revenue', data:weeks.map(function(w){return byWeek[w];}), color:'#22c55e', vf:fmt}], 180);
+  
+  var sortVal = document.getElementById('sSort') ? document.getElementById('sSort').value : 'date-desc';
+  var displaySales = sales.slice(); 
+  
+  if (sortVal === 'amt-desc') {
+    displaySales.sort(function(a,b){ return b.amt - a.amt; }); 
+  } else if (sortVal === 'amt-asc') {
+    displaySales.sort(function(a,b){ return a.amt - b.amt; }); 
+  } else {
+    displaySales.sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); }); 
+  }
 
-  document.getElementById('sTable').innerHTML=displaySales.length?displaySales.map(function(s){return '<tr><td style="font-family:monospace;color:#a78bfa">'+s.ref+'</td><td>'+fd(s.date)+'</td><td style="color:#fff">'+s.client+'</td><td><span class="badge poc">'+s.poc+'</span></td><td style="color:#888">'+s.type+'</td><td style="text-align:right;font-family:monospace;color:#22c55e;font-weight:600">'+fmt(s.amt)+'</td></tr>';}).join(''):'<tr><td colspan="6" style="text-align:center;color:#555;padding:20px">No orders in selected range</td></tr>';
+  document.getElementById('sTable').innerHTML=displaySales.length?displaySales.map(function(s){return '<tr><td style="font-family:monospace;color:#a78bfa">'+s.ref+'</td><td>'+fd(s.date)+'</td><td style="color:#fff">'+s.client+'</td><td><span class="badge poc">'+s.poc+'</span></td><td style="color:#888">'+s.type+'</td><td style="text-align:right;font-family:monospace;color:#22c55e;font-weight:600">'+fmt(s.amt)+'</td></tr>';}).join(''):'<tr><td colspan="6" style="text-align:center;color:#555;padding:20px">No orders in selected range</td></tr>';
 
-  var inbound=ads.filter(function(a){return a.type==='Inbound';}).length;
-  var ccbd=ads.filter(function(a){return a.type==='CCBD';}).length;
-  set('aTotal',totalLeads); set('aInbound',inbound); set('aInboundR',pct(inbound,totalLeads||1)+' of leads');
-  set('aCcbd',ccbd); set('aCcbdR',pct(ccbd,totalLeads||1)+' of leads');
-  set('aConv',totalConv); set('aConvR',pct(totalConv,totalLeads||1)+' conv rate');
-  set('aCount',ads.length+' leads in range');
-  document.getElementById('aTable').innerHTML=ads.length?ads.map(function(a){return '<tr><td>'+fd(a.date)+'</td><td style="color:#fff">'+a.client+'</td><td><span class="badge '+a.type.toLowerCase()+'">'+a.type+'</span></td><td><span class="badge poc">'+a.poc+'</span></td><td><span class="badge '+a.lead.toLowerCase()+'">'+a.lead+'</span></td><td><span class="badge '+(a.conv==='Yes'?'yes':a.conv==='No'?'no':'')+'">'+(a.conv||'—')+'</span></td><td style="text-align:right;font-family:monospace;color:#22c55e">'+(a.val?fmt(a.val):'—')+'</td></tr>';}).join(''):'<tr><td colspan="7" style="text-align:center;color:#555;padding:20px">No leads in selected range</td></tr>';
+  var inbound=ads.filter(function(a){return a.type==='Inbound';}).length;
+  var ccbd=ads.filter(function(a){return a.type==='CCBD';}).length;
+  set('aTotal',totalLeads); set('aInbound',inbound); set('aInboundR',pct(inbound,totalLeads||1)+' of leads');
+  set('aCcbd',ccbd); set('aCcbdR',pct(ccbd,totalLeads||1)+' of leads');
+  set('aConv',totalConv); set('aConvR',pct(totalConv,totalLeads||1)+' conv rate');
+  set('aCount',ads.length+' leads in range');
+  document.getElementById('aTable').innerHTML=ads.length?ads.map(function(a){return '<tr><td>'+fd(a.date)+'</td><td style="color:#fff">'+a.client+'</td><td><span class="badge '+a.type.toLowerCase()+'">'+a.type+'</span></td><td><span class="badge poc">'+a.poc+'</span></td><td><span class="badge '+a.lead.toLowerCase()+'">'+a.lead+'</span></td><td><span class="badge '+(a.conv==='Yes'?'yes':a.conv==='No'?'no':'')+'">'+(a.conv||'—')+'</span></td><td style="text-align:right;font-family:monospace;color:#22c55e">'+(a.val?fmt(a.val):'—')+'</td></tr>';}).join(''):'<tr><td colspan="7" style="text-align:center;color:#555;padding:20px">No leads in selected range</td></tr>';
 
-  set('iTotal',INMAILS.length);
-  set('iFM',INMAILS.filter(function(i){return i.ind==='FM';}).length);
-  set('iIT',INMAILS.filter(function(i){return i.ind==='IT';}).length);
-  document.getElementById('iTable').innerHTML=INMAILS.map(function(m){return '<tr><td style="color:#888">'+m.n+'</td><td><span class="badge '+(m.ind==='FM'?'inbound':'ccbd')+'">'+m.ind+'</span></td><td style="color:#fff">'+m.company+'</td><td style="color:#aaa">'+m.role+'</td><td style="color:#a78bfa">'+m.poc+'</td></tr>';}).join('');
+  set('iTotal',INMAILS.length);
+  set('iFM',INMAILS.filter(function(i){return i.ind==='FM';}).length);
+  set('iIT',INMAILS.filter(function(i){return i.ind==='IT';}).length);
+  document.getElementById('iTable').innerHTML=INMAILS.map(function(m){return '<tr><td style="color:#888">'+m.n+'</td><td><span class="badge '+(m.ind==='FM'?'inbound':'ccbd')+'">'+m.ind+'</span></td><td style="color:#fff">'+m.company+'</td><td style="color:#aaa">'+m.role+'</td><td style="color:#a78bfa">'+m.poc+'</td></tr>';}).join('');
 
-  renderBD();
-  renderSamples();
-  document.getElementById('lu').textContent='Updated '+new Date().toLocaleTimeString();
+  renderBD();
+  renderSamples();
+  document.getElementById('lu').textContent='Updated '+new Date().toLocaleTimeString();
 }
 
 document.querySelectorAll('.tab').forEach(function(t){t.addEventListener('click',function(){
-  document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on');});
-  document.querySelectorAll('.tp').forEach(function(x){x.classList.remove('on');});
-  t.classList.add('on');
-  document.getElementById('tp-'+t.dataset.tab).classList.add('on');
-  setTimeout(renderAll,30);
+  document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on');});
+  document.querySelectorAll('.tp').forEach(function(x){x.classList.remove('on');});
+  t.classList.add('on');
+  document.getElementById('tp-'+t.dataset.tab).classList.add('on');
+  setTimeout(renderAll,30);
 });});
 
 window._mtype='all';
 document.querySelectorAll('[data-mtype]').forEach(function(b){
-  b.addEventListener('click',function(){
-    document.querySelectorAll('[data-mtype]').forEach(function(x){x.classList.remove('on');});
-    b.classList.add('on');
-    window._mtype=b.dataset.mtype;
-    var labels={all:'Showing all mails',primary:'Showing primary mails only',followup:'Showing follow-up mails only'};
-    var el=document.getElementById('mTypeLabel');if(el)el.textContent=labels[window._mtype]||'';
-    renderAll();
-  });
+  b.addEventListener('click',function(){
+    document.querySelectorAll('[data-mtype]').forEach(function(x){x.classList.remove('on');});
+    b.classList.add('on');
+    window._mtype=b.dataset.mtype;
+    var labels={all:'Showing all mails',primary:'Showing primary mails only',followup:'Showing follow-up mails only'};
+    var el=document.getElementById('mTypeLabel');if(el)el.textContent=labels[window._mtype]||'';
+    renderAll();
+  });
 });
 
 function todayStr(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 document.querySelectorAll('[data-r]').forEach(function(b){b.addEventListener('click',function(){
-  document.querySelectorAll('[data-r]').forEach(function(x){x.classList.remove('on');});
-  b.classList.add('on');
-  var rv=b.dataset.r;
-  if(rv==='all'){
-    document.getElementById('df').value='';
-    document.getElementById('dt').value='';
-  } else if(rv==='today'){
-    var td=todayStr();
-    document.getElementById('df').value=td;
-    document.getElementById('dt').value=td;
-  } else {
-    var td2=todayStr();
-    var fd2=new Date(td2);fd2.setDate(fd2.getDate()-(+rv-1));
-    document.getElementById('df').value=fd2.toISOString().slice(0,10);
-    document.getElementById('dt').value=td2;
-  }
-  renderAll();
+  document.querySelectorAll('[data-r]').forEach(function(x){x.classList.remove('on');});
+  b.classList.add('on');
+  var rv=b.dataset.r;
+  if(rv==='all'){
+    document.getElementById('df').value='';
+    document.getElementById('dt').value='';
+  } else if(rv==='today'){
+    var td=todayStr();
+    document.getElementById('df').value=td;
+    document.getElementById('dt').value=td;
+  } else {
+    var td2=todayStr();
+    var fd2=new Date(td2);fd2.setDate(fd2.getDate()-(+rv-1));
+    document.getElementById('df').value=fd2.toISOString().slice(0,10);
+    document.getElementById('dt').value=td2;
+  }
+  renderAll();
 });});
 document.getElementById('df').addEventListener('change',function(){document.querySelectorAll('[data-r]').forEach(function(x){x.classList.remove('on');});renderAll();});
 document.getElementById('dt').addEventListener('change',function(){document.querySelectorAll('[data-r]').forEach(function(x){x.classList.remove('on');});renderAll();});
@@ -701,108 +704,108 @@ document.getElementById('dt').addEventListener('change',function(){document.quer
 var PHASE_COLOR={Cold:'#3b82f6',Hot:'#f97316',Converted:'#22c55e',Unknown:'#888'};
 
 function fBD(){
-  var f=getF(),t=getT();
-  var phase=document.getElementById('bdPhase').value;
-  var source=document.getElementById('bdSource').value;
-  var poc=document.getElementById('bdPoc').value;
-  var src=BD_ROWS;
-  return src.filter(function(b){
-    if(f&&b.date<f)return false;
-    if(t&&b.date>t)return false;
-    if(phase!=='all'&&b.phase!==phase)return false;
-    if(source!=='all'&&b.source.trim()!==source)return false;
-    if(poc!=='all'&&b.poc!==poc)return false;
-    return true;
-  });
+  var f=getF(),t=getT();
+  var phase=document.getElementById('bdPhase').value;
+  var source=document.getElementById('bdSource').value;
+  var poc=document.getElementById('bdPoc').value;
+  var src=BD_ROWS;
+  return src.filter(function(b){
+    if(f&&b.date<f)return false;
+    if(t&&b.date>t)return false;
+    if(phase!=='all'&&b.phase!==phase)return false;
+    if(source!=='all'&&b.source.trim()!==source)return false;
+    if(poc!=='all'&&b.poc!==poc)return false;
+    return true;
+  });
 }
 
 function fSamples(){
-  var f=getF(),t=getT();
-  var prod=document.getElementById('smProd').value;
-  var by=document.getElementById('smBy').value;
-  return SAMPLES.filter(function(s){
-    if(f&&s.date<f)return false;
-    if(t&&s.date>t)return false;
-    if(prod!=='all'&&!s.product.toLowerCase().includes(prod.toLowerCase().slice(0,15)))return false;
-    if(by!=='all'&&s.req_by.toLowerCase()!==by.toLowerCase())return false;
-    return true;
-  });
+  var f=getF(),t=getT();
+  var prod=document.getElementById('smProd').value;
+  var by=document.getElementById('smBy').value;
+  return SAMPLES.filter(function(s){
+    if(f&&s.date<f)return false;
+    if(t&&s.date>t)return false;
+    if(prod!=='all'&&!s.product.toLowerCase().includes(prod.toLowerCase().slice(0,15)))return false;
+    if(by!=='all'&&s.req_by.toLowerCase()!==by.toLowerCase())return false;
+    return true;
+  });
 }
 
 function renderBD(){
-  var bd=fBD();
-  var cold=bd.filter(function(b){return b.phase==='Cold';}).length;
-  var hot=bd.filter(function(b){return b.phase==='Hot';}).length;
-  var conv=bd.filter(function(b){return b.phase==='Converted';}).length;
-  set('bdTotal',bd.length); set('bdSub',bd.length+' leads in range');
-  set('bdCold',cold); set('bdColdR',pct(cold,bd.length||1)+' of leads');
-  set('bdHot',hot); set('bdHotR',pct(hot,bd.length||1)+' of leads');
-  set('bdConv',conv); set('bdConvR',pct(conv,bd.length||1)+' conv rate');
-  set('bdCount',bd.length+' leads shown');
+  var bd=fBD();
+  var cold=bd.filter(function(b){return b.phase==='Cold';}).length;
+  var hot=bd.filter(function(b){return b.phase==='Hot';}).length;
+  var conv=bd.filter(function(b){return b.phase==='Converted';}).length;
+  set('bdTotal',bd.length); set('bdSub',bd.length+' leads in range');
+  set('bdCold',cold); set('bdColdR',pct(cold,bd.length||1)+' of leads');
+  set('bdHot',hot); set('bdHotR',pct(hot,bd.length||1)+' of leads');
+  set('bdConv',conv); set('bdConvR',pct(conv,bd.length||1)+' conv rate');
+  set('bdCount',bd.length+' leads shown');
 
-  var phases=['Cold','Hot','Converted'];
-  var phaseLabels={Cold:'❄️ Cold',Hot:'🔥 Hot',Converted:'✅ Converted'};
-  document.getElementById('bdPipeline').innerHTML=phases.map(function(ph){
-    var leads=bd.filter(function(b){return b.phase===ph;});
-    var col=PHASE_COLOR[ph]||'#888';
-    return '<div class="cc" style="border-top:2px solid '+col+';">'+
-      '<div class="ch"><div class="ct">'+phaseLabels[ph]+'</div><span style="background:'+col+'22;color:'+col+';padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;">'+leads.length+'</span></div>'+
-      (leads.length?leads.map(function(b){
-        return '<div style="background:var(--s2);border-radius:8px;padding:10px;margin-bottom:8px;">'+
-          '<div style="font-size:12px;font-weight:600;color:#fff;margin-bottom:3px;">'+(b.company||b.name)+'</div>'+
-          (b.company?'<div style="font-size:11px;color:#aaa;margin-bottom:3px;">'+b.name+'</div>':'')+
-          '<div style="font-size:10px;color:var(--m);display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">'+
-          '<span>📅 '+b.date.slice(5).replace('-','/')+'</span>'+
-          (b.poc?'<span>👤 '+b.poc+'</span>':'')+
-          (b.source?'<span style="background:rgba(124,58,237,.15);color:#a78bfa;padding:1px 5px;border-radius:3px;">'+b.source.trim()+'</span>':'')+
-          '</div>'+
-          (b.remarks?'<div style="font-size:10px;color:#aaa;margin-top:5px;padding-top:5px;border-top:1px solid rgba(255,255,255,.05);">'+b.remarks.slice(0,60)+(b.remarks.length>60?'…':'')+'</div>':'')+
-          (b.followup?'<div style="font-size:10px;color:#eab308;margin-top:3px;">⏰ Follow-up: '+b.followup.slice(5).replace('-','/')+'</div>':'')+
-          '</div>';
-      }).join(''):'<div style="color:var(--m);font-size:12px;text-align:center;padding:16px;">No leads</div>')+
-      '</div>';
-  }).join('');
+  var phases=['Cold','Hot','Converted'];
+  var phaseLabels={Cold:'❄️ Cold',Hot:'🔥 Hot',Converted:'✅ Converted'};
+  document.getElementById('bdPipeline').innerHTML=phases.map(function(ph){
+    var leads=bd.filter(function(b){return b.phase===ph;});
+    var col=PHASE_COLOR[ph]||'#888';
+    return '<div class="cc" style="border-top:2px solid '+col+';">'+
+      '<div class="ch"><div class="ct">'+phaseLabels[ph]+'</div><span style="background:'+col+'22;color:'+col+';padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;">'+leads.length+'</span></div>'+
+      (leads.length?leads.map(function(b){
+        return '<div style="background:var(--s2);border-radius:8px;padding:10px;margin-bottom:8px;">'+
+          '<div style="font-size:12px;font-weight:600;color:#fff;margin-bottom:3px;">'+(b.company||b.name)+'</div>'+
+          (b.company?'<div style="font-size:11px;color:#aaa;margin-bottom:3px;">'+b.name+'</div>':'')+
+          '<div style="font-size:10px;color:var(--m);display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">'+
+          '<span>📅 '+b.date.slice(5).replace('-','/')+'</span>'+
+          (b.poc?'<span>👤 '+b.poc+'</span>':'')+
+          (b.source?'<span style="background:rgba(124,58,237,.15);color:#a78bfa;padding:1px 5px;border-radius:3px;">'+b.source.trim()+'</span>':'')+
+          '</div>'+
+          (b.remarks?'<div style="font-size:10px;color:#aaa;margin-top:5px;padding-top:5px;border-top:1px solid rgba(255,255,255,.05);">'+b.remarks.slice(0,60)+(b.remarks.length>60?'…':'')+'</div>':'')+
+          (b.followup?'<div style="font-size:10px;color:#eab308;margin-top:3px;">⏰ Follow-up: '+b.followup.slice(5).replace('-','/')+'</div>':'')+
+          '</div>';
+      }).join(''):'<div style="color:var(--m);font-size:12px;text-align:center;padding:16px;">No leads</div>')+
+      '</div>';
+  }).join('');
 
-  document.getElementById('bdTable').innerHTML = bd.length ? bd.map(function(b) {
-    var col = PHASE_COLOR[b.phase] || '#888';
-    
-    // Memory for Dropdown
-    var leadKey = 'conv_' + (b.company + b.name).replace(/\s+/g, '_');
-    var savedStatus = localStorage.getItem(leadKey) || '';
-    
-    // Memory for Tick Mark
-    var tickKey = 'tick_' + (b.company + b.name).replace(/\s+/g, '_');
-    var isTicked = localStorage.getItem(tickKey) === 'true';
+  document.getElementById('bdTable').innerHTML = bd.length ? bd.map(function(b) {
+    var col = PHASE_COLOR[b.phase] || '#888';
+    
+    // Memory for Dropdown
+    var leadKey = 'conv_' + (b.company + b.name).replace(/\s+/g, '_');
+    var savedStatus = localStorage.getItem(leadKey) || '';
+    
+    // Memory for Tick Mark
+    var tickKey = 'tick_' + (b.company + b.name).replace(/\s+/g, '_');
+    var isTicked = localStorage.getItem(tickKey) === 'true';
 
-    return '<tr>' +
-      '<td>' + fd(b.date) + '</td>' +
-      '<td style="color:#fff">' + (b.company || '—') + '</td>' +
-      '<td style="color:#ddd">' + b.name + '</td>' +
-      '<td><span class="badge poc">' + (b.poc || '—') + '</span></td>' +
-      '<td style="color:#aaa">' + (b.source.trim() || '—') + '</td>' +
-      '<td><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;background:' + col + '22;color:' + col + '">' + b.phase + '</span></td>' +
-      
-      // The Yes/No Dropdown
-      '<td>' +
-        '<select class="di" style="font-size:10px; padding:2px 4px; height:22px; width:70px; background:var(--s2); border-color:var(--b);" ' +
-        'onchange="saveLocalStatus(\'' + leadKey + '\', this.value)">' +
-          '<option value="" ' + (savedStatus === '' ? 'selected' : '') + '>—</option>' +
-          '<option value="Yes" ' + (savedStatus === 'Yes' ? 'selected' : '') + '>Yes</option>' +
-          '<option value="No" ' + (savedStatus === 'No' ? 'selected' : '') + '>No</option>' +
-        '</select>' +
-      '</td>' +
-      
-      // The Checkbox (Tick Mark)
-      '<td style="text-align:center">' +
-        '<input type="checkbox" style="cursor:pointer; width:16px; height:16px; accent-color:#22c55e;" ' +
-        (isTicked ? 'checked ' : '') +
-        'onchange="saveLocalStatus(\'' + tickKey + '\', this.checked ? \'true\' : \'false\')">' +
-      '</td>' +
-      
-      '<td style="color:#eab308;font-size:11px">' + (b.followup ? '⏰ ' + b.followup.slice(5).replace('-', '/') : '—') + '</td>' +
-      '<td style="color:#aaa;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + b.remarks + '</td>' +
-      '</tr>';
-  }).join('') : '<tr><td colspan="10" style="text-align:center;color:#555;padding:20px">No leads found</td></tr>';
+    return '<tr>' +
+      '<td>' + fd(b.date) + '</td>' +
+      '<td style="color:#fff">' + (b.company || '—') + '</td>' +
+      '<td style="color:#ddd">' + b.name + '</td>' +
+      '<td><span class="badge poc">' + (b.poc || '—') + '</span></td>' +
+      '<td style="color:#aaa">' + (b.source.trim() || '—') + '</td>' +
+      '<td><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;background:' + col + '22;color:' + col + '">' + b.phase + '</span></td>' +
+      
+      // The Yes/No Dropdown
+      '<td>' +
+        '<select class="di" style="font-size:10px; padding:2px 4px; height:22px; width:70px; background:var(--s2); border-color:var(--b);" ' +
+        'onchange="saveLocalStatus(\'' + leadKey + '\', this.value)">' +
+          '<option value="" ' + (savedStatus === '' ? 'selected' : '') + '>—</option>' +
+          '<option value="Yes" ' + (savedStatus === 'Yes' ? 'selected' : '') + '>Yes</option>' +
+          '<option value="No" ' + (savedStatus === 'No' ? 'selected' : '') + '>No</option>' +
+        '</select>' +
+      '</td>' +
+      
+      // The Checkbox (Tick Mark)
+      '<td style="text-align:center">' +
+        '<input type="checkbox" style="cursor:pointer; width:16px; height:16px; accent-color:#22c55e;" ' +
+        (isTicked ? 'checked ' : '') +
+        'onchange="saveLocalStatus(\'' + tickKey + '\', this.checked ? \'true\' : \'false\')">' +
+      '</td>' +
+      
+      '<td style="color:#eab308;font-size:11px">' + (b.followup ? '⏰ ' + b.followup.slice(5).replace('-', '/') : '—') + '</td>' +
+      '<td style="color:#aaa;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + b.remarks + '</td>' +
+      '</tr>';
+  }).join('') : '<tr><td colspan="10" style="text-align:center;color:#555;padding:20px">No leads found</td></tr>';
 }
 
 function renderSamples(){
@@ -828,7 +831,7 @@ function renderSamples(){
   var topProds = Object.entries(byProd).sort(function(a,b){return b[1]-a[1];}).slice(0,7);
   hbar('smProdChart', topProds.map(function(p){return p[0].slice(0,22);}), topProds.map(function(p){return p[1];}), ['#3b82f6','#6d28d9','#5b21b6','#4c1d95','#1d4ed8','#1e40af','#1e3a8a']);
 
-  // --- GROUP DATA FOR TABLE ---
+  // --- GROUPING FOR TABLE ---
   var grouped = {};
   sm.forEach(function(s) {
     var key = s.date + '|' + s.client + '|' + s.req_by;
@@ -866,116 +869,116 @@ var sSortEl = document.getElementById('sSort'); if(sSortEl) sSortEl.addEventList
 
 // ── BOOT ──────────────────────────────────────────────────
 window.addEventListener('load',function(){
-  requestAnimationFrame(function(){requestAnimationFrame(function(){
-    renderAll();
-  });});
-  
-  if (typeof SHEET_URL !== 'undefined' && SHEET_URL) {
-    (function() {
-      var ctrl = new AbortController();
-      var timeoutId = setTimeout(function() { ctrl.abort(); }, 60000);
+  requestAnimationFrame(function(){requestAnimationFrame(function(){
+    renderAll();
+  });});
+  
+  if (typeof SHEET_URL !== 'undefined' && SHEET_URL) {
+    (function() {
+      var ctrl = new AbortController();
+      var timeoutId = setTimeout(function() { ctrl.abort(); }, 60000);
 
-      fetch(SHEET_URL + '?t=' + Date.now(), { cache: 'no-store', signal: ctrl.signal, redirect: 'follow' })
-        .then(function(r) { return r.json(); })
-        .then(function(raw) {
-          clearTimeout(timeoutId);
-          if(raw['Master_Log']){
-            var smap={'Email Delivered':'del','Email Opened':'open','Email Clicked':'click','RESPONDED':'resp','BOUNCED':'bounce'};
-            var bd2={},bi2={},bdP={},bdF={};
-            var firstHeader={};
-            raw['Master_Log'].forEach(function(r){
-              if(!r||!r[0])return;
-              var ind=String(r[0]).trim();
-              if(!firstHeader[ind])firstHeader[ind]=String(r[2]||'').trim();
-            });
-            raw['Master_Log'].forEach(function(r){
-              if(!r||!r[3])return;
-              var key=smap[String(r[3])];if(!key)return;
-              var ind=String(r[0]||'').trim();
-              var isPrimary=(String(r[2]||'').trim()===firstHeader[ind]);
-              var d=r[4],ds='';
-              if(d&&typeof d==='string'&&d.length>=10){
-                var utc=new Date(d);
-                if(!isNaN(utc)){
-                  var ist=new Date(utc.getTime()+5.5*60*60*1000);
-                  ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0');
-                }
-              }
-              if(!ds||ds<'2020-01-01')return;
-              if(!bd2[ds])bd2[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};
-              bd2[ds][key]++;
-              if(isPrimary){if(!bdP[ds])bdP[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};bdP[ds][key]++;}
-              else{if(!bdF[ds])bdF[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};bdF[ds][key]++;}
-              var ind_cl=String(r[0]||'').trim().replace(/^N\(\d+\)[-–]\s*/,'').replace(/^O\(\d+\)[-–]\s*/,'').replace(/^[NO][-–]\s*/,'').replace(/^0[-–]\s*/,'').replace(/[-–]\s*\d+\/\d+\/\d+\s*$/,'').trim();
-              if(!ind_cl)return;
-              if(!bi2[ind_cl])bi2[ind_cl]={ind:ind_cl,del:0,open:0,click:0,resp:0,bounce:0};
-              bi2[ind_cl][key]++;
-            });
-            ML_BY_DATE.length=0; Object.values(bd2).sort(function(a,b){return a.date.localeCompare(b.date);}).forEach(function(d){ML_BY_DATE.push(d);});
-            ML_BY_IND.length=0; Object.values(bi2).filter(function(i){return i.del>0;}).forEach(function(i){ML_BY_IND.push(i);});
-            ML_PRIMARY=Object.values(bdP).sort(function(a,b){return a.date.localeCompare(b.date);});
-            ML_FOLLOWUP=Object.values(bdF).sort(function(a,b){return a.date.localeCompare(b.date);});
-          }
-          if(raw['Sales_Log']){
-            var parsed=raw['Sales_Log'].slice(1).filter(function(r){return r[0]&&String(r[1]||'').trim()==='Inst Order';}).map(function(r){
-              var dRaw=r[3]||r[2],ds='';
-              if(dRaw){
-                var dObj=new Date(dRaw);
-                if(!isNaN(dObj)){var ist=new Date(dObj.getTime()+5.5*60*60*1000);ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0');}
-                else if(typeof dRaw==='string')ds=dRaw.slice(0,10);
-              }
-              return ds?{ref:String(r[0]),date:ds,client:String(r[5]||'').trim(),poc:String(r[4]||'').trim(),type:String(r[1]||''),amt:parseFloat(r[6])||0}:null;
-            }).filter(Boolean);
-            if(parsed.length>0)SALES=parsed;
-          }
-          if(raw['Ads_Log']){
-            var parsed2=raw['Ads_Log'].slice(1).filter(function(r){return r[1];}).map(function(r){
-              var dRaw2=r[4],ds='';
-              if(dRaw2){var dObj2=new Date(dRaw2);if(!isNaN(dObj2)){var ist2=new Date(dObj2.getTime()+5.5*60*60*1000);ds=ist2.getFullYear()+'-'+String(ist2.getMonth()+1).padStart(2,'0')+'-'+String(ist2.getDate()).padStart(2,'0');}else if(typeof dRaw2==='string')ds=dRaw2.slice(0,10);};
-              return ds?{date:ds,client:String(r[1]||'').trim(),type:String(r[8]||''),poc:String(r[9]||'').trim(),lead:String(r[13]||''),conv:String(r[12]||'—'),val:parseFloat(r[11])||null}:null;
-            }).filter(Boolean);
-            if(parsed2.length>0)ADS=parsed2;
-          }
-          document.getElementById('stxt').textContent='live · google sheets';
-          renderAll();
-        }).catch(function(err){ document.getElementById('stxt').textContent='cached data (fetch failed)'; });
-    })();
-  }
-  
-  if (typeof BD_URL !== 'undefined' && BD_URL) {
-    fetch(BD_URL+'?t='+Date.now(),{cache:'no-store',redirect:'follow'}).then(function(r){return r.json();}).then(function(bdRaw){
-      BD_ROWS=(bdRaw['Sheet1']||[]).slice(1).filter(function(r){return r[0]||r[1];}).map(function(r){
-        var dRaw=r[0],ds='';
-        if(dRaw){
-          var dObj=new Date(dRaw);
-          if(!isNaN(dObj)){var ist=new Date(dObj.getTime()+5.5*60*60*1000);ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0');}
-          else if(typeof dRaw==='string'&&dRaw.length>=8){ds=dRaw.replace(/(\d+)\/(\d+)\/(\d+)/,function(m,d,mo,y){return(y.length===2?'20'+y:y)+'-'+mo.padStart(2,'0')+'-'+d.padStart(2,'0');});}
-        }
-        return {date:ds,company:String(r[1]||'').trim(),name:String(r[2]||'').trim(),contact:String(r[3]||'').trim(),location:String(r[4]||'').trim(),poc:String(r[5]||'').trim(),remarks:String(r[6]||'').trim(),source:String(r[7]||'').trim(),phase:String(r[10]||'').trim()||'Unknown',followup:String(r[12]||'').trim()};
-      });
-      renderBD();
-    }).catch(function(e){});
-  }
+      fetch(SHEET_URL + '?t=' + Date.now(), { cache: 'no-store', signal: ctrl.signal, redirect: 'follow' })
+        .then(function(r) { return r.json(); })
+        .then(function(raw) {
+          clearTimeout(timeoutId);
+          if(raw['Master_Log']){
+            var smap={'Email Delivered':'del','Email Opened':'open','Email Clicked':'click','RESPONDED':'resp','BOUNCED':'bounce'};
+            var bd2={},bi2={},bdP={},bdF={};
+            var firstHeader={};
+            raw['Master_Log'].forEach(function(r){
+              if(!r||!r[0])return;
+              var ind=String(r[0]).trim();
+              if(!firstHeader[ind])firstHeader[ind]=String(r[2]||'').trim();
+            });
+            raw['Master_Log'].forEach(function(r){
+              if(!r||!r[3])return;
+              var key=smap[String(r[3])];if(!key)return;
+              var ind=String(r[0]||'').trim();
+              var isPrimary=(String(r[2]||'').trim()===firstHeader[ind]);
+              var d=r[4],ds='';
+              if(d&&typeof d==='string'&&d.length>=10){
+                var utc=new Date(d);
+                if(!isNaN(utc)){
+                  var ist=new Date(utc.getTime()+5.5*60*60*1000);
+                  ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0');
+                }
+              }
+              if(!ds||ds<'2020-01-01')return;
+              if(!bd2[ds])bd2[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};
+              bd2[ds][key]++;
+              if(isPrimary){if(!bdP[ds])bdP[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};bdP[ds][key]++;}
+              else{if(!bdF[ds])bdF[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};bdF[ds][key]++;}
+              var ind_cl=String(r[0]||'').trim().replace(/^N\(\d+\)[-–]\s*/,'').replace(/^O\(\d+\)[-–]\s*/,'').replace(/^[NO][-–]\s*/,'').replace(/^0[-–]\s*/,'').replace(/[-–]\s*\d+\/\d+\/\d+\s*$/,'').trim();
+              if(!ind_cl)return;
+              if(!bi2[ind_cl])bi2[ind_cl]={ind:ind_cl,del:0,open:0,click:0,resp:0,bounce:0};
+              bi2[ind_cl][key]++;
+            });
+            ML_BY_DATE.length=0; Object.values(bd2).sort(function(a,b){return a.date.localeCompare(b.date);}).forEach(function(d){ML_BY_DATE.push(d);});
+            ML_BY_IND.length=0; Object.values(bi2).filter(function(i){return i.del>0;}).forEach(function(i){ML_BY_IND.push(i);});
+            ML_PRIMARY=Object.values(bdP).sort(function(a,b){return a.date.localeCompare(b.date);});
+            ML_FOLLOWUP=Object.values(bdF).sort(function(a,b){return a.date.localeCompare(b.date);});
+          }
+          if(raw['Sales_Log']){
+            var parsed=raw['Sales_Log'].slice(1).filter(function(r){return r[0]&&String(r[1]||'').trim()==='Inst Order';}).map(function(r){
+              var dRaw=r[3]||r[2],ds='';
+              if(dRaw){
+                var dObj=new Date(dRaw);
+                if(!isNaN(dObj)){var ist=new Date(dObj.getTime()+5.5*60*60*1000);ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0');}
+                else if(typeof dRaw==='string')ds=dRaw.slice(0,10);
+              }
+              return ds?{ref:String(r[0]),date:ds,client:String(r[5]||'').trim(),poc:String(r[4]||'').trim(),type:String(r[1]||''),amt:parseFloat(r[6])||0}:null;
+            }).filter(Boolean);
+            if(parsed.length>0)SALES=parsed;
+          }
+          if(raw['Ads_Log']){
+            var parsed2=raw['Ads_Log'].slice(1).filter(function(r){return r[1];}).map(function(r){
+              var dRaw2=r[4],ds='';
+              if(dRaw2){var dObj2=new Date(dRaw2);if(!isNaN(dObj2)){var ist2=new Date(dObj2.getTime()+5.5*60*60*1000);ds=ist2.getFullYear()+'-'+String(ist2.getMonth()+1).padStart(2,'0')+'-'+String(ist2.getDate()).padStart(2,'0');}else if(typeof dRaw2==='string')ds=dRaw2.slice(0,10);};
+              return ds?{date:ds,client:String(r[1]||'').trim(),type:String(r[8]||''),poc:String(r[9]||'').trim(),lead:String(r[13]||''),conv:String(r[12]||'—'),val:parseFloat(r[11])||null}:null;
+            }).filter(Boolean);
+            if(parsed2.length>0)ADS=parsed2;
+          }
+          document.getElementById('stxt').textContent='live · google sheets';
+          renderAll();
+        }).catch(function(err){ document.getElementById('stxt').textContent='cached data (fetch failed)'; });
+    })();
+  }
+  
+  if (typeof BD_URL !== 'undefined' && BD_URL) {
+    fetch(BD_URL+'?t='+Date.now(),{cache:'no-store',redirect:'follow'}).then(function(r){return r.json();}).then(function(bdRaw){
+      BD_ROWS=(bdRaw['Sheet1']||[]).slice(1).filter(function(r){return r[0]||r[1];}).map(function(r){
+        var dRaw=r[0],ds='';
+        if(dRaw){
+          var dObj=new Date(dRaw);
+          if(!isNaN(dObj)){var ist=new Date(dObj.getTime()+5.5*60*60*1000);ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0');}
+          else if(typeof dRaw==='string'&&dRaw.length>=8){ds=dRaw.replace(/(\d+)\/(\d+)\/(\d+)/,function(m,d,mo,y){return(y.length===2?'20'+y:y)+'-'+mo.padStart(2,'0')+'-'+d.padStart(2,'0');});}
+        }
+        return {date:ds,company:String(r[1]||'').trim(),name:String(r[2]||'').trim(),contact:String(r[3]||'').trim(),location:String(r[4]||'').trim(),poc:String(r[5]||'').trim(),remarks:String(r[6]||'').trim(),source:String(r[7]||'').trim(),phase:String(r[10]||'').trim()||'Unknown',followup:String(r[12]||'').trim()};
+      });
+      renderBD();
+    }).catch(function(e){});
+  }
 
-  if (typeof SALES_URL !== 'undefined' && SALES_URL) {
-    fetch(SALES_URL+'?t='+Date.now(),{cache:'no-store',redirect:'follow'}).then(function(r){return r.json();}).then(function(sRaw){
-      var parsed=(sRaw['Sales_Log']||[]).filter(function(r){
-        return r[0] && r[3] && r[6] && String(r[1]||'').trim().toLowerCase() === 'inst order' && String(r[4]||'').trim().toLowerCase() !== 'aditi';
-      }).map(function(r){
-        var dRaw=r[2]||r[3],ds='';
-        if(dRaw){
-          if(typeof dRaw==='string'&&dRaw.indexOf('/')>-1){
-            var dp=dRaw.split('/'); ds='2026-'+String(parseInt(dp[1])).padStart(2,'0')+'-'+String(parseInt(dp[0])).padStart(2,'0');
-          } else {
-            var dObj=new Date(dRaw);
-            if(!isNaN(dObj)){var ist=new Date(dObj.getTime()+5.5*60*60*1000);ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0');}
-          }
-        }
-        return ds?{ref:String(r[0]),date:ds,client:String(r[5]||'').trim(),poc:String(r[4]||'').trim(),type:'Inst Order',amt:parseFloat(String(r[6]).replace(/,/g,''))||0}:null;
-      }).filter(Boolean);
-      if(parsed.length > 0){ SALES = parsed; renderAll(); }
-    }).catch(function(e){});
-  }
+  if (typeof SALES_URL !== 'undefined' && SALES_URL) {
+    fetch(SALES_URL+'?t='+Date.now(),{cache:'no-store',redirect:'follow'}).then(function(r){return r.json();}).then(function(sRaw){
+      var parsed=(sRaw['Sales_Log']||[]).filter(function(r){
+        return r[0] && r[3] && r[6] && String(r[1]||'').trim().toLowerCase() === 'inst order' && String(r[4]||'').trim().toLowerCase() !== 'aditi';
+      }).map(function(r){
+        var dRaw=r[2]||r[3],ds='';
+        if(dRaw){
+          if(typeof dRaw==='string'&&dRaw.indexOf('/')>-1){
+            var dp=dRaw.split('/'); ds='2026-'+String(parseInt(dp[1])).padStart(2,'0')+'-'+String(parseInt(dp[0])).padStart(2,'0');
+          } else {
+            var dObj=new Date(dRaw);
+            if(!isNaN(dObj)){var ist=new Date(dObj.getTime()+5.5*60*60*1000);ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0');}
+          }
+        }
+        return ds?{ref:String(r[0]),date:ds,client:String(r[5]||'').trim(),poc:String(r[4]||'').trim(),type:'Inst Order',amt:parseFloat(String(r[6]).replace(/,/g,''))||0}:null;
+      }).filter(Boolean);
+      if(parsed.length > 0){ SALES = parsed; renderAll(); }
+    }).catch(function(e){});
+  }
 
   // --- LIVE SAMPLES FETCH ---
   if (typeof SAMPLES_URL !== 'undefined' && SAMPLES_URL) {
