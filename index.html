@@ -271,7 +271,7 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
     <div class="g1"><div class="cc">
       <div class="ch"><div class="ct">All Conversations</div></div>
       <table class="tbl">
-        <thead><tr><th>Date</th><th>Company</th><th>Contact</th><th>POC</th><th>Source</th><th>Phase</th><th style="width:100px">Converted?</th><th>Follow-up</th><th>Remarks</th></tr></thead>
+        <thead><tr><th>Date</th><th>Company</th><th>Contact</th><th>POC</th><th>Source</th><th>Phase</th><th style="width:100px">Converted?</th><th style="width:40px; text-align:center">✔</th><th>Follow-up</th><th>Remarks</th></tr></thead>
         <tbody id="bdTable"></tbody>
       </table>
     </div></div>
@@ -775,8 +775,14 @@ function renderBD(){
 
   document.getElementById('bdTable').innerHTML = bd.length ? bd.map(function(b) {
     var col = PHASE_COLOR[b.phase] || '#888';
+    
+    // Memory for the Dropdown
     var leadKey = 'conv_' + (b.company + b.name).replace(/\s+/g, '_');
     var savedStatus = localStorage.getItem(leadKey) || '';
+    
+    // Memory for the new Tick Mark
+    var tickKey = 'tick_' + (b.company + b.name).replace(/\s+/g, '_');
+    var isTicked = localStorage.getItem(tickKey) === 'true';
 
     return '<tr>' +
       '<td>' + fd(b.date) + '</td>' +
@@ -785,6 +791,8 @@ function renderBD(){
       '<td><span class="badge poc">' + (b.poc || '—') + '</span></td>' +
       '<td style="color:#aaa">' + (b.source.trim() || '—') + '</td>' +
       '<td><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;background:' + col + '22;color:' + col + '">' + b.phase + '</span></td>' +
+      
+      // Column 7: The Original Dropdown
       '<td>' +
         '<select class="di" style="font-size:10px; padding:2px 4px; height:22px; width:70px; background:var(--s2); border-color:var(--b);" ' +
         'onchange="saveLocalStatus(\'' + leadKey + '\', this.value)">' +
@@ -793,11 +801,18 @@ function renderBD(){
           '<option value="No" ' + (savedStatus === 'No' ? 'selected' : '') + '>No</option>' +
         '</select>' +
       '</td>' +
+
+      // Column 8: The New Tick Mark
+      '<td style="text-align:center">' +
+        '<input type="checkbox" style="cursor:pointer; width:16px; height:16px; accent-color:#22c55e;" ' +
+        (isTicked ? 'checked ' : '') +
+        'onchange="saveLocalStatus(\'' + tickKey + '\', this.checked ? \'true\' : \'false\')">' +
+      '</td>' +
+
       '<td style="color:#eab308;font-size:11px">' + (b.followup ? '⏰ ' + b.followup.slice(5).replace('-', '/') : '—') + '</td>' +
       '<td style="color:#aaa;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + b.remarks + '</td>' +
       '</tr>';
-  }).join('') : '<tr><td colspan="9" style="text-align:center;color:#555;padding:20px">No leads found</td></tr>';
-}
+  }).join('') : '<tr><td colspan="10" style="text-align:center;color:#555;padding:20px">No leads found</td></tr>';
 
 function renderSamples(){
   var sm=fSamples();
