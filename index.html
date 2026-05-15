@@ -46,217 +46,135 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
 .tbl tr:hover td{background:rgba(255,255,255,.03);}
 .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;}
 .badge.yes{background:rgba(34,197,94,.15);color:#22c55e;}.badge.no{background:rgba(239,68,68,.12);color:#ef4444;}
-.badge.warm{background:rgba(234,179,8,.12);color:#eab308;}.badge.cold{background:rgba(148,163,184,.1);color:#94a3b8;}
-.badge.inbound{background:rgba(59,130,246,.12);color:#60a5fa;}.badge.ccbd{background:rgba(124,58,237,.15);color:#a78bfa;}
 .badge.poc{background:rgba(124,58,237,.12);color:#c4b5fd;}
 .frow{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
 .flbl{font-size:11px;color:var(--m);width:88px;flex-shrink:0;text-align:right;}
 .fwrap{flex:1;background:rgba(255,255,255,.05);border-radius:4px;height:24px;overflow:hidden;}
 .fbar{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:10px;font-size:11px;font-weight:600;color:#fff;transition:width .3s;}
 .fpct{font-size:11px;color:var(--m);width:46px;text-align:right;flex-shrink:0;}
-.fg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
-.fc{background:var(--s2);border-radius:10px;padding:14px;text-align:center;}
-.fcv{font-size:26px;font-weight:600;font-family:monospace;}
-.fcl{font-size:10px;color:var(--m);margin-top:3px;text-transform:uppercase;letter-spacing:.06em;}
-.fcr{font-size:11px;color:var(--ac2);margin-top:3px;}
-.mrow{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:8px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;align-items:center;}
-.mhdr{color:var(--m);font-size:10px;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--b);padding-bottom:9px;margin-bottom:4px;}
 .rate{display:inline-block;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:600;background:rgba(124,58,237,.15);color:var(--ac2);}
-.lg{display:flex;gap:10px;flex-wrap:wrap;}
-.li{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--m);}
-.ld{width:8px;height:8px;border-radius:2px;}
-.nd{color:var(--m);font-size:13px;padding:24px;text-align:center;}
-@media(max-width:900px){.mg{grid-template-columns:repeat(3,1fr);}.g2,.g3{grid-template-columns:1fr;}.fg{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:560px){.mg{grid-template-columns:repeat(2,1fr);}.wrap{padding:14px;}.ph{flex-direction:column;}}
+@media(max-width:900px){.mg{grid-template-columns:repeat(3,1fr);}.g2,.g3{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 <div class="bar">
-  <div class="logo">SNACKIBLE <em>/ B2B</em></div>
-  <div class="stl"><div class="dot"></div><span id="stxt">ready</span></div>
+  <div class="logo">SNACKIBLE <em>/ B2B</em></div>
+  <div class="stl"><div class="dot"></div><span id="stxt">ready</span></div>
 </div>
 <div class="wrap">
-  <div class="ph">
-    <div><p class="pt">B2B Dashboard</p><p class="ps">Mails · Sales · Ads · InMails · <em id="lu">—</em></p></div>
-    <div class="df">
-      <span class="fl">Range</span>
-      <input type="date" class="di" id="df">
-      <span style="color:var(--m);font-size:11px">→</span>
-      <input type="date" class="di" id="dt">
-      <button class="qb on" data-r="all">All</button>
-      <button class="qb" data-r="30">30d</button>
-      <button class="qb" data-r="7">7d</button>
-      <button class="qb" data-r="today">Today</button>
-      <span style="font-size:11px;color:var(--m);font-family:monospace;" id="fi">—</span>
-    </div>
-  </div>
+  <div class="ph">
+    <div><p class="pt">B2B Dashboard</p><p class="ps">Mails · Sales · Ads · InMails · <em id="lu">—</em></p></div>
+    <div class="df">
+      <span class="fl">Range</span>
+      <input type="date" class="di" id="df">
+      <span style="color:var(--m);font-size:11px">→</span>
+      <input type="date" class="di" id="dt">
+      <button class="qb on" data-r="all">All</button>
+      <button class="qb" data-r="30">30d</button>
+      <button class="qb" data-r="7">7d</button>
+      <span style="font-size:11px;color:var(--m);font-family:monospace;" id="fi">—</span>
+    </div>
+  </div>
 
-  <div class="mg">
-    <div class="mc gn"><div class="ml">Total B2B Sales</div><div class="mv" id="tSales">—</div><div class="ms" id="tOrders">— orders</div></div>
-    <div class="mc bl"><div class="ml">Emails Delivered</div><div class="mv" id="tDel">—</div><div class="ms" id="tOpenR">—</div></div>
-    <div class="mc or"><div class="ml">Email Responses</div><div class="mv" id="tResp">—</div><div class="ms" id="tRespR">—</div></div>
-    <div class="mc ye"><div class="ml">Ads Leads</div><div class="mv" id="tLeads">—</div><div class="ms" id="tConvR">—</div></div>
-    <div class="mc"><div class="ml">InMails Sent</div><div class="mv" id="tInmail">—</div><div class="ms" id="tInmailS">—</div></div>
-  </div>
+  <div class="mg">
+    <div class="mc gn"><div class="ml">Total B2B Sales</div><div class="mv" id="tSales">—</div><div class="ms" id="tOrders">— orders</div></div>
+    <div class="mc bl"><div class="ml">Emails Delivered</div><div class="mv" id="tDel">—</div><div class="ms" id="tOpenR">—</div></div>
+    <div class="mc or"><div class="ml">Email Responses</div><div class="mv" id="tResp">—</div><div class="ms" id="tRespR">—</div></div>
+    <div class="mc ye"><div class="ml">Ads Leads</div><div class="mv" id="tLeads">—</div><div class="ms" id="tConvR">—</div></div>
+    <div class="mc"><div class="ml">InMails Sent</div><div class="mv" id="tInmail">—</div><div class="ms" id="tInmailS">—</div></div>
+  </div>
 
-  <div class="tabs">
-    <div class="tab on" data-tab="ov">Overview</div>
+  <div class="tabs">
+    <div class="tab on" data-tab="ov">Overview</div>
     <div class="tab" data-tab="sales">Sales</div>
-    <div class="tab" data-tab="mails">Mails</div>
-    <div class="tab" data-tab="ads">Ads</div>
-    <div class="tab" data-tab="inmails">InMails</div>
+    <div class="tab" data-tab="mails">Mails</div>
+    <div class="tab" data-tab="ads">Ads</div>
+    <div class="tab" data-tab="inmails">InMails</div>
     <div class="tab" data-tab="samples">Sample Data</div>
-    <div class="tab" data-tab="bd">Active Conversations</div>
-  </div>
+    <div class="tab" data-tab="bd">Active Conversations</div>
+  </div>
 
-    <div class="tp on" id="tp-ov">
-    <div class="g2">
-      <div class="cc">
-        <div class="ch"><div class="ct">Email Funnel</div></div>
-        <div class="fg">
-          <div class="fc"><div class="fcv" style="color:var(--bl)" id="fcDel">—</div><div class="fcl">Delivered</div><div class="fcr">100%</div></div>
-          <div class="fc"><div class="fcv" style="color:var(--ac2)" id="fcOpen">—</div><div class="fcl">Opened</div><div class="fcr" id="fcOpenR">—</div></div>
-          <div class="fc"><div class="fcv" style="color:var(--or)" id="fcClick">—</div><div class="fcl">Clicked</div><div class="fcr" id="fcClickR">—</div></div>
-          <div class="fc"><div class="fcv" style="color:var(--gr)" id="fcResp">—</div><div class="fcl">Responded</div><div class="fcr" id="fcRespR">—</div></div>
-        </div>
-        <div class="frow"><span class="flbl">Delivered</span><div class="fwrap"><div class="fbar" id="fbDel" style="width:100%;background:#3b82f6">—</div></div><span class="fpct">100%</span></div>
-        <div class="frow"><span class="flbl">Opened</span><div class="fwrap"><div class="fbar" id="fbOpen" style="background:#7c3aed">—</div></div><span class="fpct" id="fpOpen">—</span></div>
-        <div class="frow"><span class="flbl">Clicked</span><div class="fwrap"><div class="fbar" id="fbClick" style="background:#f97316">—</div></div><span class="fpct" id="fpClick">—</span></div>
-        <div class="frow"><span class="flbl">Responded</span><div class="fwrap"><div class="fbar" id="fbResp" style="background:#22c55e">—</div></div><span class="fpct" id="fpResp">—</span></div>
-        <div class="frow"><span class="flbl">Bounced</span><div class="fwrap"><div class="fbar" id="fbBounce" style="background:#ef4444">—</div></div><span class="fpct" id="fpBounce">—</span></div>
-      </div>
-      <div class="cc"><div class="ch"><div class="ct">Sales by Date (₹)</div></div><div class="cw" id="ovSales" style="min-height:220px"></div></div>
-    </div>
-    <div class="g3">
-      <div class="cc"><div class="ch"><div class="ct">Ads — Lead Source</div></div><div class="cw" id="ovAdsType" style="min-height:160px"></div></div>
-      <div class="cc"><div class="ch"><div class="ct">Ads — Conversion</div></div><div class="cw" id="ovAdsConv" style="min-height:160px"></div></div>
-      <div class="cc"><div class="ch"><div class="ct">Sales by POC</div></div><div class="cw" id="ovPoc" style="min-height:160px"></div></div>
-    </div>
-  </div>
+  <div class="tp on" id="tp-ov">
+    <div class="g2">
+      <div class="cc">
+        <div class="ch"><div class="ct">Email Funnel</div></div>
+        <div class="frow"><span class="flbl">Delivered</span><div class="fwrap"><div class="fbar" id="fbDel" style="width:100%;background:#3b82f6">—</div></div><span class="fpct">100%</span></div>
+        <div class="frow"><span class="flbl">Opened</span><div class="fwrap"><div class="fbar" id="fbOpen" style="background:#7c3aed">—</div></div><span class="fpct" id="fpOpen">—</span></div>
+        <div class="frow"><span class="flbl">Clicked</span><div class="fwrap"><div class="fbar" id="fbClick" style="background:#f97316">—</div></div><span class="fpct" id="fpClick">—</span></div>
+        <div class="frow"><span class="flbl">Responded</span><div class="fwrap"><div class="fbar" id="fbResp" style="background:#22c55e">—</div></div><span class="fpct" id="fpResp">—</span></div>
+      </div>
+      <div class="cc"><div class="ch"><div class="ct">Sales by Date (₹)</div></div><div class="cw" id="ovSales" style="min-height:220px"></div></div>
+    </div>
+  </div>
 
-    <div class="tp" id="tp-mails">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
-      <div class="df" style="gap:6px;">
-        <span class="fl">Mail Type</span>
-        <button class="qb on" id="mTypeAll" data-mtype="all">All Mails</button>
-        <button class="qb" id="mTypePri" data-mtype="primary">🟢 Primary</button>
-        <button class="qb" id="mTypeFol" data-mtype="followup">🔄 Follow-ups</button>
-      </div>
-    </div>
-    <div class="mg">
-      <div class="mc bl"><div class="ml">Delivered</div><div class="mv" id="mDel">—</div><div class="ms" id="mDelS">—</div></div>
-      <div class="mc"><div class="ml">Opened</div><div class="mv" id="mOpen">—</div><div class="ms" id="mOpenR">—</div></div>
-      <div class="mc or"><div class="ml">Clicked</div><div class="mv" id="mClick">—</div><div class="ms" id="mClickR">—</div></div>
-      <div class="mc gn"><div class="ml">Responded</div><div class="mv" id="mResp">—</div><div class="ms" id="mRespR">—</div></div>
-      <div class="mc re"><div class="ml">Bounced</div><div class="mv" id="mBounce">—</div><div class="ms" id="mBounceR">—</div></div>
-    </div>
-    <div class="g2">
-      <div class="cc">
-        <div class="ch">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <div class="ct">Daily Email Events</div>
-            <select class="di" id="mEventFilter" style="font-size:11px; padding:4px 8px;" onchange="renderAll()">
-              <option value="all">All Events</option>
-              <option value="del">Delivered</option>
-              <option value="open">Opened</option>
-              <option value="click">Clicked</option>
-              <option value="resp">Responded</option>
-            </select>
-          </div>
+  <div class="tp" id="tp-mails">
+    <div class="mg">
+      <div class="mc bl"><div class="ml">Delivered</div><div class="mv" id="mDel">—</div><div class="ms" id="mDelS">—</div></div>
+      <div class="mc"><div class="ml">Opened</div><div class="mv" id="mOpen">—</div><div class="ms" id="mOpenR">—</div></div>
+      <div class="mc or"><div class="ml">Clicked</div><div class="mv" id="mClick">—</div><div class="ms" id="mClickR">—</div></div>
+      <div class="mc gn"><div class="ml">Responded</div><div class="mv" id="mResp">—</div><div class="ms" id="mRespR">—</div></div>
+      <div class="mc re"><div class="ml">Bounced</div><div class="mv" id="mBounce">—</div><div class="ms" id="mBounceR">—</div></div>
+    </div>
+    <div class="cc">
+      <div class="ch">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div class="ct">Daily Email Events</div>
+          <select class="di" id="mEventFilter" style="font-size:11px; padding:4px 8px;" onchange="renderAll()">
+            <option value="all">All Events</option>
+            <option value="del">Delivered</option>
+            <option value="open">Opened</option>
+            <option value="click">Clicked</option>
+            <option value="resp">Responded</option>
+          </select>
         </div>
-        <div class="cw" id="mDailyChart" style="min-height:240px"></div>
-      </div>
-      <div class="cc"><div class="ch"><div class="ct">Open Rate by Industry</div></div><div class="cw" id="mIndChart" style="min-height:240px"></div></div>
-    </div>
-    <div class="g1"><div class="cc">
-      <div class="ch"><div class="ct">Performance by Industry</div></div>
-      <div class="mrow mhdr"><span>Industry</span><span>Delivered</span><span>Opened</span><span>Clicked</span><span>Responded</span></div>
-      <div id="mIndTable"></div>
-      <div class="mrow" style="font-weight:600;color:#fff;border-top:1px solid var(--b);margin-top:6px;padding-top:10px;" id="mIndTotal"></div>
-    </div></div>
-  </div>
+      </div>
+      <div class="cw" id="mDailyChart" style="min-height:240px"></div>
+    </div>
+  </div>
 
-    <div class="tp" id="tp-sales">
-    <div class="mg">
-      <div class="mc gn"><div class="ml">Total Revenue</div><div class="mv" id="sTotalRev">—</div><div class="ms" id="sTotalOrd">—</div></div>
-      <div class="mc gn"><div class="ml">Avg Order Value</div><div class="mv" id="sAvg">—</div><div class="ms">per order</div></div>
-      <div class="mc gn"><div class="ml">Top POC</div><div class="mv" id="sTopPoc">—</div><div class="ms" id="sTopAmt">—</div></div>
-      <div class="mc gn"><div class="ml">Top 5 Orders</div><div id="sTop5List" style="margin-top: 4px; display: flex; flex-direction: column; gap: 5px;">—</div></div>
-    </div>
-    <div class="g2">
-      <div class="cc"><div class="ch"><div class="ct">Revenue by POC</div></div><div class="cw" id="sPocChart" style="min-height:180px"></div></div>
-      <div class="cc"><div class="ch"><div class="ct">Daily Revenue</div></div><div class="cw" id="sDateChart" style="min-height:180px"></div></div>
-    </div>
-    <div class="g1"><div class="cc">
-      <div class="ch">
-        <div style="display:flex; align-items:center; gap:10px;"><div class="ct">All Orders</div><span id="sCount" style="font-size:11px;color:var(--m)"></span></div>
-        <select class="di" id="sSort" style="font-size:11px; padding:4px 8px;">
-          <option value="date-desc">Newest First</option>
-          <option value="amt-desc">Amount: High to Low</option>
-        </select>
-      </div>
-      <table class="tbl"><thead><tr><th>Ref</th><th>Date</th><th>Client</th><th>POC</th><th>Type</th><th style="text-align:right">Amount</th></tr></thead><tbody id="sTable"></tbody></table>
-    </div></div>
-  </div>
+  <div class="tp" id="tp-sales">
+    <div class="mg">
+      <div class="mc gn"><div class="ml">Total Revenue</div><div class="mv" id="sTotalRev">—</div><div class="ms" id="sTotalOrd">—</div></div>
+      <div class="mc gn"><div class="ml">Avg Order Value</div><div class="mv" id="sAvg">—</div><div class="ms">per order</div></div>
+      <div class="mc gn"><div class="ml">Top POC</div><div class="mv" id="sTopPoc">—</div><div class="ms" id="sTopAmt">—</div></div>
+      <div class="mc gn"><div class="ml">Top 5 Orders</div><div id="sTop5List" style="margin-top:4px;display:flex;flex-direction:column;gap:5px;">—</div></div>
+    </div>
+    <div class="g1"><div class="cc">
+      <div class="ch">
+        <div class="ct">All Orders</div>
+        <select class="di" id="sSort" style="font-size:11px;" onchange="renderAll()">
+          <option value="date-desc">Newest First</option>
+          <option value="amt-desc">High to Low</option>
+        </select>
+      </div>
+      <table class="tbl"><thead><tr><th>Ref</th><th>Date</th><th>Client</th><th>POC</th><th style="text-align:right">Amount</th></tr></thead><tbody id="sTable"></tbody></table>
+    </div></div>
+  </div>
 
-    <div class="tp" id="tp-ads">
-    <div class="mg">
-      <div class="mc ye"><div class="ml">Total Leads</div><div class="mv" id="aTotal">—</div><div class="ms">from ads</div></div>
-      <div class="mc ye"><div class="ml">Inbound</div><div class="mv" id="aInbound">—</div><div class="ms" id="aInboundR">—</div></div>
-      <div class="mc ye"><div class="ml">CCBD</div><div class="mv" id="aCcbd">—</div><div class="ms" id="aCcbdR">—</div></div>
-      <div class="mc gn"><div class="ml">Converted</div><div class="mv" id="aConv">—</div><div class="ms" id="aConvR">—</div></div>
-    </div>
-    <div class="g1"><div class="cc">
-      <div class="ch"><div class="ct">All Leads</div><span id="aCount" style="font-size:11px;color:var(--m)"></span></div>
-      <table class="tbl"><thead><tr><th>Date</th><th>Client</th><th>Source</th><th>POC</th><th>Lead Type</th><th>Converted</th><th style="text-align:right">Order Value</th></tr></thead><tbody id="aTable"></tbody></table>
-    </div></div>
-  </div>
+  <div class="tp" id="tp-samples">
+    <div class="mg">
+      <div class="mc bl"><div class="ml">Total Items</div><div class="mv" id="smTotal">—</div><div class="ms" id="smSub">in range</div></div>
+      <div class="mc bl"><div class="ml">Unique Clients</div><div class="mv" id="smClients">—</div><div class="ms">recipients</div></div>
+    </div>
+    <div class="g1"><div class="cc">
+      <div class="ch"><div class="ct">All Sample Requests</div><span id="smCount" style="font-size:11px;color:var(--m)"></span></div>
+      <table class="tbl"><thead><tr><th>Date</th><th>Products</th><th>Client</th><th>Qty</th><th>Requested By</th></tr></thead><tbody id="smTable"></tbody></table>
+    </div></div>
+  </div>
 
-    <div class="tp" id="tp-inmails">
-    <div class="mg">
-      <div class="mc bl"><div class="ml">Total Contacts</div><div class="mv" id="iTotal">—</div><div class="ms">LinkedIn InMails</div></div>
-      <div class="mc bl"><div class="ml">Facility Mgmt</div><div class="mv" id="iFM">—</div><div class="ms">FM industry</div></div>
-      <div class="mc bl"><div class="ml">IT Industry</div><div class="mv" id="iIT">—</div><div class="ms">IT sector</div></div>
-    </div>
-    <div class="g1"><div class="cc">
-      <div class="ch"><div class="ct">InMail Contact List</div></div>
-      <table class="tbl"><thead><tr><th>#</th><th>Industry</th><th>Company</th><th>Role</th><th>Contact</th></tr></thead><tbody id="iTable"></tbody></table>
-    </div></div>
-  </div>
-
-    <div class="tp" id="tp-samples">
-    <div class="mg">
-      <div class="mc bl"><div class="ml">Total Items</div><div class="mv" id="smTotal">—</div><div class="ms" id="smSub">in range</div></div>
-      <div class="mc bl"><div class="ml">Unique Clients</div><div class="mv" id="smClients">—</div><div class="ms">recipients</div></div>
-      <div class="mc bl"><div class="ml">Most Sampled</div><div class="mv" id="smTopProd" style="font-size:13px">—</div><div class="ms" id="smTopQty">—</div></div>
-      <div class="mc bl"><div class="ml">Requested By</div><div class="mv" id="smTopPoc" style="font-size:14px">—</div><div class="ms">active POC</div></div>
-    </div>
-    <div class="g2">
-      <div class="cc"><div class="ch"><div class="ct">Items by Date</div></div><div class="cw" id="smDateChart" style="min-height:180px"></div></div>
-      <div class="cc"><div class="ch"><div class="ct">Top Products</div></div><div class="cw" id="smProdChart" style="min-height:180px"></div></div>
-    </div>
-    <div class="g1"><div class="cc">
-      <div class="ch"><div class="ct">All Sample Requests</div><span id="smCount" style="font-size:11px;color:var(--m)"></span></div>
-      <table class="tbl"><thead><tr><th>Date</th><th>Products</th><th>Client</th><th>Qty</th><th>POC</th><th>Dispatch</th></tr></thead><tbody id="smTable"></tbody></table>
-    </div></div>
-  </div>
-
-    <div class="tp" id="tp-bd">
-    <div class="mg">
-      <div class="mc ye"><div class="ml">Total Leads</div><div class="mv" id="bdTotal">—</div><div class="ms" id="bdSub">in range</div></div>
-      <div class="mc re"><div class="ml">Cold</div><div class="mv" id="bdCold">—</div><div class="ms" id="bdColdR">—</div></div>
-      <div class="mc or"><div class="ml">Hot</div><div class="mv" id="bdHot">—</div><div class="ms" id="bdHotR">—</div></div>
-      <div class="mc gn"><div class="ml">Converted</div><div class="mv" id="bdConv">—</div><div class="ms" id="bdConvR">—</div></div>
-    </div>
-    <div class="g3" id="bdPipeline"></div>
-    <div class="g1"><div class="cc">
-      <div class="ch"><div class="ct">All Conversations</div></div>
-      <table class="tbl">
-        <thead><tr><th>Date</th><th>Company</th><th>Contact</th><th>POC</th><th>Source</th><th>Phase</th><th style="width:100px">Converted?</th><th style="width:40px; text-align:center">✔</th><th>Follow-up</th><th>Remarks</th></tr></thead>
-        <tbody id="bdTable"></tbody>
-      </table>
-    </div></div>
-  </div>
+  <div class="tp" id="tp-bd">
+    <div class="mg">
+      <div class="mc ye"><div class="ml">Total Leads</div><div class="mv" id="bdTotal">—</div><div class="ms" id="bdSub">leads</div></div>
+      <div class="mc gn"><div class="ml">Converted</div><div class="mv" id="bdConv">—</div><div class="ms" id="bdConvR">—</div></div>
+    </div>
+    <div class="g1"><div class="cc">
+      <div class="ch"><div class="ct">All Conversations</div></div>
+      <table class="tbl">
+        <thead><tr><th>Date</th><th>Company</th><th>Contact</th><th>POC</th><th>Phase</th><th style="width:100px">Converted?</th><th style="width:40px; text-align:center">✔</th><th>Remarks</th></tr></thead>
+        <tbody id="bdTable"></tbody>
+      </table>
+    </div></div>
+  </div>
 
 </div>
 <div class="tip" id="tip"></div>
@@ -267,9 +185,8 @@ const BD_URL='https://script.google.com/macros/s/AKfycbwZOjviZgLXKd0nuXKxiGHUeJ9
 const SALES_URL='https://script.google.com/macros/s/AKfycbyNjcsuR8UfA9m81N5dVF-U5Fhvzmk_i8jjmhIqLJwNiGqA2h9j83ZizKyAS8jcP2Cm/exec';
 const SAMPLES_URL='https://script.google.com/macros/s/AKfycbyXk1rfhfq0yAa1e3gN4jK5_6jIiAM2Q3pwZfSRtgz6UzqB3C5chDYtQ4uWIyMuCU9x/exec';
 
-var BD_ROWS=[], ML_PRIMARY=[], ML_FOLLOWUP=[], SAMPLES=[], SALES=[], ADS=[];
+var BD_ROWS=[], ML_BY_DATE=[], SAMPLES=[], SALES=[], ADS=[];
 
-// ── HELPERS ───────────────────────────────────────────────
 function fmt(n){if(!n||isNaN(n)||n===0)return'—';if(n>=100000)return'₹'+(n/100000).toFixed(1)+'L';if(n>=1000)return'₹'+(n/1000).toFixed(0)+'K';return'₹'+Math.round(n);}
 function pct(a,b){return b>0?Math.round(a/b*100)+'%':'0%';}
 function fd(d){return d?d.slice(5).replace('-','/'):'—';}
@@ -278,206 +195,127 @@ var tipEl=document.getElementById('tip');
 function showTip(e,h){tipEl.innerHTML=h;tipEl.style.display='block';tipEl.style.left=(e.clientX+12)+'px';tipEl.style.top=(e.clientY-30)+'px';}
 function hideTip(){tipEl.style.display='none';}
 function getWeekMonday(dateStr) {
-  if(!dateStr) return '';
-  var p = dateStr.split('-');
-  if(p.length < 3) return dateStr;
-  var d = new Date(parseInt(p[0]), parseInt(p[1])-1, parseInt(p[2]));
-  var day = d.getDay();
-  var diff = d.getDate() - day + (day === 0 ? -6 : 1);
-  d.setDate(diff);
-  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  if(!dateStr) return ''; var p = dateStr.split('-');
+  var d = new Date(parseInt(p[0]), parseInt(p[1])-1, parseInt(p[2]));
+  var day = d.getDay(); d.setDate(d.getDate() - day + (day === 0 ? -6 : 1));
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
 }
-function saveLocalStatus(key, value) {
-  localStorage.setItem(key, value);
-  var originalTxt = document.getElementById('stxt').textContent;
-  document.getElementById('stxt').textContent = 'selection saved locally';
-  setTimeout(function() { document.getElementById('stxt').textContent = originalTxt; }, 1500);
-}
+function saveLocalStatus(key, value) { localStorage.setItem(key, value); document.getElementById('stxt').textContent = 'saved locally'; setTimeout(()=>{document.getElementById('stxt').textContent='ready';},1500); }
 
-// ── DATE FILTER ───────────────────────────────────────────
 function getF(){return document.getElementById('df').value;}
 function getT(){return document.getElementById('dt').value;}
 function inR(date){var f=getF(),t=getT();if(f&&date<f)return false;if(t&&date>t)return false;return true;}
-function fSales(){return SALES.filter(function(s){return inR(s.date);});}
-function fAds(){return ADS.filter(function(a){return inR(a.date);});}
-function fML(){
-  var f=getF(),t=getT();
-  return ML_BY_DATE.filter(function(d){if(f&&d.date<f)return false; if(t&&d.date>t)return false; return true;});
-}
 
-// ── CHARTS ────────────────────────────────────────────────
 function barChart(id,labels,datasets,h){
-  var el=document.getElementById(id);if(!el)return;
-  h=h||200;
-  var W=Math.max(el.getBoundingClientRect().width,el.clientWidth,el.offsetWidth)||680,P={t:8,r:10,b:65,l:55},cW=W-P.l-P.r,cH=h-P.t-P.b;
-  if(!labels||!labels.length){el.innerHTML='<p style="color:#555;padding:20px;font-size:12px;text-align:center">No data</p>';return;}
-  var maxV=0;
-  datasets.forEach(function(d){d.data.forEach(function(v){if(v>maxV)maxV=v;});});
-  if(maxV===0)maxV=1;
-  var bW=Math.min((cW/labels.length)*0.8/datasets.length,34);
-  var s='<svg width="'+W+'" height="'+h+'" xmlns="http://www.w3.org/2000/svg">';
-  var isMoney = id.toLowerCase().includes('sales') || id.toLowerCase().includes('rev');
-  var axisFmt = function(n) { if(n===0) return '0'; if(isMoney) return fmt(n); return n>=1000 ? (n/1000).toFixed(1)+'K' : Math.round(n); };
-  for(var i=0;i<=4;i++){
-    var y=P.t+cH-(i/4)*cH,v=maxV*i/4;
-    s+='<line x1="'+P.l+'" y1="'+(y|0)+'" x2="'+(P.l+cW)+'" y2="'+(y|0)+'" stroke="rgba(255,255,255,.06)" stroke-width="1"/>';
-    s+='<text x="'+(P.l-4)+'" y="'+((y+4)|0)+'" text-anchor="end" fill="#777" font-size="9">'+axisFmt(v)+'</text>';
-  }
-  datasets.forEach(function(d,di){
-    labels.forEach(function(lbl,i){
-      var v=d.data[i]||0,bH=Math.max((v/maxV)*cH,0),x=P.l+i*(cW/labels.length)+(cW/labels.length-datasets.length*bW)/2+di*bW,y=P.t+cH-bH;
-      var tv=d.vf?d.vf(v, i):axisFmt(v);
-      if (bH > 0) s+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bW.toFixed(1)+'" height="'+bH.toFixed(1)+'" fill="'+d.color+'" rx="3" opacity=".88" style="cursor:pointer" onmouseenter="showTip(event,\'<b>'+lbl+'</b><br>'+(d.label||'')+': '+tv+'\')" onmouseleave="hideTip()"/>';
-    });
-  });
-  labels.forEach(function(lbl,i){
-    var x=(P.l+i*(cW/labels.length)+(cW/labels.length)/2)|0,ty = h - 8;
-    s+='<text x="'+x+'" y="'+ty+'" text-anchor="end" fill="#aaa" font-size="9" transform="rotate(-45,'+x+','+ty+')">'+lbl+'</text>';
-  });
-  s+='</svg>'; el.innerHTML=s;
+  var el=document.getElementById(id);if(!el)return;
+  var W=el.clientWidth||600,P={t:10,r:10,b:50,l:50},cW=W-P.l-P.r,cH=h-P.t-P.b;
+  if(!labels.length){el.innerHTML='<p style="color:#555;text-align:center;padding:20px;">No data</p>';return;}
+  var maxV=0; datasets.forEach(d=>d.data.forEach(v=>{if(v>maxV)maxV=v;})); if(maxV===0)maxV=1;
+  var bW=Math.min((cW/labels.length)*0.8/datasets.length,30);
+  var s='<svg width="'+W+'" height="'+h+'" xmlns="http://www.w3.org/2000/svg">';
+  for(var i=0;i<=4;i++){
+    var y=P.t+cH-(i/4)*cH;
+    s+='<line x1="'+P.l+'" y1="'+y+'" x2="'+(P.l+cW)+'" y2="'+y+'" stroke="rgba(255,255,255,.05)"/>';
+  }
+  datasets.forEach((d,di)=>{
+    labels.forEach((lbl,i)=>{
+      var v=d.data[i]||0, bH=(v/maxV)*cH, x=P.l+i*(cW/labels.length)+(cW/labels.length-datasets.length*bW)/2+di*bW, y=P.t+cH-bH;
+      var tv=d.vf?d.vf(v, i):v;
+      if(bH>0) s+='<rect x="'+x+'" y="'+y+'" width="'+bW+'" height="'+bH+'" fill="'+d.color+'" rx="2" style="cursor:pointer" onmouseenter="showTip(event,\'<b>'+lbl+'</b><br>'+d.label+': '+tv+'\')" onmouseleave="hideTip()"/>';
+    });
+  });
+  el.innerHTML=s+'</svg>';
 }
 
-function hbar(id,labels,values,colors,vf){
-  var el=document.getElementById(id);if(!el)return;
-  if(!labels||!labels.length){el.innerHTML='<p style="color:#555;padding:20px;font-size:12px;text-align:center">No data</p>';return;}
-  var W=Math.max(el.getBoundingClientRect().width,el.clientWidth,el.offsetWidth)||500,maxV=Math.max(...values, 1),rowH=32,P={l:115,r:55,t:4},H=labels.length*rowH+P.t*2;
-  var s='<svg width="'+W+'" height="'+H+'" xmlns="http://www.w3.org/2000/svg">';
-  labels.forEach(function(lbl,i){
-    var y=P.t+i*rowH,bW=(values[i]/maxV)*(W-P.l-P.r),col=Array.isArray(colors)?colors[i%colors.length]:colors,tv=vf?vf(values[i]):''+Math.round(values[i]);
-    s+='<text x="'+(P.l-7)+'" y="'+(y+rowH/2+4)+'" text-anchor="end" fill="#aaa" font-size="10">'+lbl+'</text>';
-    s+='<rect x="'+P.l+'" y="'+(y+5)+'" width="'+Math.max(bW,3).toFixed(1)+'" height="'+(rowH-12)+'" fill="'+col+'" rx="3" opacity=".85" style="cursor:pointer" onmouseenter="showTip(event,\''+lbl+': '+tv+'\')" onmouseleave="hideTip()"/>';
-    s+='<text x="'+(P.l+bW+7)+'" y="'+(y+rowH/2+4)+'" fill="#ccc" font-size="10">'+tv+'</text>';
-  });
-  s+='</svg>'; el.innerHTML=s;
-}
-
-// ── MAIN RENDER ───────────────────────────────────────────
 function renderAll(){
-  var sales=fSales(), ads=fAds(), mlRows=getMLRows();
-  var tSalesAmt=sales.reduce(function(a,s){return a+s.amt;},0);
-  var mlDel=mlRows.reduce(function(a,r){return a+r.del;},0);
-  var mlOpen=mlRows.reduce(function(a,r){return a+r.open;},0);
-  var mlClick=mlRows.reduce(function(a,r){return a+r.click;},0);
-  var mlResp=mlRows.reduce(function(a,r){return a+r.resp;},0);
-  var totalConv=ads.filter(function(a){return a.conv==='Yes';}).length;
+  var sales=SALES.filter(s=>inR(s.date)), ads=ADS.filter(a=>inR(a.date)), ml=ML_BY_DATE.filter(m=>inR(m.date));
+  var tRev=sales.reduce((a,s)=>a+s.amt,0), tDel=ml.reduce((a,m)=>a+m.del,0), tOpen=ml.reduce((a,m)=>a+m.open,0), tResp=ml.reduce((a,m)=>a+m.resp,0), tClick=ml.reduce((a,m)=>a+m.click,0);
+  
+  set('tSales',fmt(tRev)); set('tOrders',sales.length+' orders');
+  set('tDel',tDel.toLocaleString()); set('tOpenR',pct(tOpen,tDel)+' open');
+  set('tResp',tResp); set('tRespR',pct(tResp,tDel)+' response');
+  set('tLeads',ads.length); set('tConvR',ads.filter(a=>a.conv==='Yes').length+' converted');
+  set('fi',(sales.length+ads.length)+' records');
 
-  set('tSales',fmt(tSalesAmt)); set('tOrders',sales.length+' orders');
-  set('tDel',mlDel.toLocaleString()); set('tOpenR',pct(mlOpen,mlDel)+' open rate');
-  set('tResp',mlResp); set('tRespR',pct(mlResp,mlDel)+' response rate');
-  set('tLeads',ads.length); set('tConvR',totalConv+' converted · '+pct(totalConv,ads.length||1));
+  var setFbar=(id,pctId,v,total)=>{ var el=document.getElementById(id),pel=document.getElementById(pctId),p=total>0?v/total*100:0; if(el)el.style.width=p+'%'; if(pel)pel.textContent=pct(v,total); };
+  setFbar('fbOpen','fpOpen',tOpen,tDel); setFbar('fbClick','fpClick',tClick,tDel); setFbar('fbResp','fpResp',tResp,tDel);
 
-  // Overview Funnel
-  var fbDelEl=document.getElementById('fbDel');if(fbDelEl)fbDelEl.textContent=mlDel.toLocaleString();
-  var setFbar=function(id,pctId,v,total){
-    var el=document.getElementById(id),pel=document.getElementById(pctId),p=total>0?v/total*100:0;
-    if(el){el.style.width=p+'%';el.textContent=v;} if(pel)pel.textContent=pct(v,total);
-  };
-  setFbar('fbOpen','fpOpen',mlOpen,mlDel); setFbar('fbClick','fpClick',mlClick,mlDel); setFbar('fbResp','fpResp',mlResp,mlDel);
+  var byWeek={}; sales.forEach(s=>{ var w=getWeekMonday(s.date); byWeek[w]=(byWeek[w]||0)+s.amt; });
+  var weeks=Object.keys(byWeek).sort();
+  barChart('ovSales', weeks.map(fd), [{label:'Revenue',data:weeks.map(w=>byWeek[w]),color:'#22c55e',vf:fmt}], 220);
 
-  var byWeek={}; sales.forEach(function(s){ var w = getWeekMonday(s.date); byWeek[w] = (byWeek[w]||0) + s.amt; });
-  var weeks = Object.keys(byWeek).sort();
-  barChart('ovSales', weeks.map(fd), [{label:'Weekly Sales', data:weeks.map(function(w){return byWeek[w];}), color:'#22c55e', vf:fmt}], 220);
-
-  // Mail Charts
-  var evFilter = document.getElementById('mEventFilter') ? document.getElementById('mEventFilter').value : 'all';
-  var allEventDatasets = [
-    {id:'del', label:'Delivered', data:mlRows.map(function(r){return r.del;}), color:'#3b82f6', vf:function(v){return v.toLocaleString();}},
-    {id:'open', label:'Opened', data:mlRows.map(function(r){return r.open;}), color:'#7c3aed', vf:function(v, i){ return v.toLocaleString() + ' (' + pct(v, mlRows[i].del) + ' rate)'; }},
-    {id:'click', label:'Clicked', data:mlRows.map(function(r){return r.click;}), color:'#f97316', vf:function(v, i){ return v.toLocaleString() + ' (' + pct(v, mlRows[i].del) + ' rate)'; }},
-    {id:'resp', label:'Responded', data:mlRows.map(function(r){return r.resp;}), color:'#22c55e', vf:function(v, i){ return v.toLocaleString() + ' (' + pct(v, mlRows[i].del) + ' rate)'; }}
+  var evFilter=document.getElementById('mEventFilter').value;
+  var evDs=[
+    {id:'del',label:'Delivered',data:ml.map(m=>m.del),color:'#3b82f6',vf:v=>v.toLocaleString()},
+    {id:'open',label:'Opened',data:ml.map(m=>m.open),color:'#7c3aed',vf:(v,i)=>v+' ('+pct(v,ml[i].del)+')'},
+    {id:'click',label:'Clicked',data:ml.map(m=>m.click),color:'#f97316',vf:(v,i)=>v+' ('+pct(v,ml[i].del)+')'},
+    {id:'resp',label:'Responded',data:ml.map(m=>m.resp),color:'#22c55e',vf:(v,i)=>v+' ('+pct(v,ml[i].del)+')'}
   ];
-  var chartDatasets = evFilter === 'all' ? allEventDatasets : allEventDatasets.filter(function(d){ return d.id === evFilter; });
-  barChart('mDailyChart', mlRows.map(function(r){return fd(r.date);}), chartDatasets, 240);
+  barChart('mDailyChart',ml.map(m=>fd(m.date)),evFilter==='all'?evDs:evDs.filter(d=>d.id===evFilter),240);
 
-  renderBD(); renderSamples();
-  document.getElementById('lu').textContent='Updated '+new Date().toLocaleTimeString();
-}
-
-function getMLRows(){
-  var f=getF(),t=getT(),mtype=window._mtype||'all';
-  var src= mtype==='primary'?ML_PRIMARY : mtype==='followup'?ML_FOLLOWUP : ML_BY_DATE;
-  if(!f&&!t)return src;
-  return src.filter(function(d){if(f&&d.date<f)return false; if(t&&d.date>t)return false; return true;});
+  var sSort=document.getElementById('sSort').value;
+  var sData=sales.slice().sort((a,b)=>sSort==='amt-desc'?b.amt-a.amt:b.date.localeCompare(a.date));
+  document.getElementById('sTable').innerHTML=sData.map(s=>'<tr><td>'+s.ref+'</td><td>'+fd(s.date)+'</td><td>'+s.client+'</td><td><span class="badge poc">'+s.poc+'</span></td><td style="text-align:right">'+fmt(s.amt)+'</td></tr>').join('');
+  
+  renderBD(); renderSamples();
+  set('lu','Updated '+new Date().toLocaleTimeString());
 }
 
 function renderBD(){
-  var bd=BD_ROWS.filter(function(b){return inR(b.date);});
-  set('bdTotal',bd.length); set('bdSub',bd.length+' leads shown');
-  
-  document.getElementById('bdTable').innerHTML = bd.length ? bd.map(function(b) {
-    var col = PHASE_COLOR[b.phase] || '#888', lk = 'conv_' + (b.company + b.name).replace(/\s+/g, '_'), ss = localStorage.getItem(lk) || '';
-    var tk = 'tick_' + (b.company + b.name).replace(/\s+/g, '_'), it = localStorage.getItem(tk) === 'true';
-    return '<tr><td>'+fd(b.date)+'</td><td style="color:#fff">'+(b.company||'—')+'</td><td>'+b.name+'</td><td><span class="badge poc">'+(b.poc||'—')+'</span></td><td style="color:#aaa">'+b.source+'</td><td><span style="background:'+col+'22;color:'+col+';padding:2px 8px;border-radius:4px;">'+b.phase+'</span></td>'+
-      '<td><select class="di" style="font-size:10px;height:22px;width:70px;" onchange="saveLocalStatus(\''+lk+'\', this.value)"><option value="" '+(ss===''?'selected':'')+'>—</option><option value="Yes" '+(ss==='Yes'?'selected':'')+'>Yes</option><option value="No" '+(ss==='No'?'selected':'')+'>No</option></select></td>'+
-      '<td style="text-align:center"><input type="checkbox" style="width:16px;height:16px;" '+(it?'checked':'')+' onchange="saveLocalStatus(\''+tk+'\', this.checked?\'true\':\'false\')"></td>'+
-      '<td style="color:#eab308">'+(b.followup?fd(b.followup):'—')+'</td><td style="color:#aaa">'+b.remarks+'</td></tr>';
-  }).join('') : '<tr><td colspan="10" style="text-align:center;padding:20px">No leads</td></tr>';
+  var bd=BD_ROWS.filter(b=>inR(b.date));
+  set('bdTotal',bd.length); set('bdConv',bd.filter(b=>b.phase==='Converted').length);
+  document.getElementById('bdTable').innerHTML=bd.map(b=>{
+    var lk='c_'+(b.company+b.name).replace(/\s+/g,'_'), tk='t_'+lk, ss=localStorage.getItem(lk)||'', it=localStorage.getItem(tk)==='true';
+    return '<tr><td>'+fd(b.date)+'</td><td>'+b.company+'</td><td>'+b.name+'</td><td>'+b.poc+'</td><td>'+b.phase+'</td>'+
+    '<td><select class="di" onchange="saveLocalStatus(\''+lk+'\',this.value)"><option value="" '+(ss===''?'selected':'')+'>—</option><option value="Yes" '+(ss==='Yes'?'selected':'')+'>Yes</option></select></td>'+
+    '<td style="text-align:center"><input type="checkbox" '+(it?'checked':'')+' onchange="saveLocalStatus(\''+tk+'\',this.checked?\'true\':\'false\')"></td><td>'+b.remarks+'</td></tr>';
+  }).join('');
 }
 
 function renderSamples(){
-  var sm = SAMPLES.filter(function(s){return inR(s.date);});
-  var grouped = {}; sm.forEach(function(s) {
-    var key = s.date + '|' + s.client + '|' + s.req_by;
-    if (!grouped[key]) grouped[key] = { date: s.date, client: s.client, req_by: s.req_by, totalQty: 0, products: [] };
-    grouped[key].products.push(s.product + ' (' + s.qty + ')'); grouped[key].totalQty += s.qty;
-  });
-  var gArr = Object.values(grouped).sort((a,b)=>b.date.localeCompare(a.date));
-  set('smTotal', sm.length); set('smCount', sm.length + ' items shown');
-
-  document.getElementById('smTable').innerHTML = gArr.length ? gArr.map(function(g) {
-    var phtml = g.products.length === 1 ? g.products[0] : '<details style="cursor:pointer;"><summary style="color:#a78bfa;">'+g.products.length+' products</summary><div style="font-size:11px;color:#aaa;padding-left:10px;">'+g.products.join('<br>')+'</div></details>';
-    return '<tr><td>'+fd(g.date)+'</td><td style="color:#fff">'+phtml+'</td><td>'+g.client+'</td><td style="font-family:monospace;color:#a78bfa">'+g.totalQty+'</td><td><span class="badge poc">'+g.req_by+'</span></td><td>—</td></tr>';
-  }).join('') : '<tr><td colspan="6" style="text-align:center;padding:20px">No samples</td></tr>';
+  var sm=SAMPLES.filter(s=>inR(s.date)), grouped={};
+  sm.forEach(s=>{ var k=s.date+'|'+s.client+'|'+s.req_by; if(!grouped[k])grouped[k]={date:s.date,client:s.client,req_by:s.req_by,qty:0,prods:[]}; grouped[k].prods.push(s.product+' ('+s.qty+')'); grouped[k].qty+=s.qty; });
+  var gArr=Object.values(grouped).sort((a,b)=>b.date.localeCompare(a.date));
+  set('smTotal',sm.length); set('smClients',new Set(sm.map(s=>s.client)).size);
+  document.getElementById('smTable').innerHTML=gArr.map(g=>{
+    var phtml=g.prods.length===1?g.prods[0]:'<details><summary>'+g.prods.length+' products</summary><div style="font-size:11px;color:#888">'+g.prods.join('<br>')+'</div></details>';
+    return '<tr><td>'+fd(g.date)+'</td><td>'+phtml+'</td><td>'+g.client+'</td><td>'+g.qty+'</td><td><span class="badge poc">'+g.req_by+'</span></td></tr>';
+  }).join('');
 }
 
-// ── BOOT ──────────────────────────────────────────────────
-window.addEventListener('load',function(){
+window.addEventListener('load',()=>{
   document.querySelectorAll('.tab').forEach(t=>{t.onclick=()=>{
     document.querySelectorAll('.tab,.tp').forEach(x=>x.classList.remove('on'));
     t.classList.add('on'); document.getElementById('tp-'+t.dataset.tab).classList.add('on'); renderAll();
   }});
 
-  if (typeof SHEET_URL !== 'undefined') {
-    fetch(SHEET_URL + '?t=' + Date.now(), {redirect: 'follow'})
-      .then(r => r.json()).then(raw => {
-        if(raw['Master_Log']){
-          var smap={'Email Delivered':'del','Email Opened':'open','Email Clicked':'click','RESPONDED':'resp','BOUNCED':'bounce'};
-          var bd2={}; raw['Master_Log'].forEach(r=>{
-            var key=smap[String(r[3])]; if(!key)return;
-            var d=r[4], ds=d?new Date(new Date(d).getTime()+5.5*36e5).toISOString().slice(0,10):'';
-            if(!ds)return; if(!bd2[ds])bd2[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0}; bd2[ds][key]++;
-          });
-          ML_BY_DATE.length=0; Object.values(bd2).sort((a,b)=>a.date.localeCompare(b.date)).forEach(d=>ML_BY_DATE.push(d));
-        }
-        if(raw['Sales_Log']) SALES = raw['Sales_Log'].slice(1).map(r=>({date:r[3]?r[3].slice(0,10):'',amt:parseFloat(r[6])||0,client:r[5],poc:r[4]})).filter(s=>s.date);
-        if(raw['Ads_Log']) ADS = raw['Ads_Log'].slice(1).map(r=>({date:r[4]?r[4].slice(0,10):'',conv:r[12]}));
-        renderAll();
-      });
-  }
+  if(typeof SHEET_URL!=='undefined') fetch(SHEET_URL+'?t='+Date.now(),{redirect:'follow'}).then(r=>r.json()).then(raw=>{
+    if(raw['Master_Log']){
+      var smap={'Email Delivered':'del','Email Opened':'open','Email Clicked':'click','RESPONDED':'resp','BOUNCED':'bounce'}, d2={};
+      raw['Master_Log'].forEach(r=>{ var k=smap[r[3]], d=r[4]?new Date(new Date(r[4]).getTime()+198e5).toISOString().slice(0,10):''; if(k&&d){if(!d2[d])d2[d]={date:d,del:0,open:0,click:0,resp:0,bounce:0}; d2[d][k]++;}});
+      ML_BY_DATE=Object.values(d2).sort((a,b)=>a.date.localeCompare(b.date));
+    }
+    if(raw['Sales_Log']) SALES=raw['Sales_Log'].slice(1).map(r=>({ref:r[0],date:r[3]?r[3].slice(0,10):'',amt:parseFloat(r[6])||0,client:r[5],poc:r[4]})).filter(s=>s.date);
+    if(raw['Ads_Log']) ADS=raw['Ads_Log'].slice(1).map(r=>({date:r[4]?r[4].slice(0,10):'',conv:r[12]}));
+    renderAll();
+  });
 
-  if (typeof BD_URL !== 'undefined') {
-    fetch(BD_URL+'?t='+Date.now(), {redirect: 'follow'}).then(r=>r.json()).then(raw=>{
-      BD_ROWS = (raw['Sheet1']||[]).slice(1).map(r=>({date:r[0]?r[0].slice(0,10):'',company:r[1],name:r[2],poc:r[5],source:r[7],phase:r[10]||'Cold',remarks:r[6],followup:r[12]})).filter(b=>b.date);
-      renderBD();
-    });
-  }
+  if(typeof BD_URL!=='undefined') fetch(BD_URL+'?t='+Date.now(),{redirect:'follow'}).then(r=>r.json()).then(raw=>{
+    BD_ROWS=(raw['Sheet1']||[]).slice(1).map(r=>({date:r[0]?r[0].slice(0,10):'',company:r[1],name:r[2],poc:r[5],phase:r[10]||'Cold',remarks:r[6]})).filter(b=>b.date);
+    renderBD();
+  });
 
-  if (typeof SAMPLES_URL !== 'undefined') {
-    fetch(SAMPLES_URL + '?t=' + Date.now(), {redirect: 'follow'}).then(r=>r.json()).then(raw=>{
-        var sheetName = Object.keys(raw).find(k => k.toLowerCase().includes('sample'));
-        var rows = (raw[sheetName] || []).slice(1), cp = '', cd = '', cc = '';
-        SAMPLES = rows.map(r => {
-          var rb = String(r[2]||'').toLowerCase(); 
-          var al = ['siya', 'mahi', 'bhoomika', 'dhyana'];
-          if (rb) { cc = ''; cp = ''; al.forEach(n => { if(rb.includes(n)) cp = n.charAt(0).toUpperCase()+n.slice(1); }); }
-          if (r[3]) { var d = new Date(new Date(r[3]).getTime()+5.5*36e5); if(!isNaN(d)) cd = d.toISOString().slice(0,10); }
-          if (r[12]) cc = r[12];
-          if (!cp || !cd || !r[9]) return null;
-          return { date: cd, product: r[9], client: cc || '—', qty: parseInt(r[11])||1, req_by: cp };
-        }).filter(Boolean);
-        renderAll();
-      });
-  }
+  if(typeof SAMPLES_URL!=='undefined') fetch(SAMPLES_URL+'?t='+Date.now(),{redirect:'follow'}).then(r=>r.json()).then(raw=>{
+    var sName=Object.keys(raw).find(k=>k.toLowerCase().includes('sample')), cp='', cd='', cc='';
+    SAMPLES=(raw[sName]||[]).slice(1).map(r=>{
+      var rb=String(r[2]||'').toLowerCase(), al=['siya','mahi','bhoomika','dhyana'];
+      if(rb){cc='';cp='';al.forEach(n=>{if(rb.includes(n))cp=n.charAt(0).toUpperCase()+n.slice(1);});}
+      if(r[3])cd=new Date(new Date(r[3]).getTime()+198e5).toISOString().slice(0,10);
+      if(r[12])cc=r[12];
+      return (cp&&cd&&r[9])?{date:cd,product:r[9],client:cc||'—',qty:parseInt(r[11])||1,req_by:cp}:null;
+    }).filter(Boolean);
+    renderAll();
+  });
 });
 </script>
 </body>
