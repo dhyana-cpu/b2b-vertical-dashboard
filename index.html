@@ -101,12 +101,12 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
 
   <div class="tabs">
     <div class="tab on" data-tab="ov">Overview</div>
-    <div class="tab" data-tab="sales">Sales</div>
     <div class="tab" data-tab="mails">Mails</div>
+    <div class="tab" data-tab="sales">Sales</div>
     <div class="tab" data-tab="ads">Ads</div>
     <div class="tab" data-tab="inmails">InMails</div>
-    <div class="tab" data-tab="samples">Sample Data</div>
     <div class="tab" data-tab="bd">Active Conversations</div>
+    <div class="tab" data-tab="samples">Sample Data</div>
   </div>
 
   <!-- OVERVIEW -->
@@ -816,56 +816,25 @@ function renderBD(){
 }
 
 function renderSamples(){
-  var sm = fSamples();
-  var clients = new Set(sm.map(function(s){return s.client;}).filter(Boolean));
-  var byProd = {}; sm.forEach(function(s){if(s.product) byProd[s.product] = (byProd[s.product]||0) + s.qty;});
-  var topProd = Object.entries(byProd).sort(function(a,b){return b[1]-a[1];})[0];
-  var byBy = {}; sm.forEach(function(s){if(s.req_by) byBy[s.req_by] = (byBy[s.req_by]||0) + 1;});
-  var topBy = Object.entries(byBy).sort(function(a,b){return b[1]-a[1];})[0];
+  var sm=fSamples();
+  var clients=new Set(sm.map(function(s){return s.client;}).filter(Boolean));
+  var byProd={};sm.forEach(function(s){if(s.product)byProd[s.product]=(byProd[s.product]||0)+1;});
+  var topProd=Object.entries(byProd).sort(function(a,b){return b[1]-a[1];})[0];
+  var byBy={};sm.forEach(function(s){if(s.req_by)byBy[s.req_by]=(byBy[s.req_by]||0)+1;});
+  var topBy=Object.entries(byBy).sort(function(a,b){return b[1]-a[1];})[0];
+  set('smTotal',sm.length); set('smSub',sm.length+' samples in range');
+  set('smClients',clients.size);
+  set('smTopProd',topProd?topProd[0].slice(0,22):'—'); set('smTopQty',topProd?topProd[1]+' times':'—');
+  set('smTopPoc',topBy?topBy[0]:'—');
+  set('smCount',sm.length+' samples shown');
 
-  set('smTotal', sm.length); 
-  set('smSub', sm.length + ' items in range');
-  set('smClients', clients.size);
-  set('smTopProd', topProd ? topProd[0].slice(0,22) : '—'); 
-  set('smTopQty', topProd ? topProd[1] + ' units' : '—');
-  set('smTopPoc', topBy ? topBy[0] : '—');
-  set('smCount', sm.length + ' individual items shown');
+  var byDate={};sm.forEach(function(s){byDate[s.date]=(byDate[s.date]||0)+1;});
+  var dates=Object.keys(byDate).sort();
+  barChart('smDateChart',dates.map(fd),[{label:'Samples',data:dates.map(function(d){return byDate[d];}),color:'#3b82f6',vf:function(v){return v;}}],180);
 
-  // Charts
-  var byDate = {}; sm.forEach(function(s){byDate[s.date] = (byDate[s.date]||0) + 1;});
-  var dates = Object.keys(byDate).sort();
-  barChart('smDateChart', dates.map(fd), [{label:'Items', data:dates.map(function(d){return byDate[d];}), color:'#3b82f6', vf:function(v){return v;}}], 180);
+  var topProds=Object.entries(byProd).sort(function(a,b){return b[1]-a[1];}).slice(0,7);
+  hbar('smProdChart',topProds.map(function(p){return p[0].slice(0,22);}),topProds.map(function(p){return p[1];}),['#3b82f6','#6d28d9','#5b21b6','#4c1d95','#1d4ed8','#1e40af','#1e3a8a']);
 
-  var topProds = Object.entries(byProd).sort(function(a,b){return b[1]-a[1];}).slice(0,7);
-  hbar('smProdChart', topProds.map(function(p){return p[0].slice(0,22);}), topProds.map(function(p){return p[1];}), ['#3b82f6','#6d28d9','#5b21b6','#4c1d95','#1d4ed8','#1e40af','#1e3a8a']);
-
-  // --- GROUPING FOR TABLE ---
-  var grouped = {};
-  sm.forEach(function(s) {
-    var key = s.date + '|' + s.client + '|' + s.req_by;
-    if (!grouped[key]) {
-      grouped[key] = { date: s.date, client: s.client, req_by: s.req_by, totalQty: 0, products: [] };
-    }
-    grouped[key].products.push(s.product + ' (' + s.qty + ')');
-    grouped[key].totalQty += s.qty;
-  });
-  
-  var groupedArr = Object.values(grouped).sort(function(a,b){return b.date.localeCompare(a.date);});
-
-  document.getElementById('smTable').innerHTML = groupedArr.length ? groupedArr.map(function(g) {
-    var prodHtml = g.products.length === 1 ? g.products[0] : 
-      '<details style="cursor:pointer;"><summary style="color:#a78bfa; outline:none; font-weight:600;">' + g.products.length + ' products</summary><div style="margin-top:6px; font-size:11px; color:#aaa; line-height:1.6; padding-left:12px; border-left:2px solid #333;">' + g.products.join('<br>') + '</div></details>';
-
-    return '<tr>'+
-      '<td>'+fd(g.date)+'</td>'+
-      '<td style="color:#fff">'+prodHtml+'</td>'+
-      '<td style="color:#ddd">'+(g.client||'—')+'</td>'+
-      '<td style="font-family:monospace;color:#a78bfa">'+g.totalQty+'</td>'+
-      '<td><span class="badge poc">'+g.req_by+'</span></td>'+
-      '<td style="color:#aaa">—</td>'+
-      '</tr>';
-  }).join('') : '<tr><td colspan="6" style="text-align:center;color:#555;padding:20px">No samples in selected range</td></tr>';
-}
   // --- GROUP DATA FOR TABLE ---
   var grouped = {};
   sm.forEach(function(s) {
@@ -1024,18 +993,20 @@ window.addEventListener('load',function(){
     fetch(SAMPLES_URL + '?t=' + Date.now(), {cache: 'no-store', redirect: 'follow'})
       .then(function(r) { return r.json(); })
       .then(function(raw) {
-        var sheetName = Object.keys(raw).find(function(k) { return k.toLowerCase().includes('sample'); });
-        var rows = (raw[sheetName] || []).slice(1); 
+        var rows = (raw['Samples'] || []).slice(1); 
         
-        var currentPOC = '', currentDate = '', currentClient = '';
+        var currentPOC = '';
+        var currentDate = '';
+        var currentClient = '';
 
         var parsed = rows.map(function(r) {
-          // 1. Detect POC (Column C / Index 2)
+          
+          // 1. POC & New Request Detection
           var reqByRaw = String(r[2] || '').trim();
           if (reqByRaw) {
+            currentClient = ''; // Reset client memory when a new request starts
             var reqByLower = reqByRaw.toLowerCase();
-            // ONLY these 4 names allowed as per your request
-            var allowed = ['siya', 'mahi', 'bhoomika', 'dhyana'];
+            var allowed = ['siya', 'manjari', 'mahi', 'dhyana', 'faizaan', 'raghav', 'jaydeep', 'meshva', 'shruti'];
             currentPOC = '';
             for (var i = 0; i < allowed.length; i++) {
               if (reqByLower.includes(allowed[i])) { 
@@ -1045,7 +1016,7 @@ window.addEventListener('load',function(){
             }
           }
 
-          // 2. Detect Date (Column D / Index 3)
+          // 2. Date
           var dRaw = r[3];
           if (dRaw) {
             var ds = '';
@@ -1066,23 +1037,20 @@ window.addEventListener('load',function(){
             } catch(err) {}
           }
           
-          // 3. Detect Client (Column M / Index 12)
-          var clientRaw = String(r[12] || '').trim();
+          // 3. Client Memory
+          var clientRaw = String(r[11] || '').trim();
           if (clientRaw) currentClient = clientRaw;
 
-          // 4. MAPPING DATA (Using Column J for Product and L for Qty)
           if (!currentPOC || !currentDate) return null;
-          
-          var prod = String(r[9] || '').trim(); // Column J (Index 9)
-          var qtyVal = parseInt(r[11]) || 1;    // Column L (Index 11)
-          
-          if (!prod || prod.toLowerCase() === 'q') return null; // Skip header/empty rows
+
+          var prod = String(r[8] || r[4] || '').trim();
+          if (!prod) return null;
 
           return {
             date: currentDate,
             product: prod,
-            client: currentClient || '—',
-            qty: qtyVal,
+            client: currentClient,
+            qty: parseInt(r[10] || r[5]) || 1,
             req_by: currentPOC,
             dispatch: ''
           };
@@ -1091,7 +1059,6 @@ window.addEventListener('load',function(){
         if (parsed.length > 0) { 
           SAMPLES = parsed; 
           renderAll(); 
-          console.log('B2B Samples Loaded: ' + parsed.length);
         }
       })
       .catch(function(e) { console.warn('Samples fetch failed', e); });
