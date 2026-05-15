@@ -1087,17 +1087,15 @@ window.addEventListener('load',function(){
             dispatch: ''
           };
         }).filter(Boolean);
-
-        if (parsed.length > 0) { 
-          SAMPLES = parsed; 
-          renderAll(); 
-        }
-          console.log('B2B Samples Loaded: ' + parsed.length);
-        }
-      })
-      .catch(function(e) { console.warn('Samples fetch failed', e); });
+if (parsed.length > 0) { 
+        SAMPLES = parsed; 
+        renderAll(); 
+      }
+    })
+    .catch(function(e) { console.warn('Samples fetch failed', e); });
   }
-});
+}); 
 </script>
 </body>
 </html>
+       
