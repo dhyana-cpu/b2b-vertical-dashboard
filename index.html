@@ -835,16 +835,40 @@ function renderSamples(){
   var topProds=Object.entries(byProd).sort(function(a,b){return b[1]-a[1];}).slice(0,7);
   hbar('smProdChart',topProds.map(function(p){return p[0].slice(0,22);}),topProds.map(function(p){return p[1];}),['#3b82f6','#6d28d9','#5b21b6','#4c1d95','#1d4ed8','#1e40af','#1e3a8a']);
 
-  document.getElementById('smTable').innerHTML=sm.length?sm.sort(function(a,b){return b.date.localeCompare(a.date);}).map(function(s){
+  // --- GROUP DATA FOR TABLE ---
+  var grouped = {};
+  sm.forEach(function(s) {
+    // Create a unique group key for each request
+    var key = s.date + '|' + s.client + '|' + s.req_by;
+    if (!grouped[key]) {
+      grouped[key] = { date: s.date, client: s.client, req_by: s.req_by, totalQty: 0, products: [] };
+    }
+    grouped[key].products.push(s.product + ' (' + s.qty + ')');
+    grouped[key].totalQty += s.qty;
+  });
+  
+  // Sort newest first
+  var groupedArr = Object.values(grouped).sort(function(a,b){return b.date.localeCompare(a.date);});
+
+  // Draw Table with native HTML Dropdown
+  document.getElementById('smTable').innerHTML = groupedArr.length ? groupedArr.map(function(g) {
+    var prodHtml = '';
+    if (g.products.length === 1) {
+      prodHtml = g.products[0]; // If only 1 product, just show it normally
+    } else {
+      // If multiple products, wrap them in a clickable details/summary dropdown
+      prodHtml = '<details style="cursor:pointer;"><summary style="color:#a78bfa; outline:none; font-weight:600;">' + g.products.length + ' products</summary><div style="margin-top:6px; font-size:11px; color:#aaa; line-height:1.6; padding-left:12px; border-left:2px solid #333;">' + g.products.join('<br>') + '</div></details>';
+    }
+
     return '<tr>'+
-      '<td>'+fd(s.date)+'</td>'+
-      '<td style="color:#fff">'+(s.product||'—')+'</td>'+
-      '<td style="color:#ddd">'+(s.client||'—')+'</td>'+
-      '<td style="font-family:monospace;color:#a78bfa">'+s.qty+'</td>'+
-      '<td><span class="badge poc">'+s.req_by+'</span></td>'+
-      '<td style="color:#aaa">'+(s.dispatch||'—')+'</td>'+
+      '<td>'+fd(g.date)+'</td>'+
+      '<td style="color:#fff">'+prodHtml+'</td>'+
+      '<td style="color:#ddd">'+(g.client||'—')+'</td>'+
+      '<td style="font-family:monospace;color:#a78bfa">'+g.totalQty+'</td>'+
+      '<td><span class="badge poc">'+g.req_by+'</span></td>'+
+      '<td style="color:#aaa">—</td>'+
       '</tr>';
-  }).join(''):'<tr><td colspan="6" style="text-align:center;color:#555;padding:20px">No samples in selected range</td></tr>';
+  }).join('') : '<tr><td colspan="6" style="text-align:center;color:#555;padding:20px">No samples in selected range</td></tr>';
 }
 
 ['bdPhase','bdSource','bdPoc'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('change',renderBD);});
@@ -964,35 +988,80 @@ window.addEventListener('load',function(){
     }).catch(function(e){});
   }
 
+  // --- LIVE SAMPLES FETCH ---
   if (typeof SAMPLES_URL !== 'undefined' && SAMPLES_URL) {
-    fetch(SAMPLES_URL + '?t=' + Date.now(), {cache: 'no-store', redirect: 'follow'}).then(function(r) { return r.json(); }).then(function(raw) {
-      var parsed = (raw['Samples'] || []).slice(1).map(function(r) {
-        var reqByLower = String(r[2] || '').trim().toLowerCase();
-        var allowed = ['siya', 'manjari', 'mahi', 'dhyana'], matchedPOC = '';
-        for (var i = 0; i < allowed.length; i++) {
-          if (reqByLower.includes(allowed[i])) { matchedPOC = allowed[i].charAt(0).toUpperCase() + allowed[i].slice(1); break; }
-        }
-        if (!matchedPOC) return null;
-        var dRaw = r[3], ds = '';
-        if (!dRaw) return null;
-        try {
-          if (dRaw instanceof Date || Object.prototype.toString.call(dRaw) === '[object Date]') {
-             var ist = new Date(dRaw.getTime() + 5.5 * 60 * 60 * 1000); ds = ist.getFullYear() + '-' + String(ist.getMonth() + 1).padStart(2, '0') + '-' + String(ist.getDate()).padStart(2, '0');
-          } else if (typeof dRaw === 'string') {
-             if (dRaw.includes('/')) {
-                 var parts = dRaw.split('/');
-                 if (parts.length >= 3) { var y = parts[2].length === 2 ? '20' + parts[2] : parts[2]; ds = y + '-' + parts[1].padStart(2, '0') + '-' + parts[0].padStart(2, '0'); } 
-                 else { ds = dRaw.slice(0, 10); }
-             } else { ds = dRaw.slice(0, 10); }
+    fetch(SAMPLES_URL + '?t=' + Date.now(), {cache: 'no-store', redirect: 'follow'})
+      .then(function(r) { return r.json(); })
+      .then(function(raw) {
+        var rows = (raw['Samples'] || []).slice(1); 
+        
+        var currentPOC = '';
+        var currentDate = '';
+        var currentClient = '';
+
+        var parsed = rows.map(function(r) {
+          
+          // 1. POC & New Request Detection
+          var reqByRaw = String(r[2] || '').trim();
+          if (reqByRaw) {
+            currentClient = ''; // Reset client memory when a new request starts
+            var reqByLower = reqByRaw.toLowerCase();
+            var allowed = ['siya', 'manjari', 'mahi', 'dhyana', 'faizaan', 'raghav', 'jaydeep', 'meshva', 'shruti'];
+            currentPOC = '';
+            for (var i = 0; i < allowed.length; i++) {
+              if (reqByLower.includes(allowed[i])) { 
+                currentPOC = allowed[i].charAt(0).toUpperCase() + allowed[i].slice(1); 
+                break; 
+              }
+            }
           }
-          if (!ds.includes('-')) return null; 
-        } catch(err) { return null; }
-        var prod = String(r[8] || r[4] || '').trim(); 
-        if (!prod) return null;
-        return { date: ds, product: prod, client: String(r[11] || '').trim(), qty: parseInt(r[10] || r[5]) || 1, req_by: matchedPOC, dispatch: '' };
-      }).filter(Boolean);
-      if (parsed.length > 0) { SAMPLES = parsed; renderAll(); }
-    }).catch(function(e) { });
+
+          // 2. Date
+          var dRaw = r[3];
+          if (dRaw) {
+            var ds = '';
+            try {
+              if (dRaw instanceof Date || Object.prototype.toString.call(dRaw) === '[object Date]') {
+                 var ist = new Date(dRaw.getTime() + 5.5 * 60 * 60 * 1000); 
+                 ds = ist.getFullYear() + '-' + String(ist.getMonth() + 1).padStart(2, '0') + '-' + String(ist.getDate()).padStart(2, '0');
+              } else if (typeof dRaw === 'string') {
+                 if (dRaw.includes('/')) {
+                     var parts = dRaw.split('/');
+                     if (parts.length >= 3) { 
+                         var y = parts[2].length === 2 ? '20' + parts[2] : parts[2]; 
+                         ds = y + '-' + parts[1].padStart(2, '0') + '-' + parts[0].padStart(2, '0'); 
+                     } else { ds = dRaw.slice(0, 10); }
+                 } else { ds = dRaw.slice(0, 10); }
+              }
+              if (ds.includes('-')) currentDate = ds;
+            } catch(err) {}
+          }
+          
+          // 3. Client Memory
+          var clientRaw = String(r[11] || '').trim();
+          if (clientRaw) currentClient = clientRaw;
+
+          if (!currentPOC || !currentDate) return null;
+
+          var prod = String(r[8] || r[4] || '').trim();
+          if (!prod) return null;
+
+          return {
+            date: currentDate,
+            product: prod,
+            client: currentClient,
+            qty: parseInt(r[10] || r[5]) || 1,
+            req_by: currentPOC,
+            dispatch: ''
+          };
+        }).filter(Boolean);
+
+        if (parsed.length > 0) { 
+          SAMPLES = parsed; 
+          renderAll(); 
+        }
+      })
+      .catch(function(e) { console.warn('Samples fetch failed', e); });
   }
 });
 </script>
