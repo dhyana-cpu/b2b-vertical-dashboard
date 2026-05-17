@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>B2B Dashboard — Snackible</title>
+<title>B2B Dashboard v4.0</title>
 <style>
 :root{--bg:#0a0a0a;--s:#141414;--s2:#1c1c1c;--b:rgba(255,255,255,.07);--t:#fff;--m:#888;--ac:#7c3aed;--ac2:#a78bfa;--gr:#22c55e;--or:#f97316;--bl:#3b82f6;--re:#ef4444;--ye:#eab308;}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -80,7 +80,10 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
 </div>
 <div class="wrap">
   <div class="ph">
-    <div><p class="pt">B2B Dashboard</p><p class="ps">Mails · Sales · Ads · InMails · <em id="lu">—</em></p></div>
+    <div>
+        <p class="pt">B2B Dashboard <span style="font-size:12px;color:var(--gr);background:rgba(34,197,94,0.1);padding:2px 8px;border-radius:10px;">v4.0 Live</span></p>
+        <p class="ps">Mails · Sales · Ads · InMails · <em id="lu">—</em></p>
+    </div>
     <div class="df">
       <span class="fl">Range</span>
       <input type="date" class="di" id="df">
@@ -902,34 +905,40 @@ window.addEventListener('load',function(){
     }).catch(function(e){});
   }
 
+  // --- LIVE SALES FETCH ---
   if (typeof SALES_URL !== 'undefined' && SALES_URL) {
     fetch(SALES_URL+'?t='+Date.now(),{cache:'no-store',redirect:'follow'}).then(function(r){return r.json();}).then(function(sRaw){
       var parsed=(sRaw['Sales_Log']||[]).slice(1).map(function(r){
-        // STRICT INST ORDER FILTER
+        
+        // STRICT INST ORDER & POC FILTER
         var typeStr = String(r[1] || '').trim();
         if (typeStr.toLowerCase() !== 'inst order') return null;
+        var pocRaw = String(r[4]||r[3]||'').trim();
+        if (pocRaw.toLowerCase() === 'aditi') return null;
 
         var dRaw=r[2]||r[3],ds='';
         if(dRaw){
-          var dObj=new Date(dRaw);
-          if(!isNaN(dObj.getTime())){ 
-              var ist = new Date(dObj.getTime() + 5.5 * 60 * 60 * 1000);
-              ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0'); 
-          }
-          else if(typeof dRaw==='string' && dRaw.includes('/')){ 
-              var p=dRaw.split('/'); 
+          var dStr = String(dRaw).trim();
+          if(dStr.includes('/')){ 
+              var p=dStr.split('/'); 
               if(p.length >= 3) ds=(p[2].length===2?'20'+p[2]:p[2])+'-'+p[1].padStart(2,'0')+'-'+p[0].padStart(2,'0'); 
+          } else {
+              var dObj=new Date(dStr);
+              if(!isNaN(dObj.getTime())){ 
+                  var ist = new Date(dObj.getTime() + 5.5 * 60 * 60 * 1000);
+                  ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0'); 
+              }
           }
         }
-        var amt = parseFloat(String(r[6]||r[7]||r[5]||'0').replace(/[^\d.-]/g, ''));
         
-        if (!ds || amt === 0) return null;
+        var amt = parseFloat(String(r[6]||r[7]||r[5]||'0').replace(/[^\d.-]/g, ''));
+        if (!ds || isNaN(amt) || amt === 0) return null;
         
         return {
             ref: String(r[0]||'—'), 
             date: ds, 
             client: String(r[5]||r[4]||'—').trim(), 
-            poc: String(r[4]||r[3]||'—').trim(), 
+            poc: pocRaw || '—', 
             type: 'Inst Order', 
             amt: amt
         };
@@ -944,7 +953,7 @@ window.addEventListener('load',function(){
     fetch(SAMPLES_URL + '?t=' + Date.now(), {cache: 'no-store', redirect: 'follow'})
       .then(function(r) { return r.json(); })
       .then(function(raw) {
-        var sheetName = Object.keys(raw).find(function(k) { return k.toLowerCase().includes('sample'); });
+        var sheetName = Object.keys(raw).find(function(k) { return k.toLowerCase().includes('sample'); }) || Object.keys(raw)[0];
         var rows = (raw[sheetName] || []).slice(1); 
         
         var currentPOC = '', currentDate = '', currentClient = '';
@@ -968,7 +977,7 @@ window.addEventListener('load',function(){
 
           // 2. Dates (Col D)
           var dRaw = r[3];
-          if (dRaw) {
+          if (dRaw && String(dRaw).trim() !== '') {
             var dStr = String(dRaw).trim();
             if (dStr.includes('/')) {
               var p = dStr.split('/');
@@ -977,7 +986,7 @@ window.addEventListener('load',function(){
                 currentDate = yr + '-' + p[1].padStart(2, '0') + '-' + p[0].padStart(2, '0');
               }
             } else {
-              var tempD = new Date(dRaw);
+              var tempD = new Date(dStr);
               if (!isNaN(tempD.getTime())) {
                 var ist = new Date(tempD.getTime() + 5.5 * 60 * 60 * 1000);
                 currentDate = ist.getFullYear() + '-' + String(ist.getMonth() + 1).padStart(2, '0') + '-' + String(ist.getDate()).padStart(2, '0');
@@ -991,11 +1000,11 @@ window.addEventListener('load',function(){
 
           if (!currentPOC || !currentDate) return null;
 
-          // 4. Product (Col I) and Qty (Col K)
-          var prod = String(r[8] || '').trim();
-          var qtyVal = parseInt(r[10]) || 1;
+          // 4. Product (Col I OR Col E) and Qty (Col K OR Col F)
+          var prod = String(r[8] || r[4] || '').trim();
+          var qtyVal = parseInt(r[10] || r[5]) || 1;
 
-          if (!prod || prod.toLowerCase() === 'q') return null;
+          if (!prod || prod.toLowerCase() === 'q' || prod.toLowerCase() === 'dipsters list') return null;
 
           return {
             date: currentDate,
