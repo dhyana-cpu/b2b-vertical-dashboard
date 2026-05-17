@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>B2B Dashboard — Snackible</title>
 <style>
 :root{--bg:#0a0a0a;--s:#141414;--s2:#1c1c1c;--b:rgba(255,255,255,.07);--t:#fff;--m:#888;--ac:#7c3aed;--ac2:#a78bfa;--gr:#22c55e;--or:#f97316;--bl:#3b82f6;--re:#ef4444;--ye:#eab308;}
@@ -326,7 +329,58 @@ const BD_URL='https://script.google.com/macros/s/AKfycbwZOjviZgLXKd0nuXKxiGHUeJ9
 const SALES_URL='https://script.google.com/macros/s/AKfycbyNjcsuR8UfA9m81N5dVF-U5Fhvzmk_i8jjmhIqLJwNiGqA2h9j83ZizKyAS8jcP2Cm/exec';
 const SAMPLES_URL='https://script.google.com/macros/s/AKfycbyXk1rfhfq0yAa1e3gN4jK5_6jIiAM2Q3pwZfSRtgz6UzqB3C5chDYtQ4uWIyMuCU9x/exec';
 
-var BD_ROWS=[], ML_PRIMARY=[], ML_FOLLOWUP=[], SALES=[], SAMPLES=[], ML_BY_DATE=[], ML_BY_IND=[], ADS=[];
+var BD_ROWS=[], ML_PRIMARY=[], ML_FOLLOWUP=[];
+var SALES=[]; // Dummy data removed so live data will populate
+var SAMPLES=[];
+
+const ML_BY_DATE=[
+  {date:'2026-04-08',del:994,open:177,click:26,resp:51,bounce:0},
+  {date:'2026-04-09',del:811,open:150,click:9,resp:5,bounce:0},
+  {date:'2026-04-10',del:1062,open:182,click:17,resp:2,bounce:0},
+  {date:'2026-04-11',del:0,open:27,click:27,resp:0,bounce:0},
+  {date:'2026-04-12',del:0,open:2,click:0,resp:0,bounce:0},
+  {date:'2026-04-13',del:387,open:87,click:9,resp:2,bounce:0},
+];
+const ML_BY_IND=[
+  {ind:'Facility Mgmt',del:1172,open:234,click:52,resp:51,bounce:41},
+  {ind:'Corporates',del:812,open:153,click:15,resp:4,bounce:9},
+  {ind:'IT (8 Apr)',del:767,open:173,click:16,resp:4,bounce:8},
+  {ind:'IT (9 Apr)',del:503,open:65,click:5,resp:1,bounce:16},
+];
+
+var ADS=[
+  {date:'2026-03-31',client:'Vijay Chaudhary',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'No',val:null},
+  {date:'2026-03-31',client:'Rachael',type:'Inbound',poc:'Siya',lead:'Cold',conv:'—',val:null},
+  {date:'2026-03-31',client:'Gaunisha Gaanavi',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'No',val:null},
+  {date:'2026-03-31',client:'Tanisha Bhatt',type:'Inbound',poc:'Siya',lead:'Warm',conv:'—',val:null},
+  {date:'2026-03-31',client:'Khushi Sachdeva',type:'CCBD',poc:'Siya',lead:'Warm',conv:'Yes',val:7890.9},
+  {date:'2026-04-01',client:'Hasti Shah',type:'Inbound',poc:'Siya',lead:'Cold',conv:'—',val:null},
+  {date:'2026-04-02',client:'Kala Adarsh',type:'Inbound',poc:'Siya',lead:'Cold',conv:'—',val:null},
+  {date:'2026-04-06',client:'Shreya Sinha',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'No',val:null},
+  {date:'2026-04-07',client:'Syed Abdullah',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'No',val:null},
+  {date:'2026-04-06',client:'Shaila Aggarwal',type:'Inbound',poc:'Siya',lead:'Cold',conv:'—',val:null},
+  {date:'2026-04-06',client:'Shalaka Somani',type:'Inbound',poc:'Siya',lead:'Cold',conv:'Yes',val:13200},
+  {date:'2026-04-06',client:'Pikasa Bagchi',type:'Inbound',poc:'Siya',lead:'Cold',conv:'—',val:null},
+  {date:'2026-04-07',client:'Suvhankar Das',type:'CCBD',poc:'Siya',lead:'Cold',conv:'—',val:null},
+  {date:'2026-04-08',client:'Ratndeep Bhagwat',type:'Inbound',poc:'Manjari',lead:'Cold',conv:'—',val:null},
+  {date:'2026-04-06',client:'Gagan Oberoi',type:'CCBD',poc:'Siya',lead:'Warm',conv:'—',val:null},
+  {date:'2026-04-08',client:'Vivek Pandey',type:'CCBD',poc:'Manjari',lead:'Warm',conv:'—',val:null},
+  {date:'2026-04-09',client:'Neeraj Kumar',type:'CCBD',poc:'Siya',lead:'Cold',conv:'—',val:null},
+];
+
+const INMAILS=[
+  {n:1,ind:'FM',company:'CBRE South Asia',role:'Assistant Manager',poc:'Rajesh K Nair'},
+  {n:2,ind:'FM',company:'Quess Corp',role:'GM Procurement',poc:'Shiv Kumara'},
+  {n:3,ind:'FM',company:'Supreme Facility Management',role:'Group Director & CEO',poc:'Dr. Amol Shingate'},
+  {n:4,ind:'FM',company:'ISS Facility Services India',role:'Business Manager',poc:'Bishwanath Bhattacharya'},
+  {n:5,ind:'FM',company:'ISS Facility Services India',role:'HR Executive',poc:'Akshar Oza'},
+  {n:6,ind:'FM',company:'JLL India',role:'Operations Manager',poc:'Vikram Nair'},
+  {n:7,ind:'IT',company:'Infosys',role:'Procurement Lead',poc:'Ramesh Iyer'},
+  {n:8,ind:'IT',company:'TCS',role:'Admin Manager',poc:'Priya Sharma'},
+  {n:9,ind:'IT',company:'Wipro',role:'Facility Head',poc:'Anand Kumar'},
+  {n:10,ind:'IT',company:'HCL Technologies',role:'Corporate Services',poc:'Neha Singh'},
+  {n:11,ind:'FM',company:'Sodexo India',role:'Procurement Manager',poc:'Sanjay Mehta'},
+];
 
 // ── HELPERS ───────────────────────────────────────────────
 function fmt(n){if(!n||isNaN(n)||n===0)return'—';if(n>=100000)return'₹'+(n/100000).toFixed(1)+'L';if(n>=1000)return'₹'+(n/1000).toFixed(0)+'K';return'₹'+Math.round(n);}
@@ -464,7 +518,6 @@ function renderAll(){
   set('tResp',mlResp); set('tRespR',pct(mlResp,mlDel)+' response rate');
   set('tLeads',totalLeads); set('tConvR',totalConv+' converted · '+pct(totalConv,totalLeads||1));
   
-  // Hardcoded INMAILS fallback summary
   var INMAILS = [{n:1,ind:'FM'}, {n:2,ind:'FM'}, {n:3,ind:'FM'}, {n:4,ind:'FM'}, {n:5,ind:'FM'}, {n:6,ind:'FM'}, {n:7,ind:'IT'}, {n:8,ind:'IT'}, {n:9,ind:'IT'}, {n:10,ind:'IT'}, {n:11,ind:'FM'}];
   set('tInmail',INMAILS.length); set('tInmailS','FM: '+INMAILS.filter(function(i){return i.ind==='FM';}).length+' · IT: '+INMAILS.filter(function(i){return i.ind==='IT';}).length);
   set('fi',(sales.length+ads.length)+' records');
@@ -754,14 +807,6 @@ function renderSamples(){
   var byBy = {}; sm.forEach(function(s){if(s.req_by) byBy[s.req_by] = (byBy[s.req_by]||0) + 1;});
   var topBy = Object.entries(byBy).sort(function(a,b){return b[1]-a[1];})[0];
 
-  set('smTotal', sm.length); 
-  set('smSub', sm.length + ' items in range');
-  set('smClients', clients.size);
-  set('smTopProd', topProd ? topProd[0].slice(0,22) : '—'); 
-  set('smTopQty', topProd ? topProd[1] + ' units' : '—');
-  set('smTopPoc', topBy ? topBy[0] : '—');
-  set('smCount', sm.length + ' individual items shown');
-
   var byDate = {}; sm.forEach(function(s){byDate[s.date] = (byDate[s.date]||0) + 1;});
   var dates = Object.keys(byDate).sort();
   barChart('smDateChart', dates.map(fd), [{label:'Items', data:dates.map(function(d){return byDate[d];}), color:'#3b82f6', vf:function(v){return v;}}], 180);
@@ -782,12 +827,22 @@ function renderSamples(){
   
   var groupedArr = Object.values(grouped).sort(function(a,b){return b.date.localeCompare(a.date);});
 
+  set('smTotal', sm.length); 
+  set('smSub', sm.length + ' items in range');
+  set('smClients', clients.size);
+  set('smTopProd', topProd ? topProd[0].slice(0,22) : '—'); 
+  set('smTopQty', topProd ? topProd[1] + ' units' : '—');
+  set('smTopPoc', topBy ? topBy[0] : '—');
+  set('smCount', groupedArr.length + ' requests shown'); 
+
   document.getElementById('smTable').innerHTML = groupedArr.length ? groupedArr.map(function(g) {
     var prodHtml = '';
     if (g.products.length === 1) {
       prodHtml = g.products[0];
     } else {
-      prodHtml = '<details style="cursor:pointer;"><summary style="color:#a78bfa; outline:none; font-weight:600;">' + g.products.length + ' products</summary><div style="margin-top:6px; font-size:11px; color:#aaa; line-height:1.6; padding-left:12px; border-left:2px solid #333;">' + g.products.join('<br>') + '</div></details>';
+      var remaining = g.products.length - 1;
+      var firstProd = g.products[0].split(' (')[0]; 
+      prodHtml = '<details style="cursor:pointer;"><summary style="color:#a78bfa; outline:none; font-weight:600;">' + firstProd + ' <span style="color:#888;font-size:10px;">(+' + remaining + ' more)</span></summary><div style="margin-top:6px; font-size:11px; color:#aaa; line-height:1.6; padding-left:12px; border-left:2px solid #333;">' + g.products.join('<br>') + '</div></details>';
     }
 
     return '<tr>'+
@@ -900,25 +955,40 @@ window.addEventListener('load',function(){
 
   if (typeof SALES_URL !== 'undefined' && SALES_URL) {
     fetch(SALES_URL+'?t='+Date.now(),{cache:'no-store',redirect:'follow'}).then(function(r){return r.json();}).then(function(sRaw){
-      var parsed=(sRaw['Sales_Log']||[]).filter(function(r){
-        return r[0] && r[3] && r[6] && String(r[1]||'').trim().toLowerCase() === 'inst order' && String(r[4]||'').trim().toLowerCase() !== 'aditi';
-      }).map(function(r){
+      var parsed=(sRaw['Sales_Log']||[]).slice(1).map(function(r){
+        var typeStr = String(r[1] || '').trim();
+        if (typeStr.toLowerCase() !== 'inst order') return null;
+
         var dRaw=r[2]||r[3],ds='';
         if(dRaw){
-          if(typeof dRaw==='string'&&dRaw.indexOf('/')>-1){
-            var dp=dRaw.split('/'); ds='2026-'+String(parseInt(dp[1])).padStart(2,'0')+'-'+String(parseInt(dp[0])).padStart(2,'0');
-          } else {
-            var dObj=new Date(dRaw);
-            if(!isNaN(dObj)){var ist=new Date(dObj.getTime()+5.5*60*60*1000);ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0');}
+          var dObj=new Date(dRaw);
+          if(!isNaN(dObj.getTime())){ 
+              var ist = new Date(dObj.getTime() + 5.5 * 60 * 60 * 1000);
+              ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0'); 
+          }
+          else if(typeof dRaw==='string' && dRaw.includes('/')){ 
+              var p=dRaw.split('/'); 
+              if(p.length >= 3) ds=(p[2].length===2?'20'+p[2]:p[2])+'-'+p[1].padStart(2,'0')+'-'+p[0].padStart(2,'0'); 
           }
         }
-        return ds?{ref:String(r[0]),date:ds,client:String(r[5]||'').trim(),poc:String(r[4]||'').trim(),type:'Inst Order',amt:parseFloat(String(r[6]).replace(/,/g,''))||0}:null;
+        var amt = parseFloat(String(r[6]||r[7]||r[5]||'0').replace(/[^\d.-]/g, ''));
+        if (!ds || amt === 0) return null;
+        
+        return {
+            ref: String(r[0]||'—'), 
+            date: ds, 
+            client: String(r[5]||r[4]||'—').trim(), 
+            poc: String(r[4]||r[3]||'—').trim(), 
+            type: 'Inst Order', 
+            amt: amt
+        };
       }).filter(Boolean);
+      
       if(parsed.length > 0){ SALES = parsed; renderAll(); }
-    }).catch(function(e){});
+    }).catch(function(e){ console.warn("Sales API Error", e); });
   }
 
-// --- LIVE SAMPLES FETCH ---
+  // --- LIVE SAMPLES FETCH ---
   if (typeof SAMPLES_URL !== 'undefined' && SAMPLES_URL) {
     fetch(SAMPLES_URL + '?t=' + Date.now(), {cache: 'no-store', redirect: 'follow'})
       .then(function(r) { return r.json(); })
@@ -926,9 +996,7 @@ window.addEventListener('load',function(){
         var sheetName = Object.keys(raw).find(function(k) { return k.toLowerCase().includes('sample'); });
         var rows = (raw[sheetName] || []).slice(1); 
         
-        var currentPOC = '';
-        var currentDate = '';
-        var currentClient = '';
+        var currentPOC = '', currentDate = '', currentClient = '';
 
         var parsed = rows.map(function(r) {
           
@@ -960,7 +1028,7 @@ window.addEventListener('load',function(){
               }
             } else {
               var tempD = new Date(dRaw);
-              if (!isNaN(tempD)) {
+              if (!isNaN(tempD.getTime())) {
                 var ist = new Date(tempD.getTime() + 5.5 * 60 * 60 * 1000);
                 currentDate = ist.getFullYear() + '-' + String(ist.getMonth() + 1).padStart(2, '0') + '-' + String(ist.getDate()).padStart(2, '0');
               }
