@@ -926,15 +926,18 @@ window.addEventListener('load',function(){
         var sheetName = Object.keys(raw).find(function(k) { return k.toLowerCase().includes('sample'); });
         var rows = (raw[sheetName] || []).slice(1); 
         
-        var currentPOC = '', currentDate = '', currentClient = '';
+        var currentPOC = '';
+        var currentDate = '';
+        var currentClient = '';
 
         var parsed = rows.map(function(r) {
           
-          // 1. Detect POC (Column C / Index 2)
+          // 1. POC & Memory Reset (Column C / Index 2)
           var reqByRaw = String(r[2] || '').trim();
           if (reqByRaw) {
-            currentClient = ''; // Reset client memory for new request
+            currentClient = ''; // Reset client memory when a new request block starts
             var reqByLower = reqByRaw.toLowerCase();
+            // Strictly filter for the B2B team only
             var allowed = ['siya', 'mahi', 'bhoomika', 'dhyana'];
             currentPOC = '';
             for (var i = 0; i < allowed.length; i++) {
@@ -945,7 +948,7 @@ window.addEventListener('load',function(){
             }
           }
 
-          // 2. Detect and Format Date (Column D / Index 3)
+          // 2. Date Memory (Column D / Index 3)
           var dRaw = r[3];
           if (dRaw) {
             var dStr = String(dRaw).trim();
@@ -958,19 +961,20 @@ window.addEventListener('load',function(){
             } else {
               var tempD = new Date(dRaw);
               if (!isNaN(tempD)) {
-                var ist = new Date(tempD.getTime() + 5.5 * 60 * 60 * 1000); 
+                var ist = new Date(tempD.getTime() + 5.5 * 60 * 60 * 1000);
                 currentDate = ist.getFullYear() + '-' + String(ist.getMonth() + 1).padStart(2, '0') + '-' + String(ist.getDate()).padStart(2, '0');
               }
             }
           }
           
-          // 3. Detect Client (Column L / Index 11) <-- FIXED: Was index 12 (Phone)
+          // 3. Client Memory (Column L / Index 11)
           var clientRaw = String(r[11] || '').trim();
           if (clientRaw) currentClient = clientRaw;
 
+          // If it is a blank row and we haven't found a valid POC/Date yet, skip it
           if (!currentPOC || !currentDate) return null;
 
-          // 4. Product (Col I / Index 8) and Qty (Col K / Index 10) <-- FIXED
+          // 4. Product (Column I / Index 8) and Qty (Column K / Index 10)
           var prod = String(r[8] || '').trim();
           var qtyVal = parseInt(r[10]) || 1;
 
