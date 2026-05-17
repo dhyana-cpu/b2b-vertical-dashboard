@@ -787,7 +787,10 @@ function renderSamples(){
     if (g.products.length === 1) {
       prodHtml = g.products[0];
     } else {
-      prodHtml = '<details style="cursor:pointer;"><summary style="color:#a78bfa; outline:none; font-weight:600;">' + g.products.length + ' products</summary><div style="margin-top:6px; font-size:11px; color:#aaa; line-height:1.6; padding-left:12px; border-left:2px solid #333;">' + g.products.join('<br>') + '</div></details>';
+      // SMART FIX: Show the first product name, then (+ X more) so it's not hidden!
+      var remaining = g.products.length - 1;
+      var firstProd = g.products[0].split(' (')[0]; 
+      prodHtml = '<details style="cursor:pointer;"><summary style="color:#a78bfa; outline:none; font-weight:600;">' + firstProd + ' <span style="color:#888;font-size:10px;">(+' + remaining + ' more)</span></summary><div style="margin-top:6px; font-size:11px; color:#aaa; line-height:1.6; padding-left:12px; border-left:2px solid #333;">' + g.products.join('<br>') + '</div></details>';
     }
 
     return '<tr>'+
@@ -926,18 +929,15 @@ window.addEventListener('load',function(){
         var sheetName = Object.keys(raw).find(function(k) { return k.toLowerCase().includes('sample'); });
         var rows = (raw[sheetName] || []).slice(1); 
         
-        var currentPOC = '';
-        var currentDate = '';
-        var currentClient = '';
+        var currentPOC = '', currentDate = '', currentClient = '';
 
         var parsed = rows.map(function(r) {
           
-          // 1. POC & Memory Reset (Column C / Index 2)
+          // 1. POC & Memory Reset
           var reqByRaw = String(r[2] || '').trim();
           if (reqByRaw) {
-            currentClient = ''; // Reset client memory when a new request block starts
+            currentClient = ''; // Reset client memory for new block
             var reqByLower = reqByRaw.toLowerCase();
-            // Strictly filter for the B2B team only
             var allowed = ['siya', 'mahi', 'bhoomika', 'dhyana'];
             currentPOC = '';
             for (var i = 0; i < allowed.length; i++) {
@@ -948,7 +948,7 @@ window.addEventListener('load',function(){
             }
           }
 
-          // 2. Date Memory (Column D / Index 3)
+          // 2. Bulletproof Date Parser (Fixes the 14th/15th issue)
           var dRaw = r[3];
           if (dRaw) {
             var dStr = String(dRaw).trim();
@@ -959,22 +959,20 @@ window.addEventListener('load',function(){
                 currentDate = yr + '-' + p[1].padStart(2, '0') + '-' + p[0].padStart(2, '0');
               }
             } else {
-              var tempD = new Date(dRaw);
-              if (!isNaN(tempD)) {
-                var ist = new Date(tempD.getTime() + 5.5 * 60 * 60 * 1000);
-                currentDate = ist.getFullYear() + '-' + String(ist.getMonth() + 1).padStart(2, '0') + '-' + String(ist.getDate()).padStart(2, '0');
+              var dObj = new Date(dRaw);
+              if (!isNaN(dObj.getTime())) {
+                currentDate = dObj.getFullYear() + '-' + String(dObj.getMonth() + 1).padStart(2, '0') + '-' + String(dObj.getDate()).padStart(2, '0');
               }
             }
           }
           
-          // 3. Client Memory (Column L / Index 11)
+          // 3. Client Memory
           var clientRaw = String(r[11] || '').trim();
           if (clientRaw) currentClient = clientRaw;
 
-          // If it is a blank row and we haven't found a valid POC/Date yet, skip it
           if (!currentPOC || !currentDate) return null;
 
-          // 4. Product (Column I / Index 8) and Qty (Column K / Index 10)
+          // 4. Product & Qty
           var prod = String(r[8] || '').trim();
           var qtyVal = parseInt(r[10]) || 1;
 
