@@ -918,7 +918,7 @@ window.addEventListener('load',function(){
     }).catch(function(e){});
   }
 
-  // --- LIVE SAMPLES FETCH ---
+// --- LIVE SAMPLES FETCH ---
   if (typeof SAMPLES_URL !== 'undefined' && SAMPLES_URL) {
     fetch(SAMPLES_URL + '?t=' + Date.now(), {cache: 'no-store', redirect: 'follow'})
       .then(function(r) { return r.json(); })
@@ -930,9 +930,10 @@ window.addEventListener('load',function(){
 
         var parsed = rows.map(function(r) {
           
+          // 1. Detect POC (Column C / Index 2)
           var reqByRaw = String(r[2] || '').trim();
           if (reqByRaw) {
-            currentClient = ''; 
+            currentClient = ''; // Reset client memory for new request
             var reqByLower = reqByRaw.toLowerCase();
             var allowed = ['siya', 'mahi', 'bhoomika', 'dhyana'];
             currentPOC = '';
@@ -944,33 +945,34 @@ window.addEventListener('load',function(){
             }
           }
 
+          // 2. Detect and Format Date (Column D / Index 3)
           var dRaw = r[3];
           if (dRaw) {
-            try {
-              if (typeof dRaw === 'string') {
-                if (dRaw.includes('/')) {
-                  var p = dRaw.split('/');
-                  if (p.length >= 3) {
-                    var yr = p[2].length === 2 ? '20' + p[2] : p[2];
-                    currentDate = yr + '-' + p[1].padStart(2, '0') + '-' + p[0].padStart(2, '0');
-                  }
-                } else {
-                  var tempD = new Date(dRaw);
-                  if (!isNaN(tempD)) currentDate = new Date(tempD.getTime() + 19800000).toISOString().slice(0, 10);
-                }
-              } else {
-                currentDate = new Date(new Date(dRaw).getTime() + 19800000).toISOString().slice(0, 10);
+            var dStr = String(dRaw).trim();
+            if (dStr.includes('/')) {
+              var p = dStr.split('/');
+              if (p.length >= 3) {
+                var yr = p[2].length === 2 ? '20' + p[2] : p[2];
+                currentDate = yr + '-' + p[1].padStart(2, '0') + '-' + p[0].padStart(2, '0');
               }
-            } catch(e) {}
+            } else {
+              var tempD = new Date(dRaw);
+              if (!isNaN(tempD)) {
+                var ist = new Date(tempD.getTime() + 5.5 * 60 * 60 * 1000); 
+                currentDate = ist.getFullYear() + '-' + String(ist.getMonth() + 1).padStart(2, '0') + '-' + String(ist.getDate()).padStart(2, '0');
+              }
+            }
           }
           
-          var clientRaw = String(r[12] || '').trim();
+          // 3. Detect Client (Column L / Index 11) <-- FIXED: Was index 12 (Phone)
+          var clientRaw = String(r[11] || '').trim();
           if (clientRaw) currentClient = clientRaw;
 
           if (!currentPOC || !currentDate) return null;
 
-          var prod = String(r[9] || '').trim();
-          var qtyVal = parseInt(r[11]) || 1;
+          // 4. Product (Col I / Index 8) and Qty (Col K / Index 10) <-- FIXED
+          var prod = String(r[8] || '').trim();
+          var qtyVal = parseInt(r[10]) || 1;
 
           if (!prod || prod.toLowerCase() === 'q') return null;
 
