@@ -949,27 +949,34 @@ window.addEventListener('load',function(){
       .then(function(r) { return r.json(); })
       .then(function(raw) {
         
-        // 1. Target the new tab: Find the sheet with "recent" in the name
         var sheetKeys = Object.keys(raw);
         var sheetName = sheetKeys.find(function(k) { return k.toLowerCase().includes('recent'); }) || 
-                        sheetKeys.find(function(k) { return k.toLowerCase().includes('sample'); }) || 
+                        sheetKeys.reverse().find(function(k) { return k.toLowerCase().includes('sample'); }) || 
                         sheetKeys[0];
                         
         var rows = (raw[sheetName] || []).slice(1); 
-        var currentPOC = 'Unknown', currentDate = '—', currentClient = '—';
+        var currentPOC = '', currentDate = '', currentClient = '—';
 
         var parsed = rows.map(function(r) {
           
-          // 2. POC Memory (Col C) - NO FILTERS, JUST COPY EXACTLY
+          // 1. POC Filter: STRICTLY B2B Team Only (Ignores 2020 junk)
           var reqByRaw = String(r[2] || '').trim();
           if (reqByRaw) {
-            currentPOC = reqByRaw;
-            currentClient = '—'; // Reset client for the new block
+            currentClient = '—'; 
+            var reqByLower = reqByRaw.toLowerCase();
+            var allowed = ['siya', 'mahi', 'bhoomika', 'dhyana'];
+            currentPOC = '';
+            for (var i = 0; i < allowed.length; i++) {
+              if (reqByLower.includes(allowed[i])) { 
+                currentPOC = allowed[i].charAt(0).toUpperCase() + allowed[i].slice(1); 
+                break; 
+              }
+            }
           }
 
-          // 3. Date Memory (Col D)
+          // 2. Date Memory
           var dRaw = r[3];
-          if (dRaw) {
+          if (dRaw && String(dRaw).trim() !== '') {
             var dStr = String(dRaw).trim();
             if (dStr.includes('/')) {
               var p = dStr.split('/');
@@ -978,25 +985,24 @@ window.addEventListener('load',function(){
                 currentDate = yr + '-' + p[1].padStart(2, '0') + '-' + p[0].padStart(2, '0');
               }
             } else {
-              var tempD = new Date(dRaw);
+              var tempD = new Date(dStr);
               if (!isNaN(tempD.getTime())) {
                 var ist = new Date(tempD.getTime() + 5.5 * 60 * 60 * 1000);
                 currentDate = ist.getFullYear() + '-' + String(ist.getMonth() + 1).padStart(2, '0') + '-' + String(ist.getDate()).padStart(2, '0');
-              } else {
-                currentDate = dStr; // Fallback to raw text if weirdly formatted
               }
             }
           }
           
-          // 4. Client Memory (Col L)
           var clientRaw = String(r[11] || '').trim();
           if (clientRaw) currentClient = clientRaw;
 
-          // 5. Product (Col I or E) and Qty (Col K or F)
+          // If it's not our team, or the date is missing/corrupted, skip it
+          if (!currentPOC || !currentDate || currentDate.length < 8) return null;
+
+          // 3. Product: Check BOTH Col I (Q) and Col E (Dipsters)
           var prod = String(r[8] || r[4] || '').trim();
           var qtyVal = parseInt(r[10] || r[5]) || 1;
 
-          // Skip ONLY if the product is actually blank or a header row
           if (!prod || prod.toLowerCase() === 'q' || prod.toLowerCase() === 'dipsters list') return null;
 
           return {
