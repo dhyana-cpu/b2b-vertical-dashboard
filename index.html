@@ -788,22 +788,17 @@ function renderSamples(){
   hbar('smProdChart', topProds.map(function(p){return p[0].slice(0,22);}), topProds.map(function(p){return p[1];}), ['#3b82f6','#6d28d9','#5b21b6','#4c1d95','#1d4ed8','#1e40af','#1e3a8a']);
 
   document.getElementById('smTable').innerHTML = groupedArr.length ? groupedArr.map(function(g) {
-    var prodHtml = '';
-    if (g.products.length === 1) {
-      prodHtml = g.products[0];
-    } else {
-      var remaining = g.products.length - 1;
-      var firstProd = g.products[0].split(' (')[0]; 
-      prodHtml = '<details style="cursor:pointer;"><summary style="color:#a78bfa; outline:none; font-weight:600;">' + firstProd + ' <span style="color:#888;font-size:10px;">(+' + remaining + ' more)</span></summary><div style="margin-top:6px; font-size:11px; color:#aaa; line-height:1.6; padding-left:12px; border-left:2px solid #333;">' + g.products.join('<br>') + '</div></details>';
-    }
+    
+    // VISUAL FIX: List all products out with bullet points instead of hiding them
+    var prodHtml = g.products.map(function(p) { return '• ' + p; }).join('<br>');
 
     return '<tr>'+
-      '<td>'+fd(g.date)+'</td>'+
-      '<td style="color:#fff">'+prodHtml+'</td>'+
-      '<td style="color:#ddd">'+(g.client||'—')+'</td>'+
-      '<td style="font-family:monospace;color:#a78bfa">'+g.totalQty+'</td>'+
-      '<td><span class="badge poc">'+g.req_by+'</span></td>'+
-      '<td style="color:#aaa">—</td>'+
+      '<td style="vertical-align:top; padding-top:12px;">'+fd(g.date)+'</td>'+
+      '<td style="color:#fff; vertical-align:top; padding-top:12px; line-height:1.6;">'+prodHtml+'</td>'+
+      '<td style="color:#ddd; vertical-align:top; padding-top:12px;">'+(g.client||'—')+'</td>'+
+      '<td style="font-family:monospace;color:#a78bfa; vertical-align:top; padding-top:12px; font-weight:600;">'+g.totalQty+'</td>'+
+      '<td style="vertical-align:top; padding-top:12px;"><span class="badge poc">'+g.req_by+'</span></td>'+
+      '<td style="color:#aaa; vertical-align:top; padding-top:12px;">—</td>'+
       '</tr>';
   }).join('') : '<tr><td colspan="6" style="text-align:center;color:#555;padding:20px">No samples in selected range</td></tr>';
 }
