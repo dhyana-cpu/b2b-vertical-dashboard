@@ -943,36 +943,33 @@ window.addEventListener('load',function(){
     }).catch(function(e){});
   }
 
-  // --- LIVE SAMPLES FETCH ---
+// --- LIVE SAMPLES FETCH ---
   if (typeof SAMPLES_URL !== 'undefined' && SAMPLES_URL) {
     fetch(SAMPLES_URL + '?t=' + Date.now(), {cache: 'no-store', redirect: 'follow'})
       .then(function(r) { return r.json(); })
       .then(function(raw) {
-        var sheetName = Object.keys(raw).find(function(k) { return k.toLowerCase().includes('sample'); }) || Object.keys(raw)[0];
-        var rows = (raw[sheetName] || []).slice(1); 
         
-        var currentPOC = '', currentDate = '', currentClient = '';
+        // 1. Target the new tab: Find the sheet with "recent" in the name
+        var sheetKeys = Object.keys(raw);
+        var sheetName = sheetKeys.find(function(k) { return k.toLowerCase().includes('recent'); }) || 
+                        sheetKeys.find(function(k) { return k.toLowerCase().includes('sample'); }) || 
+                        sheetKeys[0];
+                        
+        var rows = (raw[sheetName] || []).slice(1); 
+        var currentPOC = 'Unknown', currentDate = '—', currentClient = '—';
 
         var parsed = rows.map(function(r) {
           
-          // 1. POC & Memory Reset (Col C)
+          // 2. POC Memory (Col C) - NO FILTERS, JUST COPY EXACTLY
           var reqByRaw = String(r[2] || '').trim();
           if (reqByRaw) {
-            currentClient = ''; 
-            var reqByLower = reqByRaw.toLowerCase();
-            var allowed = ['siya', 'mahi', 'bhoomika', 'dhyana'];
-            currentPOC = '';
-            for (var i = 0; i < allowed.length; i++) {
-              if (reqByLower.includes(allowed[i])) { 
-                currentPOC = allowed[i].charAt(0).toUpperCase() + allowed[i].slice(1); 
-                break; 
-              }
-            }
+            currentPOC = reqByRaw;
+            currentClient = '—'; // Reset client for the new block
           }
 
-          // 2. Dates (Col D)
+          // 3. Date Memory (Col D)
           var dRaw = r[3];
-          if (dRaw && String(dRaw).trim() !== '') {
+          if (dRaw) {
             var dStr = String(dRaw).trim();
             if (dStr.includes('/')) {
               var p = dStr.split('/');
@@ -981,30 +978,31 @@ window.addEventListener('load',function(){
                 currentDate = yr + '-' + p[1].padStart(2, '0') + '-' + p[0].padStart(2, '0');
               }
             } else {
-              var tempD = new Date(dStr);
+              var tempD = new Date(dRaw);
               if (!isNaN(tempD.getTime())) {
                 var ist = new Date(tempD.getTime() + 5.5 * 60 * 60 * 1000);
                 currentDate = ist.getFullYear() + '-' + String(ist.getMonth() + 1).padStart(2, '0') + '-' + String(ist.getDate()).padStart(2, '0');
+              } else {
+                currentDate = dStr; // Fallback to raw text if weirdly formatted
               }
             }
           }
           
-          // 3. Client Memory (Col L)
+          // 4. Client Memory (Col L)
           var clientRaw = String(r[11] || '').trim();
           if (clientRaw) currentClient = clientRaw;
 
-          if (!currentPOC || !currentDate) return null;
-
-          // 4. Product (Col I OR Col E) and Qty (Col K OR Col F)
+          // 5. Product (Col I or E) and Qty (Col K or F)
           var prod = String(r[8] || r[4] || '').trim();
           var qtyVal = parseInt(r[10] || r[5]) || 1;
 
+          // Skip ONLY if the product is actually blank or a header row
           if (!prod || prod.toLowerCase() === 'q' || prod.toLowerCase() === 'dipsters list') return null;
 
           return {
             date: currentDate,
             product: prod,
-            client: currentClient || '—',
+            client: currentClient,
             qty: qtyVal,
             req_by: currentPOC,
             dispatch: ''
