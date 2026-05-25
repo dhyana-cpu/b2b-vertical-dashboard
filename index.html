@@ -716,7 +716,7 @@ function renderRecurring(){
   if(!rows.length){tbody.innerHTML='<tr><td colspan="5" class="nd">No recurring clients found</td></tr>';return;}
   rows.forEach(function(r){
     var rev=parseFloat(String(r.revenue).replace(/[₹,]/g,''))||0;
-    tbody.innerHTML+='<tr><td>'+esc(r.client)+'</td><td><span class="badge poc">'+esc(r.poc)+'</span></td><td>'+esc(r.phone)+'</td><td>'+esc(r.location)+'</td><td style="text-align:right;color:var(--gr);font-family:monospace;">'+(rev?'₹'+fmt(rev):'—')+'</td></tr>';
+    tbody.innerHTML+='<tr><td>'+String(r.client)+'</td><td><span class="badge poc">'+String(r.poc)+'</span></td><td>'+String(r.phone)+'</td><td>'+String(r.location)+'</td><td style="text-align:right;color:var(--gr);font-family:monospace;">'+(rev?'₹'+fmt(rev):'—')+'</td></tr>';
   });
 }
 function renderBD(){
