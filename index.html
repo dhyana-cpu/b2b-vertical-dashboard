@@ -112,6 +112,7 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
     <div class="tab" data-tab="ads">Ads</div>
     <div class="tab" data-tab="inmails">InMails</div>
     <div class="tab" data-tab="samples">Sample Data</div>
+    <div class="tab" data-tab="recurring">Recurring Clients</div>
     <div class="tab" data-tab="bd">Active Conversations</div>
   </div>
 
@@ -234,7 +235,22 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
       <table class="tbl"><thead><tr><th>#</th><th>Industry</th><th>Company</th><th>Role</th><th>Contact</th></tr></thead><tbody id="iTable"></tbody></table>
     </div></div>
   </div>
-
+<!-- RECURRING CLIENTS -->
+  <div class="tp" id="tp-recurring">
+    <div class="mg" style="grid-template-columns:repeat(3,1fr);">
+      <div class="mc gn"><div class="ml">Total Recurring</div><div class="mv" id="rcTotal">—</div><div class="ms">clients</div></div>
+      <div class="mc gn"><div class="ml">Total Revenue</div><div class="mv" id="rcRevenue">—</div><div class="ms">from recurring</div></div>
+      <div class="mc gn"><div class="ml">Top POC</div><div class="mv" id="rcTopPoc">—</div><div class="ms" id="rcTopPocAmt">—</div></div>
+    </div>
+    <div class="g1"><div class="cc">
+      <div class="ch"><div class="ct">Recurring Clients</div><span id="rcCount" style="font-size:11px;color:var(--m)"></span></div>
+      <table class="tbl">
+        <thead><tr><th>Client Name</th><th>POC</th><th>Phone</th><th>Location</th><th style="text-align:right">Revenue</th></tr></thead>
+        <tbody id="rcTable"></tbody>
+      </table>
+    </div></div>
+  </div>
+  
   <div class="tp" id="tp-samples">
     <div class="mg" style="grid-template-columns:repeat(4,1fr);">
       <div class="mc bl"><div class="ml">Total Samples</div><div class="mv" id="smTotal">—</div><div class="ms" id="smSub">in range</div></div>
@@ -678,7 +694,31 @@ function fSamples(){
     return true;
   });
 }
-
+var RC_ROWS=[];
+function renderRecurring(){
+  var rows=RC_ROWS;
+  var total=rows.length;
+  var totalRev=0;
+  var pocMap={};
+  rows.forEach(function(r){
+    var rev=parseFloat(String(r.revenue).replace(/[₹,]/g,''))||0;
+    totalRev+=rev;
+    if(r.poc){pocMap[r.poc]=(pocMap[r.poc]||0)+rev;}
+  });
+  var topPoc=Object.keys(pocMap).sort(function(a,b){return pocMap[b]-pocMap[a];})[0]||'—';
+  document.getElementById('rcTotal').textContent=total;
+  document.getElementById('rcRevenue').textContent=totalRev>0?'₹'+fmt(totalRev):'—';
+  document.getElementById('rcTopPoc').textContent=topPoc;
+  document.getElementById('rcTopPocAmt').textContent=pocMap[topPoc]?'₹'+fmt(pocMap[topPoc]):'—';
+  document.getElementById('rcCount').textContent=total+' clients';
+  var tbody=document.getElementById('rcTable');
+  tbody.innerHTML='';
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="5" class="nd">No recurring clients found</td></tr>';return;}
+  rows.forEach(function(r){
+    var rev=parseFloat(String(r.revenue).replace(/[₹,]/g,''))||0;
+    tbody.innerHTML+='<tr><td>'+esc(r.client)+'</td><td><span class="badge poc">'+esc(r.poc)+'</span></td><td>'+esc(r.phone)+'</td><td>'+esc(r.location)+'</td><td style="text-align:right;color:var(--gr);font-family:monospace;">'+(rev?'₹'+fmt(rev):'—')+'</td></tr>';
+  });
+}
 function renderBD(){
   var bd=fBD();
   var cold=bd.filter(function(b){return b.phase==='Cold';}).length;
@@ -897,6 +937,11 @@ window.addEventListener('load',function(){
         return {date:ds,company:String(r[1]||'').trim(),name:String(r[2]||'').trim(),contact:String(r[3]||'').trim(),location:String(r[4]||'').trim(),poc:String(r[5]||'').trim(),remarks:String(r[6]||'').trim(),source:String(r[7]||'').trim(),phase:String(r[10]||'').trim()||'Unknown',followup:String(r[12]||'').trim()};
       });
       renderBD();
+      var rcRaw=(bdRaw['Recurring clients']||[]).slice(1);
+      RC_ROWS=rcRaw.filter(function(r){return r[0]||r[1];}).map(function(r){
+        return {client:String(r[0]||'').trim(),poc:String(r[1]||'').trim(),phone:String(r[2]||'').trim(),location:String(r[3]||'').trim(),revenue:String(r[4]||'').trim()};
+      });
+      renderRecurring();
     }).catch(function(e){});
   }
 
