@@ -245,7 +245,7 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
     <div class="g1"><div class="cc">
       <div class="ch"><div class="ct">Recurring Clients</div><span id="rcCount" style="font-size:11px;color:var(--m)"></span></div>
       <table class="tbl">
-        <thead><tr><th>Client Name</th><th>POC</th><th>Phone</th><th>Location</th><th style="text-align:right">Revenue</th></tr></thead>
+        <thead><tr><th>Client Name</th><th>POC</th><th>Phone</th><th>Location</th><th style="text-align:center">Total Orders</th><th>Order History</th><th style="text-align:right">Revenue</th></tr></thead>
         <tbody id="rcTable"></tbody>
       </table>
     </div></div>
@@ -716,7 +716,7 @@ function renderRecurring(){
   if(!rows.length){tbody.innerHTML='<tr><td colspan="5" class="nd">No recurring clients found</td></tr>';return;}
   rows.forEach(function(r){
     var rev=parseFloat(String(r.revenue).replace(/[₹,]/g,''))||0;
-    tbody.innerHTML+='<tr><td>'+String(r.client)+'</td><td><span class="badge poc">'+String(r.poc)+'</span></td><td>'+String(r.phone)+'</td><td>'+String(r.location)+'</td><td style="text-align:right;color:var(--gr);font-family:monospace;">'+(rev?'₹'+fmt(rev):'—')+'</td></tr>';
+    tbody.innerHTML+='<tr><td>'+String(r.client)+'</td><td><span class="badge poc">'+String(r.poc)+'</span></td><td>'+String(r.phone)+'</td><td>'+String(r.location)+'</td><td style="text-align:center;font-weight:600;">'+String(r.orders)+'</td><td style="font-family:monospace;color:#a78bfa;font-size:11px;">'+String(r.dates)+'</td><td style="text-align:right;color:var(--gr);font-family:monospace;">'+(rev?'₹'+fmt(rev):'—')+'</td></tr>';
   });
 }
 function renderBD(){
@@ -939,7 +939,15 @@ window.addEventListener('load',function(){
       renderBD();
       var rcRaw=(bdRaw['Recurring clients']||[]).slice(1);
       RC_ROWS=rcRaw.filter(function(r){return r[0]||r[1];}).map(function(r){
-        return {client:String(r[0]||'').trim(),poc:String(r[1]||'').trim(),phone:String(r[2]||'').trim(),location:String(r[3]||'').trim(),revenue:String(r[4]||'').trim()};
+        return {
+          client:String(r[0]||'').trim(),
+          poc:String(r[1]||'').trim(),
+          phone:String(r[2]||'').trim(),
+          location:String(r[3]||'').trim(),
+          revenue:String(r[4]||'').trim(),
+          orders:String(r[5]||'').trim(),
+          dates:String(r[6]||'').trim()
+        };
       });
       renderRecurring();
     }).catch(function(e){});
