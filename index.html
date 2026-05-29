@@ -89,7 +89,8 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
       <input type="date" class="di" id="df">
       <span style="color:var(--m);font-size:11px">→</span>
       <input type="date" class="di" id="dt">
-      <button class="qb on" data-r="all">All</button>
+ <button class="qb on" data-r="all">All</button>
+      <button class="qb" data-r="mtd">MTD</button>
       <button class="qb" data-r="30">30d</button>
       <button class="qb" data-r="7">7d</button>
       <button class="qb" data-r="today">Today</button>
@@ -652,6 +653,11 @@ document.querySelectorAll('[data-r]').forEach(function(b){b.addEventListener('cl
     var td=todayStr();
     document.getElementById('df').value=td;
     document.getElementById('dt').value=td;
+  } else if(rv==='mtd'){
+    var td3=todayStr();
+    var mtd=new Date(td3);mtd.setDate(1);
+    document.getElementById('df').value=mtd.toISOString().slice(0,10);
+    document.getElementById('dt').value=td3;
   } else {
     var td2=todayStr();
     var fd2=new Date(td2);fd2.setDate(fd2.getDate()-(+rv-1));
