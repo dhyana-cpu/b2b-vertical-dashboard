@@ -962,14 +962,22 @@ window.addEventListener('load',function(){
   // --- LIVE SALES FETCH ---
   if (typeof SALES_URL !== 'undefined' && SALES_URL) {
     fetch(SALES_URL+'?t='+Date.now(),{cache:'no-store',redirect:'follow'}).then(function(r){return r.json();}).then(function(sRaw){
-      var parsed=(sRaw['Sales_Log']||[]).slice(1).map(function(r){
+      
+      // Auto-detect the sales tab in case it was renamed
+      var sheetKeys = Object.keys(sRaw);
+      var sheetName = sheetKeys.find(function(k) { return k.toLowerCase().includes('sale'); }) || sheetKeys[0];
+      
+      var parsed=(sRaw[sheetName]||[]).slice(1).map(function(r){
         
-        // STRICT INST ORDER & POC FILTER
-        var typeStr = String(r[1] || '').trim();
-        if (typeStr.toLowerCase() !== 'inst order') return null;
+        // 1. FORGIVING ORDER FILTER: Just looks for "inst" anywhere in the text
+        var typeStr = String(r[1] || '').trim().toLowerCase();
+        if (!typeStr.includes('inst')) return null; 
+        
+        // 2. POC Filter: Still ignores Aditi
         var pocRaw = String(r[4]||r[3]||'').trim();
         if (pocRaw.toLowerCase() === 'aditi') return null;
 
+        // 3. Date Parser
         var dRaw=r[2]||r[3],ds='';
         if(dRaw){
           var dStr = String(dRaw).trim();
@@ -985,7 +993,8 @@ window.addEventListener('load',function(){
           }
         }
         
-        var amt = parseFloat(String(r[6]||r[7]||r[5]||'0').replace(/[^\d.-]/g, ''));
+        // 4. FORGIVING AMOUNT PARSER: Checks columns F, G, H, and I for the money
+        var amt = parseFloat(String(r[6]||r[7]||r[8]||r[5]||'0').replace(/[^\d.-]/g, ''));
         if (!ds || isNaN(amt) || amt === 0) return null;
         
         return {
@@ -993,7 +1002,7 @@ window.addEventListener('load',function(){
             date: ds, 
             client: String(r[5]||r[4]||'—').trim(), 
             poc: pocRaw || '—', 
-            type: 'Inst Order', 
+            type: String(r[1]||'Inst Order').trim(), 
             amt: amt
         };
       }).filter(Boolean);
