@@ -906,16 +906,46 @@ window.addEventListener('load',function(){
             ML_FOLLOWUP=Object.values(bdF).sort(function(a,b){return a.date.localeCompare(b.date);});
           }
           if(raw['Sales_Log']){
-            var parsed=raw['Sales_Log'].slice(1).filter(function(r){return r[0]&&String(r[1]||'').trim()==='Inst Order';}).map(function(r){
-              var dRaw=r[3]||r[2],ds='';
+            var parsed=raw['Sales_Log'].slice(1).map(function(r){
+              
+              // 1. Forgiving "Inst" filter
+              var typeStr = String(r[1] || '').trim().toLowerCase();
+              if (!typeStr.includes('inst')) return null; 
+              
+              // 2. POC filter
+              var pocRaw = String(r[4]||r[3]||'').trim();
+              if (pocRaw.toLowerCase() === 'aditi') return null;
+
+              // 3. Date Parser
+              var dRaw=r[2]||r[3],ds='';
               if(dRaw){
-                var dObj=new Date(dRaw);
-                if(!isNaN(dObj)){var ist=new Date(dObj.getTime()+5.5*60*60*1000);ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0');}
-                else if(typeof dRaw==='string')ds=dRaw.slice(0,10);
+                var dStr = String(dRaw).trim();
+                if(dStr.includes('/')){ 
+                    var p=dStr.split('/'); 
+                    if(p.length >= 3) ds=(p[2].length===2?'20'+p[2]:p[2])+'-'+p[1].padStart(2,'0')+'-'+p[0].padStart(2,'0'); 
+                } else {
+                    var dObj=new Date(dStr);
+                    if(!isNaN(dObj.getTime())){ 
+                        var ist = new Date(dObj.getTime() + 5.5 * 60 * 60 * 1000);
+                        ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0'); 
+                    }
+                }
               }
-              return ds?{ref:String(r[0]),date:ds,client:String(r[5]||'').trim(),poc:String(r[4]||'').trim(),type:String(r[1]||''),amt:parseFloat(r[6])||0}:null;
+              
+              // 4. Forgiving Amount Parser (checks multiple columns)
+              var amt = parseFloat(String(r[6]||r[7]||r[8]||r[5]||'0').replace(/[^\d.-]/g, ''));
+              if (!ds || isNaN(amt) || amt <= 0) return null;
+              
+              return {
+                  ref: String(r[0]||'—'), 
+                  date: ds, 
+                  client: String(r[5]||r[4]||'—').trim(), 
+                  poc: pocRaw || '—', 
+                  type: String(r[1]||'Inst Order').trim(), 
+                  amt: amt
+              };
             }).filter(Boolean);
-            if(parsed.length>0)SALES=parsed;
+            if(parsed.length>0) SALES=parsed;
           }
           if(raw['Ads_Log']){
             var parsed2=raw['Ads_Log'].slice(1).filter(function(r){return r[1];}).map(function(r){
