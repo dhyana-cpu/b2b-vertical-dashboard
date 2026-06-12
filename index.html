@@ -305,11 +305,10 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
       <button class="qb" id="btn-d-li" onclick="switchDiwali('d-li')">LinkedIn & Cold Calls</button>
       <button class="qb" id="btn-d-tgt" onclick="switchDiwali('d-tgt')">Sample Targets (105)</button>
     </div>
-
-    <div id="d-ov" style="display:block;">
+<div id="d-ov" style="display:block;">
       <div class="mg" style="grid-template-columns:repeat(5,1fr);">
-        <div class="mc bl"><div class="ml">Emails Sent</div><div class="mv">1,725</div><div class="ms">Week 1</div></div>
-        <div class="mc gn"><div class="ml">Responses</div><div class="mv">8</div><div class="ms">0.46% avg response</div></div>
+        <div class="mc bl"><div class="ml">Emails Sent</div><div class="mv" id="dw-tot-sent">—</div><div class="ms">Diwali Campaign</div></div>
+        <div class="mc gn"><div class="ml">Responses</div><div class="mv" id="dw-tot-resp">—</div><div class="ms" id="dw-resp-rate">—</div></div>
         <div class="mc or"><div class="ml">LinkedIn Leads</div><div class="mv">49</div><div class="ms">7 InMails sent</div></div>
         <div class="mc ye"><div class="ml">Cold Calls</div><div class="mv">25</div><div class="ms">4 catalogues, 3 connects</div></div>
         <div class="mc" style="border-left:3px solid #7c3aed"><div class="ml">Sample Targets</div><div class="mv">105</div><div class="ms">38 POCs found (36%)</div></div>
@@ -317,12 +316,8 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
 
       <div class="g2">
         <div class="cc">
-          <div class="ch"><div class="ct">Email Volume by Industry (Week 1)</div></div>
-          <div class="frow"><span class="flbl">Oil, Gas & Energy</span><div class="fwrap"><div class="fbar" style="width:100%;background:var(--or)">551</div></div></div>
-          <div class="frow"><span class="flbl">Asset Mgmt</span><div class="fwrap"><div class="fbar" style="width:96.7%;background:var(--bl)">533</div></div></div>
-          <div class="frow"><span class="flbl">Private Banking</span><div class="fwrap"><div class="fbar" style="width:93.6%;background:#7c3aed">516</div></div></div>
-          <div class="frow"><span class="flbl">Wealth Mgmt</span><div class="fwrap"><div class="fbar" style="width:22.7%;background:var(--gr)">125</div></div></div>
-        </div>
+          <div class="ch"><div class="ct">Email Volume by Industry</div></div>
+          <div id="dw-ind-bars"></div> </div>
         <div class="cc">
           <div class="ch"><div class="ct">Cold Call Outcomes (Jun 8)</div></div>
           <div class="frow"><span class="flbl">Not Picked Up</span><div class="fwrap"><div class="fbar" style="width:42%;background:#6b7280">10</div></div></div>
@@ -331,6 +326,17 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
           <div class="frow"><span class="flbl">POC Msg</span><div class="fwrap"><div class="fbar" style="width:12%;background:var(--bl)">3</div></div></div>
         </div>
       </div>
+      
+      <div class="g1"><div class="cc">
+        <div class="ch"><div class="ct">Diwali Email Tracker</div></div>
+        <table class="tbl">
+          <thead><tr><th>Industry</th><th>Delivered</th><th>Opened</th><th>Clicked</th><th>Responses</th><th>Rate</th></tr></thead>
+          <tbody id="dw-ind-table">
+            </tbody>
+        </table>
+      </div></div>
+    </div>
+    
       
       <div class="g1"><div class="cc">
         <div class="ch"><div class="ct">Email Tracker (June 2026)</div></div>
@@ -778,6 +784,61 @@ function renderAll(){
 
   renderBD();
   renderSamples();
+  // --- LIVE DIWALI CAMPAIGN CALCULATION ---
+  // Isolate only the industries with "DIWALI" in the name
+  var diwaliData = ML_BY_IND.filter(function(m) { return m.ind.toUpperCase().includes('DIWALI'); });
+  var dwDel = 0, dwOpen = 0, dwClick = 0, dwResp = 0;
+  
+  // Sort them from highest volume to lowest
+  diwaliData.sort(function(a, b) { return b.del - a.del; });
+  
+  var dwTableHtml = '';
+  var dwBarsHtml = '';
+  var colors = ['var(--or)', 'var(--bl)', '#7c3aed', 'var(--gr)', '#eab308'];
+
+  diwaliData.forEach(function(m, i) {
+      dwDel += m.del;
+      dwOpen += m.open;
+      dwClick += m.click;
+      dwResp += m.resp;
+      
+      // Clean up the name (Removes "DIWALI " so it just says "Asset", "Pharma", etc.)
+      var cleanName = m.ind.replace(/DIWALI/ig, '').replace(/[-_]/g, ' ').trim();
+      if(!cleanName) cleanName = m.ind;
+      
+      // Generate the Table Rows
+      dwTableHtml += '<tr><td style="color:#fff;font-weight:600;">' + cleanName + '</td>' +
+                     '<td>' + m.del.toLocaleString() + '</td>' +
+                     '<td>' + m.open.toLocaleString() + '</td>' +
+                     '<td>' + m.click.toLocaleString() + '</td>' +
+                     '<td>' + m.resp.toLocaleString() + '</td>' +
+                     '<td><span class="badge warm">' + pct(m.resp, m.del) + '</span></td></tr>';
+                     
+      // Generate the Top 5 Bar Charts
+      if (i < 5) {
+          var w = dwDel > 0 ? Math.max((m.del / diwaliData[0].del) * 100, 2) : 0; 
+          var c = colors[i % colors.length];
+          dwBarsHtml += '<div class="frow"><span class="flbl" style="width:130px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + cleanName + '</span>' +
+                        '<div class="fwrap"><div class="fbar" style="width:' + w + '%;background:' + c + '">' + m.del.toLocaleString() + '</div></div></div>';
+      }
+  });
+
+  // Handle empty state if no Diwali data is found
+  if (diwaliData.length === 0) {
+      dwTableHtml = '<tr><td colspan="6" style="text-align:center;padding:20px;color:#555;">No Diwali data found in Master Log</td></tr>';
+      dwBarsHtml = '<div style="color:#555;font-size:11px;text-align:center;padding:20px;">No data</div>';
+  }
+
+  // Push the calculated totals to the dashboard
+  set('dw-tot-sent', dwDel.toLocaleString());
+  set('dw-tot-resp', dwResp.toLocaleString());
+  set('dw-resp-rate', pct(dwResp, dwDel) + ' avg response');
+  
+  var elDwBars = document.getElementById('dw-ind-bars');
+  if(elDwBars) elDwBars.innerHTML = dwBarsHtml;
+  
+  var elDwTable = document.getElementById('dw-ind-table');
+  if(elDwTable) elDwTable.innerHTML = dwTableHtml;
   document.getElementById('lu').textContent='Updated '+new Date().toLocaleTimeString();
 }
 
