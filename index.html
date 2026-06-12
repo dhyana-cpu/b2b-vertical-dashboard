@@ -115,6 +115,7 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
     <div class="tab" data-tab="samples">Sample Data</div>
     <div class="tab" data-tab="recurring">Recurring Clients</div>
     <div class="tab" data-tab="bd">Active Conversations</div>
+    <div class="tab" data-tab="diwali" style="color:var(--or); font-weight:600;">✨ Diwali Campaign</div>
   </div>
 
   <div class="tp on" id="tp-ov">
@@ -297,7 +298,152 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
       </table>
     </div></div>
   </div>
+<div class="tp" id="tp-diwali">
+    
+    <div style="display:flex;gap:10px;margin-bottom:16px;border-bottom:1px solid var(--b);padding-bottom:16px;flex-wrap:wrap;">
+      <button class="qb on" id="btn-d-ov" onclick="switchDiwali('d-ov')">Overview & Emails</button>
+      <button class="qb" id="btn-d-li" onclick="switchDiwali('d-li')">LinkedIn & Cold Calls</button>
+      <button class="qb" id="btn-d-tgt" onclick="switchDiwali('d-tgt')">Sample Targets (105)</button>
+    </div>
 
+    <div id="d-ov" style="display:block;">
+      <div class="mg" style="grid-template-columns:repeat(5,1fr);">
+        <div class="mc bl"><div class="ml">Emails Sent</div><div class="mv">1,725</div><div class="ms">Week 1</div></div>
+        <div class="mc gn"><div class="ml">Responses</div><div class="mv">8</div><div class="ms">0.46% avg response</div></div>
+        <div class="mc or"><div class="ml">LinkedIn Leads</div><div class="mv">49</div><div class="ms">7 InMails sent</div></div>
+        <div class="mc ye"><div class="ml">Cold Calls</div><div class="mv">25</div><div class="ms">4 catalogues, 3 connects</div></div>
+        <div class="mc" style="border-left:3px solid #7c3aed"><div class="ml">Sample Targets</div><div class="mv">105</div><div class="ms">38 POCs found (36%)</div></div>
+      </div>
+
+      <div class="g2">
+        <div class="cc">
+          <div class="ch"><div class="ct">Email Volume by Industry (Week 1)</div></div>
+          <div class="frow"><span class="flbl">Oil, Gas & Energy</span><div class="fwrap"><div class="fbar" style="width:100%;background:var(--or)">551</div></div></div>
+          <div class="frow"><span class="flbl">Asset Mgmt</span><div class="fwrap"><div class="fbar" style="width:96.7%;background:var(--bl)">533</div></div></div>
+          <div class="frow"><span class="flbl">Private Banking</span><div class="fwrap"><div class="fbar" style="width:93.6%;background:#7c3aed">516</div></div></div>
+          <div class="frow"><span class="flbl">Wealth Mgmt</span><div class="fwrap"><div class="fbar" style="width:22.7%;background:var(--gr)">125</div></div></div>
+        </div>
+        <div class="cc">
+          <div class="ch"><div class="ct">Cold Call Outcomes (Jun 8)</div></div>
+          <div class="frow"><span class="flbl">Not Picked Up</span><div class="fwrap"><div class="fbar" style="width:42%;background:#6b7280">10</div></div></div>
+          <div class="frow"><span class="flbl">Not Interested</span><div class="fwrap"><div class="fbar" style="width:33%;background:var(--re)">8</div></div></div>
+          <div class="frow"><span class="flbl">Catalogue</span><div class="fwrap"><div class="fbar" style="width:17%;background:var(--gr)">4</div></div></div>
+          <div class="frow"><span class="flbl">POC Msg</span><div class="fwrap"><div class="fbar" style="width:12%;background:var(--bl)">3</div></div></div>
+        </div>
+      </div>
+      
+      <div class="g1"><div class="cc">
+        <div class="ch"><div class="ct">Email Tracker (June 2026)</div></div>
+        <table class="tbl">
+          <thead><tr><th>Industry</th><th>Week</th><th>Fresh Mail</th><th>Total Sent</th><th>Responses</th><th>Rate</th></tr></thead>
+          <tbody>
+            <tr><td style="color:#fff;font-weight:600;">Asset Management</td><td>W1</td><td>533</td><td>533</td><td>3</td><td><span class="badge warm">0.56%</span></td></tr>
+            <tr><td style="color:#fff;font-weight:600;">Wealth Management</td><td>W1</td><td>125</td><td>125</td><td>3</td><td><span class="badge yes">2.4%</span></td></tr>
+            <tr><td style="color:#fff;font-weight:600;">Private Banking & Insurance</td><td>W1</td><td>516</td><td>516</td><td>2</td><td><span class="badge warm">0.39%</span></td></tr>
+            <tr><td style="color:#fff;font-weight:600;">Oil, Gas & Energy</td><td>W1</td><td>551</td><td>551</td><td>0</td><td><span class="badge no">0%</span></td></tr>
+          </tbody>
+        </table>
+      </div></div>
+    </div>
+
+    <div id="d-li" style="display:none;">
+      <div class="g2">
+        <div class="cc">
+          <div class="ch"><div class="ct">LinkedIn Leads Pipeline</div></div>
+          <div style="max-height:500px;overflow-y:auto;">
+            <table class="tbl">
+              <thead><tr><th>Name</th><th>Company</th><th>Position</th><th>InMail</th></tr></thead>
+              <tbody>
+                <tr><td style="color:#fff">Garima Sengupta</td><td style="color:#a78bfa">Visa</td><td>HR Specialist</td><td><span class="badge yes">Sent</span></td></tr>
+                <tr><td style="color:#fff">Krishna Paliwal</td><td style="color:#a78bfa">Tim Horton</td><td>Restaurant GM</td><td><span class="badge yes">Sent</span></td></tr>
+                <tr><td style="color:#fff">Aaina Narang</td><td style="color:#a78bfa">McKinsey</td><td>—</td><td><span class="badge yes">Sent</span></td></tr>
+                <tr><td style="color:#fff">Anusha Bhagawatula</td><td style="color:#a78bfa">Neeman's</td><td>VP HR Strategy</td><td><span class="badge yes">Sent</span></td></tr>
+                <tr><td style="color:#fff">Rishabh Singh</td><td style="color:#a78bfa">PolicyBazaar</td><td>HRBP</td><td><span class="badge yes">Sent</span></td></tr>
+                <tr><td style="color:#fff">Chintan</td><td style="color:#a78bfa">H&M</td><td>Area HR Manager</td><td><span class="badge yes">Sent</span></td></tr>
+                <tr><td style="color:#fff">Archana Koli</td><td style="color:#a78bfa">Zee</td><td>Central HR Head</td><td><span class="badge yes">Sent</span></td></tr>
+                <tr><td style="color:#fff">Shailesh Seksaria</td><td style="color:#a78bfa">Sony</td><td>Regional HR & Admin</td><td><span class="badge cold">Pending</span></td></tr>
+                <tr><td style="color:#fff">Sandhya Raghavan</td><td style="color:#a78bfa">Zuora</td><td>HR Business Partner</td><td><span class="badge cold">Pending</span></td></tr>
+                <tr><td style="color:#fff">Esmeralda Noronha</td><td style="color:#a78bfa">BCG</td><td>HR</td><td><span class="badge cold">Pending</span></td></tr>
+                <tr><td style="color:#fff">Ashish Kumar</td><td style="color:#a78bfa">GIVA</td><td>HRBP</td><td><span class="badge cold">Pending</span></td></tr>
+                <tr><td style="color:#fff">Rahul Kumar</td><td style="color:#a78bfa">Airtel Payments</td><td>HR Manager</td><td><span class="badge cold">Pending</span></td></tr>
+                <tr><td style="color:#fff">Mitali Kadu</td><td style="color:#a78bfa">ICICI</td><td>Chief Manager HR</td><td><span class="badge cold">Pending</span></td></tr>
+                <tr><td style="color:#fff">Deepa Chadha</td><td style="color:#a78bfa">Tata 1mg</td><td>CHRO</td><td><span class="badge cold">Pending</span></td></tr>
+                <tr><td style="color:#fff">Avijit Bhattacharya</td><td style="color:#a78bfa">Tata Capital</td><td>CHRO</td><td><span class="badge cold">Pending</span></td></tr>
+                <tr><td style="color:#fff">Shaji Mathew</td><td style="color:#a78bfa">Infosys</td><td>CHRO</td><td><span class="badge cold">Pending</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <div class="cc">
+          <div class="ch"><div class="ct">Cold Call Log (June 8)</div></div>
+          <div style="max-height:500px;overflow-y:auto;">
+            <table class="tbl">
+              <thead><tr><th>Company</th><th>Called By</th><th>Follow Up</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td style="color:#fff">Mrunmai Padelkar (Amoli)</td><td>Vanshika</td><td>Mahi</td><td><span class="badge no">Not interested</span></td></tr>
+                <tr><td style="color:#fff">Akshay Bhatkar (ZingHR)</td><td>Vanshika</td><td>Mahi</td><td><span class="badge cold">Not picked up</span></td></tr>
+                <tr><td style="color:#fff">Ravi Bhushan (Stellar)</td><td>Vanshika</td><td>—</td><td><span class="badge no">Not interested</span></td></tr>
+                <tr><td style="color:#fff">Devi Dash (Apollo)</td><td>Vanshika</td><td>—</td><td><span class="badge cold">Not picked up</span></td></tr>
+                <tr><td style="color:#fff">Upasana Aneja (Fernandez)</td><td>Vanshika</td><td>—</td><td><span class="badge no">Not interested</span></td></tr>
+                <tr><td style="color:#fff">Ravi Shah (IIFL)</td><td>Vanshika</td><td>—</td><td><span class="badge no">Not interested</span></td></tr>
+                <tr><td style="color:#fff">Sandeep Sinha (Third Wave)</td><td>Vanshika</td><td>Mahi</td><td><span class="badge yes">Share catalogue</span></td></tr>
+                <tr><td style="color:#fff">Mangesh Jambhorkar (ITC)</td><td>Vanshika</td><td>—</td><td><span class="badge cold">Not connected</span></td></tr>
+                <tr><td style="color:#fff">Tulanahinaa Maity (Anand)</td><td>Vanshika</td><td>—</td><td><span class="badge no">Not interested</span></td></tr>
+                <tr><td style="color:#fff">Anuja Shankar (Mahindra)</td><td>Vanshika</td><td>Mahi</td><td><span class="badge yes">Call done</span></td></tr>
+                <tr><td style="color:#fff">Deepa Chadha (Tata 1mg)</td><td>Vanshika</td><td>—</td><td><span class="badge cold">Not picked up</span></td></tr>
+                <tr><td style="color:#fff">Avijit Bhattacharya (Tata Cap)</td><td>Vanshika</td><td>—</td><td><span class="badge no">Not interested</span></td></tr>
+                <tr><td style="color:#fff">Chintan Darji (Adani Green)</td><td>Vanshika</td><td>Mahi</td><td><span class="badge yes">Call done</span></td></tr>
+                <tr><td style="color:#fff">Mina Chauhan (Adani)</td><td>Vanshika</td><td>—</td><td><span class="badge no">Invalid number</span></td></tr>
+                <tr><td style="color:#fff">Manisha Rupani (Adani Energy)</td><td>Vanshika</td><td>Mahi</td><td><span class="badge yes">Call done</span></td></tr>
+                <tr><td style="color:#fff">Manisha Mathur (Awfis)</td><td>Vanshika</td><td>—</td><td><span class="badge warm">B2B call again</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="d-tgt" style="display:none;">
+      <div class="g1"><div class="cc">
+        <div class="ch"><div class="ct">Sample Box Targets — Full Pipeline (Top Tier)</div></div>
+        <div style="max-height:600px;overflow-y:auto;">
+          <table class="tbl">
+            <thead><tr><th>#</th><th>Company</th><th>Industry</th><th>2026 Trigger</th><th>POC</th><th>Contact</th><th>POC Status</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td style="color:#fff">Dr. Reddy's Laboratories</td><td>Pharma</td><td>International expansion</td><td style="color:#a78bfa">Karun Gaur</td><td>91212 30863</td><td><span class="badge yes">Identified</span></td></tr>
+              <tr><td>2</td><td style="color:#fff">Torrent Pharmaceuticals</td><td>Pharma</td><td>Acquisition-led expansion</td><td style="color:#a78bfa">Akhil Sisodiya</td><td>63985 15378</td><td><span class="badge yes">Identified</span></td></tr>
+              <tr><td>3</td><td style="color:#fff">Cipla</td><td>Pharma</td><td>Global respiratory growth</td><td style="color:#a78bfa">Vipin</td><td>70453 75499</td><td><span class="badge yes">Identified</span></td></tr>
+              <tr><td>4</td><td style="color:#fff">Lupin</td><td>Pharma</td><td>US market recovery</td><td style="color:#a78bfa">Akanksha Salvi</td><td>97735 91551</td><td><span class="badge yes">Identified</span></td></tr>
+              <tr><td>5</td><td style="color:#fff">Reliance Industries</td><td>Oil & Energy</td><td>Jio IPO prep</td><td style="color:#a78bfa">—</td><td>—</td><td><span class="badge no">No POC</span></td></tr>
+              <tr><td>8</td><td style="color:#fff">Tata Power</td><td>Oil & Energy</td><td>Renewable & EV expansion</td><td style="color:#a78bfa">Punjal Sharma</td><td>76785 17191</td><td><span class="badge yes">Identified</span></td></tr>
+              <tr><td>11</td><td style="color:#fff">Paytm</td><td>Fintech</td><td>Profitability & ecosystem</td><td style="color:#a78bfa">Atul Chaturvedi</td><td>124 307 1955</td><td><span class="badge yes">Identified</span></td></tr>
+              <tr><td>14</td><td style="color:#fff">Infosys</td><td>IT</td><td>AI transformation & GCC</td><td style="color:#a78bfa">Shaji Mathew</td><td>821 421 3000</td><td><span class="badge yes">Identified</span></td></tr>
+              <tr><td>15</td><td style="color:#fff">Wipro</td><td>IT</td><td>Enterprise transformation</td><td style="color:#a78bfa">Shubham Pawar</td><td>75060 64019</td><td><span class="badge warm">Weak POC</span></td></tr>
+              <tr><td>16</td><td style="color:#fff">HCLTech</td><td>IT</td><td>International delivery</td><td style="color:#a78bfa">Subhrajit Dey</td><td>88804 53929</td><td><span class="badge warm">Weak POC</span></td></tr>
+              <tr><td>17</td><td style="color:#fff">Tech Mahindra</td><td>IT</td><td>AI & telecom partnerships</td><td style="color:#a78bfa">Sandeep Vyas</td><td>86051 68009</td><td><span class="badge yes">Identified</span></td></tr>
+              <tr><td>19</td><td style="color:#fff">Zee Entertainment</td><td>Media & OTT</td><td>Digital content & streaming</td><td style="color:#a78bfa">Hemant Raha</td><td>80177 77563</td><td><span class="badge yes">Identified</span></td></tr>
+              <tr><td>22</td><td style="color:#fff">Nykaa</td><td>Cosmetics</td><td>Beauty retail & omnichannel</td><td style="color:#a78bfa">—</td><td>—</td><td><span class="badge no">No POC</span></td></tr>
+              <tr><td>26</td><td style="color:#fff">OYO</td><td>Hospitality</td><td>IPO planning & global exp.</td><td style="color:#a78bfa">—</td><td>—</td><td><span class="badge no">No POC</span></td></tr>
+              <tr><td>27</td><td style="color:#fff">The Oberoi Group</td><td>Hospitality</td><td>Luxury property expansion</td><td style="color:#a78bfa">Vikas Thakur</td><td>98161 99648</td><td><span class="badge warm">Weak POC</span></td></tr>
+              <tr><td>32</td><td style="color:#fff">Zoho</td><td>SaaS</td><td>Global SaaS expansion</td><td style="color:#a78bfa">Yashwanth Raj S</td><td>78459 42390</td><td><span class="badge yes">Identified</span></td></tr>
+              <tr><td>33</td><td style="color:#fff">Freshworks</td><td>SaaS</td><td>Enterprise AI product</td><td style="color:#a78bfa">Amit Basson</td><td>98910 00881</td><td><span class="badge yes">Identified</span></td></tr>
+              <tr><td>38</td><td style="color:#fff">BMW</td><td>Auto</td><td>—</td><td style="color:#a78bfa">Natasha</td><td>—</td><td><span class="badge warm">No number</span></td></tr>
+              <tr><td>46</td><td style="color:#fff">McKinsey & Company</td><td>Consulting</td><td>—</td><td style="color:#a78bfa">Aaina</td><td>—</td><td><span class="badge warm">No number</span></td></tr>
+              <tr><td>58</td><td style="color:#fff">Visa</td><td>Fintech</td><td>—</td><td style="color:#a78bfa">Garima Sengupta</td><td>—</td><td><span class="badge warm">No number</span></td></tr>
+              <tr><td>66</td><td style="color:#fff">Mahindra</td><td>Auto</td><td>—</td><td style="color:#a78bfa">Anuja Shankar</td><td>72755 50077</td><td><span class="badge yes">Identified</span></td></tr>
+              <tr><td>74</td><td style="color:#fff">Zuora</td><td>SaaS</td><td>—</td><td style="color:#a78bfa">Sandhya Raghavan</td><td>91364 43739</td><td><span class="badge yes">Identified</span></td></tr>
+              <tr><td>75</td><td style="color:#fff">Awfis</td><td>Co-working</td><td>—</td><td style="color:#a78bfa">Manisha Mathur</td><td>94610 39522</td><td><span class="badge yes">Identified</span></td></tr>
+              <tr><td>84</td><td style="color:#fff">Airtel</td><td>Telecom</td><td>—</td><td style="color:#a78bfa">Rahul Kumar</td><td>70101 79417</td><td><span class="badge yes">Identified</span></td></tr>
+              <tr><td>86</td><td style="color:#fff">GIVA</td><td>Jewelry</td><td>—</td><td style="color:#a78bfa">Ashish Kumar</td><td>86749 57635</td><td><span class="badge yes">Identified</span></td></tr>
+              <tr><td>97</td><td style="color:#fff">ITC Hotels</td><td>Hospitality</td><td>—</td><td style="color:#a78bfa">Mangesh Jambhorkar</td><td>88888 07223</td><td><span class="badge yes">Identified</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
   <div class="tp" id="tp-bd">
     <div class="mg" style="grid-template-columns:repeat(4,1fr);">
       <div class="mc ye"><div class="ml">Total Leads</div><div class="mv" id="bdTotal">—</div><div class="ms" id="bdSub">in range</div></div>
@@ -350,7 +496,21 @@ const SALES_URL='https://script.google.com/macros/s/AKfycbx9Np_xJ6-OeDY_OL654BC_
 const SAMPLES_URL='https://script.google.com/macros/s/AKfycbxDs9D1ZGtYLzd-RP4vP-Wkt3Hq-Rjtlg_gYLrSl2fIRk6hScDXiLRm7Bmipkr-f63s_g/exec';
 
 var BD_ROWS=[], ML_PRIMARY=[], ML_FOLLOWUP=[], SALES=[], SAMPLES=[], ML_BY_DATE=[], ML_BY_IND=[], ADS=[];
-
+function switchDiwali(subId) {
+  // Hide all Diwali sub-tabs
+  document.getElementById('d-ov').style.display = 'none';
+  document.getElementById('d-li').style.display = 'none';
+  document.getElementById('d-tgt').style.display = 'none';
+  
+  // Remove 'on' highlighting from all buttons
+  document.getElementById('btn-d-ov').classList.remove('on');
+  document.getElementById('btn-d-li').classList.remove('on');
+  document.getElementById('btn-d-tgt').classList.remove('on');
+  
+  // Show the selected tab and highlight its button
+  document.getElementById(subId).style.display = 'block';
+  document.getElementById('btn-' + subId).classList.add('on');
+}
 // ── HELPERS ───────────────────────────────────────────────
 function fmt(n){if(!n||isNaN(n)||n===0)return'—';if(n>=100000)return'₹'+(n/100000).toFixed(1)+'L';if(n>=1000)return'₹'+(n/1000).toFixed(0)+'K';return'₹'+Math.round(n);}
 function pct(a,b){return b>0?Math.round(a/b*100)+'%':'0%';}
