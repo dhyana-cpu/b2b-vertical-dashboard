@@ -1186,7 +1186,10 @@ window.addEventListener('load',function(){
           }
           document.getElementById('stxt').textContent='live · google sheets';
           renderAll();
-        }).catch(function(err){ document.getElementById('stxt').textContent='cached data (fetch failed)'; });
+        }).catch(function(err){ 
+            console.error("SHEET_URL Fetch Error:", err); 
+            document.getElementById('stxt').textContent='cached data (fetch failed)'; 
+        });
     })();
   }
   
