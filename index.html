@@ -1104,13 +1104,21 @@ window.addEventListener('load',function(){
               var ind=String(r[0]||'').trim();
               var isPrimary=(String(r[2]||'').trim()===firstHeader[ind]);
               var d=r[4],ds='';
-              if(d&&typeof d==='string'&&d.length>=10){
+              
+              // If Event Date is missing, try to steal it from the Header string (r[2])
+              if (!d && r[2] && typeof r[2] === 'string') {
+                var extracted = r[2].match(/\d{2}\s+[a-zA-Z]{3}\s+\d{2}/);
+                if (extracted) d = extracted[0];
+              }
+
+              if(d&&typeof d==='string'&&d.length>=8){
                 var utc=new Date(d);
                 if(!isNaN(utc)){
                   var ist=new Date(utc.getTime()+5.5*60*60*1000);
                   ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0');
                 }
               }
+              if(!ds||ds<'2020-01-01')return;
               if(!ds||ds<'2020-01-01')return;
               if(!bd2[ds])bd2[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};
               bd2[ds][key]++;
