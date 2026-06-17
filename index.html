@@ -1150,9 +1150,18 @@ window.addEventListener('load',function(){
               if(dRaw){
                 var dStr = String(dRaw).trim();
                 if(dStr.includes('/')){ 
-                    var p=dStr.split('/'); 
-                    if(p.length >= 3) ds=(p[2].length===2?'20'+p[2]:p[2])+'-'+p[1].padStart(2,'0')+'-'+p[0].padStart(2,'0'); 
+              var p=dStr.split('/'); 
+              if(p.length >= 3) {
+                var yr = p[2].length===2 ? '20'+p[2] : p[2];
+                // Handle both DD/MM/YY and MM/DD/YY by checking if day > 12
+                var first = parseInt(p[0]), second = parseInt(p[1]);
+                if(first > 12) {
+                  ds = yr+'-'+String(second).padStart(2,'0')+'-'+String(first).padStart(2,'0');
                 } else {
+                  ds = yr+'-'+String(first).padStart(2,'0')+'-'+String(second).padStart(2,'0');
+                }
+              }
+          } else {
                     var dObj=new Date(dStr);
                     if(!isNaN(dObj.getTime())){ 
                         var ist = new Date(dObj.getTime() + 5.5 * 60 * 60 * 1000);
