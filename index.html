@@ -785,8 +785,17 @@ function renderAll(){
   renderBD();
   renderSamples();
   // --- LIVE DIWALI CAMPAIGN CALCULATION ---
-  // Isolate only the industries with "DIWALI" in the name
-  var diwaliData = ML_BY_IND.filter(function(m) { return m.ind.toUpperCase().includes('DIWALI'); });
+  // Match either "DIWALI" in the name, or the known short base-names
+  // (the "DIWALI " prefix is often stripped upstream before reaching this page)
+  var DIWALI_BASE_NAMES = ['asset','wealth','fmcg','banking','it','pharma','consultancy','oil and gas','manufacturing and automative','manufacturing','dividend'];
+  function normDiwaliInd(s){
+    return String(s||'').toLowerCase().replace(/&/g,'and').replace(/\s+\d+$/,'').replace(/\s+/g,' ').trim();
+  }
+  var diwaliData = ML_BY_IND.filter(function(m) {
+    var raw = m.ind.toUpperCase();
+    if (raw.includes('DIWALI')) return true;
+    return DIWALI_BASE_NAMES.indexOf(normDiwaliInd(m.ind)) !== -1;
+  });
   var dwDel = 0, dwOpen = 0, dwClick = 0, dwResp = 0;
   
   // Sort them from highest volume to lowest
