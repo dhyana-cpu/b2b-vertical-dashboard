@@ -785,70 +785,7 @@ function renderAll(){
 
   renderBD();
   renderSamples();
-  // --- LIVE DIWALI CAMPAIGN CALCULATION ---
-  // Match either "DIWALI" in the name, or the known short base-names
-  // (the "DIWALI " prefix is often stripped upstream before reaching this page)
-  var DIWALI_BASE_NAMES = ['asset','wealth','fmcg','banking','it','pharma','consultancy','oil and gas','manufacturing and automative','manufacturing','dividend'];
-  function normDiwaliInd(s){
-    return String(s||'').toLowerCase().replace(/&/g,'and').replace(/\s+\d+$/,'').replace(/\s+/g,' ').trim();
-  }
-  var diwaliData = ML_BY_IND.filter(function(m) {
-    var raw = m.ind.toUpperCase();
-    if (raw.includes('DIWALI')) return true;
-    return DIWALI_BASE_NAMES.indexOf(normDiwaliInd(m.ind)) !== -1;
-  });
-  var dwDel = 0, dwOpen = 0, dwClick = 0, dwResp = 0;
-  
-  // Sort them from highest volume to lowest
-  diwaliData.sort(function(a, b) { return b.del - a.del; });
-  
-  var dwTableHtml = '';
-  var dwBarsHtml = '';
-  var colors = ['var(--or)', 'var(--bl)', '#7c3aed', 'var(--gr)', '#eab308'];
-
-  diwaliData.forEach(function(m, i) {
-      dwDel += m.del;
-      dwOpen += m.open;
-      dwClick += m.click;
-      dwResp += m.resp;
-      
-      // Clean up the name (Removes "DIWALI " so it just says "Asset", "Pharma", etc.)
-      var cleanName = m.ind.replace(/DIWALI/ig, '').replace(/[-_]/g, ' ').trim();
-      if(!cleanName) cleanName = m.ind;
-      
-      // Generate the Table Rows
-      dwTableHtml += '<tr><td style="color:#fff;font-weight:600;">' + cleanName + '</td>' +
-                     '<td>' + m.del.toLocaleString() + '</td>' +
-                     '<td>' + m.open.toLocaleString() + '</td>' +
-                     '<td>' + m.click.toLocaleString() + '</td>' +
-                     '<td>' + m.resp.toLocaleString() + '</td>' +
-                     '<td><span class="badge warm">' + pct(m.resp, m.del) + '</span></td></tr>';
-                     
-      // Generate the Top 5 Bar Charts
-      if (i < 5) {
-          var w = dwDel > 0 ? Math.max((m.del / diwaliData[0].del) * 100, 2) : 0; 
-          var c = colors[i % colors.length];
-          dwBarsHtml += '<div class="frow"><span class="flbl" style="width:130px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + cleanName + '</span>' +
-                        '<div class="fwrap"><div class="fbar" style="width:' + w + '%;background:' + c + '">' + m.del.toLocaleString() + '</div></div></div>';
-      }
-  });
-
-  // Handle empty state if no Diwali data is found
-  if (diwaliData.length === 0) {
-      dwTableHtml = '<tr><td colspan="6" style="text-align:center;padding:20px;color:#555;">No Diwali data found in Master Log</td></tr>';
-      dwBarsHtml = '<div style="color:#555;font-size:11px;text-align:center;padding:20px;">No data</div>';
-  }
-
-  // Push the calculated totals to the dashboard
-  set('dw-tot-sent', dwDel.toLocaleString());
-  set('dw-tot-resp', dwResp.toLocaleString());
-  set('dw-resp-rate', pct(dwResp, dwDel) + ' avg response');
-  
-  var elDwBars = document.getElementById('dw-ind-bars');
-  if(elDwBars) elDwBars.innerHTML = dwBarsHtml;
-  
-  var elDwTable = document.getElementById('dw-ind-table');
-  if(elDwTable) elDwTable.innerHTML = dwTableHtml;
+  renderDiwaliEmail();
   document.getElementById('lu').textContent='Updated '+new Date().toLocaleTimeString();
 }
 
@@ -955,6 +892,43 @@ function renderRecurring(){
     var rev=parseFloat(String(r.revenue).replace(/[₹,]/g,''))||0;
     tbody.innerHTML+='<tr><td>'+String(r.client)+'</td><td><span class="badge poc">'+String(r.poc)+'</span></td><td>'+String(r.phone)+'</td><td>'+String(r.location)+'</td><td style="text-align:center;font-weight:600;">'+String(r.orders)+'</td><td style="font-family:monospace;color:#a78bfa;font-size:11px;">'+String(r.dates)+'</td><td style="text-align:right;color:var(--gr);font-family:monospace;">'+(rev?'₹'+fmt(rev):'—')+'</td></tr>';
   });
+}
+  var DW_EMAIL=[]; // {industry, totalSent, responses}
+
+function renderDiwaliEmail(){
+  var dwDel = DW_EMAIL.reduce(function(a,m){return a+m.totalSent;},0);
+  var dwResp = DW_EMAIL.reduce(function(a,m){return a+m.responses;},0);
+
+  set('dw-tot-sent', dwDel.toLocaleString());
+  set('dw-tot-resp', dwResp.toLocaleString());
+  set('dw-resp-rate', pct(dwResp, dwDel) + ' avg response');
+
+  var sorted = DW_EMAIL.slice().sort(function(a,b){return b.totalSent-a.totalSent;});
+  var colors = ['var(--or)', 'var(--bl)', '#7c3aed', 'var(--gr)', '#eab308'];
+  var maxV = sorted.length ? sorted[0].totalSent : 1;
+
+  var dwBarsHtml = sorted.slice(0,5).map(function(m,i){
+    var w = maxV>0 ? Math.max((m.totalSent/maxV)*100,2) : 0;
+    return '<div class="frow"><span class="flbl" style="width:170px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+m.industry+'</span><div class="fwrap"><div class="fbar" style="width:'+w+'%;background:'+colors[i%colors.length]+'">'+m.totalSent.toLocaleString()+'</div></div></div>';
+  }).join('');
+
+  var dwTableHtml = sorted.map(function(m){
+    return '<tr><td style="color:#fff;font-weight:600;">'+m.industry+'</td>'+
+      '<td>'+m.totalSent.toLocaleString()+'</td>'+
+      '<td>—</td><td>—</td>'+
+      '<td>'+m.responses.toLocaleString()+'</td>'+
+      '<td><span class="badge warm">'+pct(m.responses,m.totalSent)+'</span></td></tr>';
+  }).join('');
+
+  if(!sorted.length){
+    dwBarsHtml = '<div style="color:#555;font-size:11px;text-align:center;padding:20px;">No data</div>';
+    dwTableHtml = '<tr><td colspan="6" style="text-align:center;padding:20px;color:#555;">No Diwali Email Tracker data found</td></tr>';
+  }
+
+  var elDwBars = document.getElementById('dw-ind-bars');
+  if(elDwBars) elDwBars.innerHTML = dwBarsHtml;
+  var elDwTable = document.getElementById('dw-ind-table');
+  if(elDwTable) elDwTable.innerHTML = dwTableHtml;
 }
 function renderBD(){
   var bd=fBD();
@@ -1365,6 +1339,23 @@ window.addEventListener('load',function(){
           var badge=hasPoc&&hasContact?'yes':(hasPoc?'warm':'no');
           return '<tr><td>'+(i+1)+'</td><td style="color:#fff">'+company+'</td><td>'+industry+'</td><td>'+trigger+'</td><td style="color:#a78bfa">'+poc+'</td><td>'+contact+'</td><td><span class="badge '+badge+'">'+status+'</span></td></tr>';
         }).join(''):'<tr><td colspan="7" style="text-align:center;color:#555;padding:20px">No target data</td></tr>';
+
+        // Email Tracker (forward-fill Month/Industry, sum Total Sent + Responses per industry)
+        var et=(dw['Email Tracker']||[]).slice(1);
+        var curInd='';
+        var etMap={};
+        et.forEach(function(r){
+          var indRaw=String(r[1]||'').trim();
+          if(indRaw) curInd=indRaw;
+          if(!curInd) return;
+          var totalSent=parseFloat(r[9])||0;
+          var resp=parseFloat(r[10])||0;
+          if(!etMap[curInd]) etMap[curInd]={industry:curInd,totalSent:0,responses:0};
+          etMap[curInd].totalSent+=totalSent;
+          etMap[curInd].responses+=resp;
+        });
+        DW_EMAIL=Object.values(etMap).filter(function(m){return m.totalSent>0;});
+        renderDiwaliEmail();
       })
       .catch(function(e){console.warn('Diwali extras fetch failed',e);});
   }
