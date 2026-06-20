@@ -411,7 +411,15 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
       </div>
     </div>
 
-    <div id="d-tgt" style="display:none;">
+<div id="d-tgt" style="display:none;">
+      
+      <div class="mg" style="grid-template-columns:repeat(4,1fr); margin-bottom:14px;">
+        <div class="mc or"><div class="ml">Total Target Companies</div><div class="mv" id="tgt-tile-tot">—</div><div class="ms">Across industries</div></div>
+        <div class="mc gn"><div class="ml">POC Identified</div><div class="mv" id="tgt-tile-poc">—</div><div class="ms" id="tgt-tile-poc-pct">—</div></div>
+        <div class="mc bl"><div class="ml">Contact Number Available</div><div class="mv" id="tgt-tile-num">—</div><div class="ms" id="tgt-tile-num-pct">—</div></div>
+        <div class="mc re"><div class="ml">No POC Yet</div><div class="mv" id="tgt-tile-nopoc">—</div><div class="ms">Need sourcing</div></div>
+      </div>
+
       <div class="g1"><div class="cc">
         <div class="ch"><div class="ct">Sample Box Targets — Full Pipeline (Top Tier)</div></div>
         <div style="max-height:600px;overflow-y:auto;">
@@ -1360,10 +1368,16 @@ window.addEventListener('load',function(){
             });
             
             var tgtWithPoc = tgt.filter(function(r){ var p=String(r[6]||r[7]||'').trim(); return p && p !== '—'; }).length;
+            var tgtWithNum = tgt.filter(function(r){ var c=String(r[8]||r[9]||'').trim(); return c && c !== '—'; }).length;
+            var tgtNoPoc = tgt.length - tgtWithPoc;
             
-            // Update Summary Tiles
-            set('dw-tgt-count', tgt.length);
-            set('dw-tgt-sub', tgtWithPoc + ' POCs found (' + pct(tgtWithPoc, tgt.length || 1) + ')');
+            // Update New Structure Summary Tiles
+            set('tgt-tile-tot', tgt.length);
+            set('tgt-tile-poc', tgtWithPoc);
+            set('tgt-tile-poc-pct', pct(tgtWithPoc, tgt.length || 1) + ' coverage');
+            set('tgt-tile-num', tgtWithNum);
+            set('tgt-tile-num-pct', pct(tgtWithNum, tgt.length || 1) + ' dialable');
+            set('tgt-tile-nopoc', tgtNoPoc);
             
             document.getElementById('dw-tgt-table').innerHTML = tgt.length ? tgt.map(function(r,i){
               // Fallbacks added to check adjacent columns just in case things shifted
