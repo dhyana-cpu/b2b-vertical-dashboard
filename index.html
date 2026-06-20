@@ -309,9 +309,9 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
       <div class="mg" style="grid-template-columns:repeat(5,1fr);">
         <div class="mc bl"><div class="ml">Emails Sent</div><div class="mv" id="dw-tot-sent">—</div><div class="ms">Diwali Campaign</div></div>
         <div class="mc gn"><div class="ml">Responses</div><div class="mv" id="dw-tot-resp">—</div><div class="ms" id="dw-resp-rate">—</div></div>
-        <div class="mc or"><div class="ml">LinkedIn Leads</div><div class="mv">49</div><div class="ms">7 InMails sent</div></div>
-        <div class="mc ye"><div class="ml">Cold Calls</div><div class="mv">25</div><div class="ms">4 catalogues, 3 connects</div></div>
-        <div class="mc" style="border-left:3px solid #7c3aed"><div class="ml">Sample Targets</div><div class="mv">105</div><div class="ms">38 POCs found (36%)</div></div>
+        <div class="mc or"><div class="ml">LinkedIn Leads</div><div class="mv" id="dw-li-count">—</div><div class="ms" id="dw-li-sub">—</div></div>
+        <div class="mc ye"><div class="ml">Cold Calls</div><div class="mv" id="dw-cc-count">—</div><div class="ms" id="dw-cc-sub">—</div></div>
+        <div class="mc" style="border-left:3px solid #7c3aed"><div class="ml">Sample Targets</div><div class="mv" id="dw-tgt-count">—</div><div class="ms" id="dw-tgt-sub">—</div></div>
       </div>
 
       <div class="g2">
@@ -359,8 +359,8 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
           <div style="max-height:500px;overflow-y:auto;">
             <table class="tbl">
               <thead><tr><th>Name</th><th>Company</th><th>Position</th><th>InMail</th></tr></thead>
-              <tbody>
-                <tr><td style="color:#fff">Garima Sengupta</td><td style="color:#a78bfa">Visa</td><td>HR Specialist</td><td><span class="badge yes">Sent</span></td></tr>
+              <tbody id="dw-li-table">
+                <tr><td style="color:#fff">Garima Sengupta</td>
                 <tr><td style="color:#fff">Krishna Paliwal</td><td style="color:#a78bfa">Tim Horton</td><td>Restaurant GM</td><td><span class="badge yes">Sent</span></td></tr>
                 <tr><td style="color:#fff">Aaina Narang</td><td style="color:#a78bfa">McKinsey</td><td>—</td><td><span class="badge yes">Sent</span></td></tr>
                 <tr><td style="color:#fff">Anusha Bhagawatula</td><td style="color:#a78bfa">Neeman's</td><td>VP HR Strategy</td><td><span class="badge yes">Sent</span></td></tr>
@@ -386,7 +386,7 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
           <div style="max-height:500px;overflow-y:auto;">
             <table class="tbl">
               <thead><tr><th>Company</th><th>Called By</th><th>Follow Up</th><th>Status</th></tr></thead>
-              <tbody>
+              <tbody id="dw-cc-table">
                 <tr><td style="color:#fff">Mrunmai Padelkar (Amoli)</td><td>Vanshika</td><td>Mahi</td><td><span class="badge no">Not interested</span></td></tr>
                 <tr><td style="color:#fff">Akshay Bhatkar (ZingHR)</td><td>Vanshika</td><td>Mahi</td><td><span class="badge cold">Not picked up</span></td></tr>
                 <tr><td style="color:#fff">Ravi Bhushan (Stellar)</td><td>Vanshika</td><td>—</td><td><span class="badge no">Not interested</span></td></tr>
@@ -415,8 +415,8 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
         <div class="ch"><div class="ct">Sample Box Targets — Full Pipeline (Top Tier)</div></div>
         <div style="max-height:600px;overflow-y:auto;">
           <table class="tbl">
-            <thead><tr><th>#</th><th>Company</th><th>Industry</th><th>2026 Trigger</th><th>POC</th><th>Contact</th><th>POC Status</th></tr></thead>
-            <tbody>
+        <thead><tr><th>#</th><th>Company</th><th>Industry</th><th>2026 Trigger</th><th>POC</th><th>Contact</th><th>POC Status</th></tr></thead>
+            <tbody id="dw-tgt-table">
               <tr><td>1</td><td style="color:#fff">Dr. Reddy's Laboratories</td><td>Pharma</td><td>International expansion</td><td style="color:#a78bfa">Karun Gaur</td><td>91212 30863</td><td><span class="badge yes">Identified</span></td></tr>
               <tr><td>2</td><td style="color:#fff">Torrent Pharmaceuticals</td><td>Pharma</td><td>Acquisition-led expansion</td><td style="color:#a78bfa">Akhil Sisodiya</td><td>63985 15378</td><td><span class="badge yes">Identified</span></td></tr>
               <tr><td>3</td><td style="color:#fff">Cipla</td><td>Pharma</td><td>Global respiratory growth</td><td style="color:#a78bfa">Vipin</td><td>70453 75499</td><td><span class="badge yes">Identified</span></td></tr>
