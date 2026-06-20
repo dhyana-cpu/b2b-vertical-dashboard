@@ -500,6 +500,7 @@ const SHEET_URL='https://b2b-vertical-dashboard.vercel.app/api/sheet';
 const BD_URL='https://script.google.com/macros/s/AKfycbwZOjviZgLXKd0nuXKxiGHUeJ9vrqRHxv3_-Hdc1fX-5UrTSNxiuMV_op4X_ey-7h4iNg/exec';
 const SALES_URL='https://script.google.com/macros/s/AKfycbx9Np_xJ6-OeDY_OL654BC_f9HfcS3-ZzY4KGJ0HBvMZSmkbH0z2kmxiRshT-mR1ODFig/exec';
 const SAMPLES_URL='https://script.google.com/macros/s/AKfycbwHPMP6i9NcDOZCR7xL7eEdJZXho8Ju0BWs0H7RVLKJmMs1h4JqJ7r3qRpHP-3iyAU/exec';
+const DIWALI_URL='https://script.google.com/macros/s/AKfycbwWOXAeQl5-KCG90vYob0uoCRA10QGq9qE9lPzc12Te3wP__7mt9IEGdB8g1gxFC0xF/exec';
 
 var BD_ROWS=[], ML_PRIMARY=[], ML_FOLLOWUP=[], SALES=[], SAMPLES=[], ML_BY_DATE=[], ML_BY_IND=[], ADS=[];
 function switchDiwali(subId) {
@@ -1290,7 +1291,85 @@ window.addEventListener('load',function(){
       if(parsed.length > 0){ SALES = parsed; renderAll(); }
     }).catch(function(e){});
   }
+// --- LIVE DIWALI EXTRAS FETCH (LinkedIn, Cold Calls, Sample Targets) ---
+  if (typeof DIWALI_URL !== 'undefined' && DIWALI_URL) {
+    fetch(DIWALI_URL+'?t='+Date.now(),{cache:'no-store',redirect:'follow'})
+      .then(function(r){return r.json();})
+      .then(function(dw){
+        // LinkedIn Tracker
+        var li=(dw['LinkedIn Tracker']||[]).slice(1).filter(function(r){return r[0]||r[2];});
+        var liSent=li.filter(function(r){return String(r[6]||'').trim().toLowerCase()==='yes'||String(r[6]||'').trim().toLowerCase()==='sent';}).length;
+        set('dw-li-count',li.length);
+        set('dw-li-sub',liSent+' InMails sent');
+        document.getElementById('dw-li-table').innerHTML=li.length?li.map(function(r){
+          var name=(String(r[0]||'')+' '+String(r[1]||'')).trim()||'—';
+          var company=String(r[2]||'—');
+          var pos=String(r[3]||'—');
+          var sentRaw=String(r[6]||'').trim().toLowerCase();
+          var sent=(sentRaw==='yes'||sentRaw==='sent');
+          return '<tr><td style="color:#fff">'+name+'</td><td style="color:#a78bfa">'+company+'</td><td>'+pos+'</td><td><span class="badge '+(sent?'yes':'cold')+'">'+(sent?'Sent':'Pending')+'</span></td></tr>';
+        }).join(''):'<tr><td colspan="4" style="text-align:center;color:#555;padding:20px">No LinkedIn data</td></tr>';
 
+        // Cold Calls Tracker
+        var cc=(dw['Cold Calls Tracker']||[]).slice(1).filter(function(r){return r[0]||r[2];});
+        var ccDone=cc.filter(function(r){var s=String(r[11]||'').trim().toLowerCase();return s&&s!=='not picked up'&&s!=='not connected';}).length;
+        set('dw-cc-count',cc.length);
+        set('dw-cc-sub',ccDone+' connects');
+        document.getElementById('dw-cc-table').innerHTML=cc.length?cc.map(function(r){
+          var company=String(r[2]||'—');
+          var calledBy=String(r[10]||r[6]||'—');
+          var followUp=String(r[6]||'—');
+          var status=String(r[11]||'—');
+          var statusLower=status.toLowerCase();
+          var badge=statusLower.includes('interested')&&!statusLower.includes('not')?'yes':(statusLower.includes('not')?'no':'cold');
+          return '<tr><td style="color:#fff">'+company+'</td><td>'+calledBy+'</td><td>'+followUp+'</td><td><span class="badge '+badge+'">'+status+'</span></td></tr>';
+        }).join(''):'<tr><td colspan="4" style="text-align:center;color:#555;padding:20px">No call data</td></tr>';
+
+        // Cold Call Outcomes breakdown
+        var outcomeMap={};
+        cc.forEach(function(r){
+          var s=String(r[11]||'').trim();
+          if(!s)return;
+          outcomeMap[s]=(outcomeMap[s]||0)+1;
+        });
+        var outcomeEntries=Object.entries(outcomeMap).sort(function(a,b){return b[1]-a[1];}).slice(0,4);
+        var maxOutcome=outcomeEntries.length?outcomeEntries[0][1]:1;
+        var outcomeColors=['#6b7280','var(--re)','var(--gr)','var(--bl)'];
+        var outcomeHtml=outcomeEntries.map(function(e,i){
+          var w=Math.round((e[1]/maxOutcome)*100);
+          return '<div class="frow"><span class="flbl">'+e[0]+'</span><div class="fwrap"><div class="fbar" style="width:'+w+'%;background:'+outcomeColors[i%outcomeColors.length]+'">'+e[1]+'</div></div></div>';
+        }).join('');
+        var outcomeContainer=document.querySelector('#d-ov .g2 .cc:nth-child(2)');
+        if(outcomeContainer){
+          var frows=outcomeContainer.querySelectorAll('.frow');
+          if(outcomeEntries.length){
+            outcomeContainer.querySelectorAll('.frow').forEach(function(f){f.remove();});
+            outcomeContainer.insertAdjacentHTML('beforeend',outcomeHtml);
+          }
+        }
+
+        // Sample Box (Targets)
+        var tgt=(dw['Sample Box']||[]).slice(1).filter(function(r){return r[1]||r[2];});
+        var tgtWithPoc=tgt.filter(function(r){return String(r[6]||'').trim();}).length;
+        set('dw-tgt-count',tgt.length);
+        set('dw-tgt-sub',tgtWithPoc+' POCs found ('+pct(tgtWithPoc,tgt.length||1)+')');
+        document.getElementById('dw-tgt-table').innerHTML=tgt.length?tgt.map(function(r,i){
+          var company=String(r[2]||'—');
+          var industry=String(r[1]||'—');
+          var trigger=String(r[4]||'—');
+          var poc=String(r[6]||'—');
+          var contact=String(r[8]||'—');
+          var hasPoc=!!poc&&poc!=='—';
+          var hasContact=!!contact&&contact!=='—';
+          var status=hasPoc&&hasContact?'Identified':(hasPoc?'No number':'No POC');
+          var badge=hasPoc&&hasContact?'yes':(hasPoc?'warm':'no');
+          return '<tr><td>'+(i+1)+'</td><td style="color:#fff">'+company+'</td><td>'+industry+'</td><td>'+trigger+'</td><td style="color:#a78bfa">'+poc+'</td><td>'+contact+'</td><td><span class="badge '+badge+'">'+status+'</span></td></tr>';
+        }).join(''):'<tr><td colspan="7" style="text-align:center;color:#555;padding:20px">No target data</td></tr>';
+      })
+      .catch(function(e){console.warn('Diwali extras fetch failed',e);});
+  }
+
+  
 // --- LIVE SAMPLES FETCH ---
   if (typeof SAMPLES_URL !== 'undefined' && SAMPLES_URL) {
     fetch(SAMPLES_URL + '?t=' + Date.now(), {cache: 'no-store', redirect: 'follow'})
