@@ -337,7 +337,23 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
       </div></div>
     </div>
 
-    <div id="d-li" style="display:none;">
+<div id="d-li" style="display:none;">
+      
+      <!-- LinkedIn Summary Tiles -->
+      <div class="mg" style="grid-template-columns:repeat(3,1fr); margin-bottom:14px;">
+        <div class="mc bl"><div class="ml">Total Leads</div><div class="mv" id="li-tile-tot">—</div><div class="ms">LinkedIn mapped</div></div>
+        <div class="mc gn"><div class="ml">InMails Sent</div><div class="mv" id="li-tile-sent">—</div><div class="ms" id="li-tile-sent-pct">—</div></div>
+        <div class="mc or"><div class="ml">Pending</div><div class="mv" id="li-tile-pend">—</div><div class="ms">to be sent</div></div>
+      </div>
+
+      <!-- Cold Calls Summary Tiles -->
+      <div class="mg" style="grid-template-columns:repeat(4,1fr);">
+        <div class="mc bl"><div class="ml">Total Calls (Jun 8)</div><div class="mv" id="cc-tile-tot">—</div><div class="ms">Vanshika & Mahi</div></div>
+        <div class="mc gn"><div class="ml">Positive Outcomes</div><div class="mv" id="cc-tile-pos">—</div><div class="ms">catalogue / connects</div></div>
+        <div class="mc re"><div class="ml">Not Interested</div><div class="mv" id="cc-tile-no">—</div><div class="ms" id="cc-tile-no-pct">—</div></div>
+        <div class="mc or"><div class="ml">Follow-Up Needed</div><div class="mv" id="cc-tile-fu">—</div><div class="ms">not picked up</div></div>
+      </div>
+
       <div class="g2">
         <div class="cc">
           <div class="ch"><div class="ct">LinkedIn Leads Pipeline</div></div>
@@ -1255,58 +1271,75 @@ window.addEventListener('load',function(){
     fetch(DIWALI_URL+'?t='+Date.now(),{cache:'no-store',redirect:'follow'})
       .then(function(r){return r.json();})
       .then(function(dw){
-        // LinkedIn Tracker
-        var li=(dw['LinkedIn Tracker']||[]).slice(1).filter(function(r){return r[0]||r[2];});
-        var liSent=li.filter(function(r){return String(r[6]||'').trim().toLowerCase()==='yes'||String(r[6]||'').trim().toLowerCase()==='sent';}).length;
-        set('dw-li-count',li.length);
-        set('dw-li-sub',liSent+' InMails sent');
-        document.getElementById('dw-li-table').innerHTML=li.length?li.map(function(r){
-          var name=(String(r[0]||'')+' '+String(r[1]||'')).trim()||'—';
-          var company=String(r[2]||'—');
-          var pos=String(r[3]||'—');
-          var sentRaw=String(r[6]||'').trim().toLowerCase();
-          var sent=(sentRaw==='yes'||sentRaw==='sent');
+       // --- LinkedIn Tracker ---
+        var liRaw = dw['LinkedIn Tracker'] || [];
+        var liStart = 0;
+        for(var i=0; i<liRaw.length; i++) { if(String(liRaw[i][0]).trim() === 'First Name') { liStart = i+1; break; } }
+        
+        var li = liRaw.slice(liStart || 4).filter(function(r){ return r[0] || r[2]; });
+        var liSent = li.filter(function(r){ return String(r[6]||'').trim().toLowerCase()==='yes' || String(r[6]||'').trim().toLowerCase()==='sent'; }).length;
+        
+        // Old Summary metrics
+        set('dw-li-count', li.length);
+        set('dw-li-sub', liSent + ' InMails sent');
+
+        // NEW LinkedIn Tiles
+        set('li-tile-tot', li.length);
+        set('li-tile-sent', liSent);
+        set('li-tile-sent-pct', pct(liSent, li.length) + ' coverage');
+        set('li-tile-pend', li.length - liSent);
+        
+        document.getElementById('dw-li-table').innerHTML = li.length ? li.map(function(r){
+          var name = (String(r[0]||'') + ' ' + String(r[1]||'')).trim() || '—';
+          var company = String(r[2]||'—');
+          var pos = String(r[3]||'—');
+          var sentRaw = String(r[6]||'').trim().toLowerCase();
+          var sent = (sentRaw === 'yes' || sentRaw === 'sent');
           return '<tr><td style="color:#fff">'+name+'</td><td style="color:#a78bfa">'+company+'</td><td>'+pos+'</td><td><span class="badge '+(sent?'yes':'cold')+'">'+(sent?'Sent':'Pending')+'</span></td></tr>';
-        }).join(''):'<tr><td colspan="4" style="text-align:center;color:#555;padding:20px">No LinkedIn data</td></tr>';
+        }).join('') : '<tr><td colspan="4" style="text-align:center;color:#555;padding:20px">No LinkedIn data</td></tr>';
 
-        // Cold Calls Tracker
-        var cc=(dw['Cold Calls Tracker']||[]).slice(1).filter(function(r){return r[0]||r[2];});
-        var ccDone=cc.filter(function(r){var s=String(r[11]||'').trim().toLowerCase();return s&&s!=='not picked up'&&s!=='not connected';}).length;
-        set('dw-cc-count',cc.length);
-        set('dw-cc-sub',ccDone+' connects');
-        document.getElementById('dw-cc-table').innerHTML=cc.length?cc.map(function(r){
-          var company=String(r[2]||'—');
-          var calledBy=String(r[10]||r[6]||'—');
-          var followUp=String(r[6]||'—');
-          var status=String(r[11]||'—');
-          var statusLower=status.toLowerCase();
-          var badge=statusLower.includes('interested')&&!statusLower.includes('not')?'yes':(statusLower.includes('not')?'no':'cold');
-          return '<tr><td style="color:#fff">'+company+'</td><td>'+calledBy+'</td><td>'+followUp+'</td><td><span class="badge '+badge+'">'+status+'</span></td></tr>';
-        }).join(''):'<tr><td colspan="4" style="text-align:center;color:#555;padding:20px">No call data</td></tr>';
-
-        // Cold Call Outcomes breakdown
-        var outcomeMap={};
-        cc.forEach(function(r){
-          var s=String(r[11]||'').trim();
-          if(!s)return;
-          outcomeMap[s]=(outcomeMap[s]||0)+1;
-        });
-        var outcomeEntries=Object.entries(outcomeMap).sort(function(a,b){return b[1]-a[1];}).slice(0,4);
-        var maxOutcome=outcomeEntries.length?outcomeEntries[0][1]:1;
-        var outcomeColors=['#6b7280','var(--re)','var(--gr)','var(--bl)'];
-        var outcomeHtml=outcomeEntries.map(function(e,i){
-          var w=Math.round((e[1]/maxOutcome)*100);
-          return '<div class="frow"><span class="flbl">'+e[0]+'</span><div class="fwrap"><div class="fbar" style="width:'+w+'%;background:'+outcomeColors[i%outcomeColors.length]+'">'+e[1]+'</div></div></div>';
-        }).join('');
-        var outcomeContainer=document.querySelector('#d-ov .g2 .cc:nth-child(2)');
-        if(outcomeContainer){
-          var frows=outcomeContainer.querySelectorAll('.frow');
-          if(outcomeEntries.length){
-            outcomeContainer.querySelectorAll('.frow').forEach(function(f){f.remove();});
-            outcomeContainer.insertAdjacentHTML('beforeend',outcomeHtml);
-          }
+        // --- Cold Calls Tracker ---
+        var ccRaw = dw['Cold Calls Tracker'] || [];
+        var ccStart = 0;
+        for(var i=0; i<ccRaw.length; i++) { 
+           var c0 = String(ccRaw[i][0]).trim().toLowerCase();
+           var c1 = String(ccRaw[i][1]).trim().toLowerCase();
+           if(c0 === 'company' || c0 === 's.no' || c0 === 's no' || c1 === 'company') { ccStart = i+1; break; } 
         }
+        
+        var cc = ccRaw.slice(ccStart || 4).filter(function(r){ return r[0] || r[2]; });
+        var ccDone = cc.filter(function(r){ var s=String(r[11]||'').trim().toLowerCase(); return s && s!=='not picked up' && s!=='not connected'; }).length;
 
+        // Categorize call outcomes for the new tiles
+        var ccPos = 0, ccNo = 0, ccFu = 0;
+        cc.forEach(function(r){
+          var s = String(r[11]||'').trim().toLowerCase();
+          if (s.includes('interested') && !s.includes('not')) ccPos++;
+          else if (s.includes('share') || s.includes('catalogue') || s.includes('call done') || s.includes('b2b')) ccPos++;
+          else if (s.includes('not interested')) ccNo++;
+          else if (s.includes('not picked up') || s.includes('not connected') || s.includes('invalid')) ccFu++;
+        });
+        
+        // Old summary metrics
+        set('dw-cc-count', cc.length);
+        set('dw-cc-sub', ccDone + ' connects');
+
+        // NEW Cold Call Tiles
+        set('cc-tile-tot', cc.length);
+        set('cc-tile-pos', ccPos);
+        set('cc-tile-no', ccNo);
+        set('cc-tile-no-pct', pct(ccNo, cc.length) + ' rejection rate');
+        set('cc-tile-fu', ccFu);
+        
+        document.getElementById('dw-cc-table').innerHTML = cc.length ? cc.map(function(r){
+          var company = String(r[2]||'—');
+          var calledBy = String(r[10]||r[6]||'—');
+          var followUp = String(r[6]||'—');
+          var status = String(r[11]||'—');
+          var statusLower = status.toLowerCase();
+          var badge = statusLower.includes('interested') && !statusLower.includes('not') ? 'yes' : (statusLower.includes('not') ? 'no' : 'cold');
+          return '<tr><td style="color:#fff">'+company+'</td><td>'+calledBy+'</td><td>'+followUp+'</td><td><span class="badge '+badge+'">'+status+'</span></td></tr>';
+        }).join('') : '<tr><td colspan="4" style="text-align:center;color:#555;padding:20px">No call data</td></tr>';
         // Sample Box (Targets)
         var tgt=(dw['Sample Box']||[]).slice(1).filter(function(r){return r[1]||r[2];});
         var tgtWithPoc=tgt.filter(function(r){return String(r[6]||'').trim();}).length;
