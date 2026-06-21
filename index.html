@@ -442,9 +442,11 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
 <div class="tip" id="tip"></div>
 
 <script>
-const SHEET_URL='https://script.google.com/macros/s/AKfycbwlZ0Ei--gRGtV3QiKLbZb_zvA23r7_potGuR5qnDSLerHIJYiSi3QJBx0yCoZO7d7jVA/exec';
+// Paste your new single API link right here:
+const SHEET_URL='https://script.google.com/macros/s/AKfycbzsb5FX-sds7Hv25Cd_crPLtJGqTDWaPDuNz10Z68UvaHjD_US5bLys6ncfkY_Wm1ibzA/exec';
+
+// Your existing supplementary links:
 const BD_URL='https://script.google.com/macros/s/AKfycbwZOjviZgLXKd0nuXKxiGHUeJ9vrqRHxv3_-Hdc1fX-5UrTSNxiuMV_op4X_ey-7h4iNg/exec';
-const SALES_URL='https://script.google.com/macros/s/AKfycbx9Np_xJ6-OeDY_OL654BC_f9HfcS3-ZzY4KGJ0HBvMZSmkbH0z2kmxiRshT-mR1ODFig/exec';
 const SAMPLES_URL='https://script.google.com/macros/s/AKfycbwHPMP6i9NcDOZCR7xL7eEdJZXho8Ju0BWs0H7RVLKJmMs1h4JqJ7r3qRpHP-3iyAU/exec';
 const DIWALI_URL='https://script.google.com/macros/s/AKfycbwWOXAeQl5-KCG90vYob0uoCRA10QGq9qE9lPzc12Te3wP__7mt9IEGdB8g1gxFC0xF/exec';
 
@@ -971,25 +973,20 @@ window.addEventListener('load',function(){
               if(!firstHeader[ind])firstHeader[ind]=String(r[1]||'').trim(); // Col 1 is now Header
             });
             
-               raw['Master_Log'].forEach(function(r){
-              if(!r||!r[0])return;
-              var ind=String(r[0]).trim();
-              if(!firstHeader[ind])firstHeader[ind]=String(r[2]||'').trim(); // Col 2 is Header
-            });
-            
             raw['Master_Log'].forEach(function(r){
-              if(!r||!r[3])return; // Col 3 is Status
-              var key=smap[String(r[3]).trim()]; 
+              if(!r||!r[2])return; // Col 2 is now Status
+              var key=smap[String(r[2]).trim()]; 
               if(!key)return;
               
               var ind=String(r[0]||'').trim();
-              var isPrimary = (String(r[2]||'').trim()===firstHeader[ind]);
-              var d=r[4], ds=''; // Col 4 is Date
+              var isPrimary = (String(r[1]||'').trim()===firstHeader[ind]);
+              var d=r[3], ds=''; // Col 3 is now Date
               
-              if (!d && r[2] && typeof r[2] === 'string') { 
-                var extracted = r[2].match(/\d{2}\s+[a-zA-Z]{3}\s+\d{2}/); 
+              if (!d && r[1] && typeof r[1] === 'string') { 
+                var extracted = r[1].match(/\d{2}\s+[a-zA-Z]{3}\s+\d{2}/); 
                 if (extracted) d = extracted[0]; 
-              }           
+              }
+              
               if(d&&typeof d==='string'&&d.length>=8){
                 var utc=new Date(d);
                 if(!isNaN(utc)){ 
@@ -1016,6 +1013,7 @@ window.addEventListener('load',function(){
             ML_PRIMARY=Object.values(bdP).sort(function(a,b){return a.date.localeCompare(b.date);});
             ML_FOLLOWUP=Object.values(bdF).sort(function(a,b){return a.date.localeCompare(b.date);});
           }
+
           // ADS LOG
           var adsKey = sheetKeys.find(function(k){ return k.toLowerCase().replace(/\s+/g, '').includes('ads_log') || k.toLowerCase().replace(/\s+/g, '') === 'adslog'; }) || 'Ads_Log';
           if(raw[adsKey]){
@@ -1066,6 +1064,35 @@ window.addEventListener('load',function(){
             if(parsedInmails.length > 0) INMAILS = parsedInmails;
           }
 
+          // SALES LOG (Inside SHEET_URL fetch now)
+          var salesKey = sheetKeys.find(function(k) { return k.toLowerCase().includes('sale'); }) || 'Sales_Log';
+          if(raw[salesKey]){
+            var parsedSales = raw[salesKey].slice(1).map(function(r){
+              var typeStr = String(r[1] || '').trim().toLowerCase();
+              if (!typeStr.includes('inst')) return null; 
+              var pocRaw = String(r[4]||r[3]||'').trim();
+              if (pocRaw.toLowerCase() === 'aditi') return null;
+              var dRaw=r[2]||r[3],ds='';
+              if(dRaw){
+                var dStr = String(dRaw).trim();
+                if(dStr.includes('/')){ 
+                    var p=dStr.split('/'); 
+                    if(p.length >= 3) ds=(p[2].length===2?'20'+p[2]:p[2])+'-'+p[1].padStart(2,'0')+'-'+p[0].padStart(2,'0'); 
+                } else {
+                    var dObj=new Date(dStr);
+                    if(!isNaN(dObj.getTime())){ 
+                        var ist = new Date(dObj.getTime() + 5.5 * 60 * 60 * 1000);
+                        ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0'); 
+                    }
+                }
+              }
+              var amt = parseFloat(String(r[6]||r[7]||r[8]||r[5]||'0').replace(/[^\d.-]/g, ''));
+              if (!ds || isNaN(amt) || amt === 0) return null;
+              return { ref: String(r[0]||'—'), date: ds, client: String(r[5]||r[4]||'—').trim(), poc: pocRaw || '—', type: String(r[1]||'Inst Order').trim(), amt: amt };
+            }).filter(Boolean);
+            if(parsedSales.length > 0){ SALES = parsedSales; }
+          }
+
           document.getElementById('stxt').textContent='live · google sheets';
           renderAll();
         }).catch(function(err){ 
@@ -1090,37 +1117,6 @@ window.addEventListener('load',function(){
       var rcRaw=(bdRaw['Recurring clients']||[]).slice(1);
       RC_ROWS=rcRaw.filter(function(r){return r[0]||r[1];}).map(function(r){ return { client:String(r[0]||'').trim(), poc:String(r[1]||'').trim(), phone:String(r[2]||'').trim(), location:String(r[3]||'').trim(), revenue:String(r[4]||'').trim(), orders:String(r[5]||'').trim(), dates:String(r[6]||'').trim() }; });
       renderRecurring();
-    }).catch(function(e){});
-  }
-
-  if (typeof SALES_URL !== 'undefined' && SALES_URL) {
-    fetch(SALES_URL+'?t='+Date.now(),{cache:'no-store',redirect:'follow'}).then(function(r){return r.json();}).then(function(sRaw){
-      var sheetKeys = Object.keys(sRaw);
-      var sheetName = sheetKeys.find(function(k) { return k.toLowerCase().includes('sale'); }) || sheetKeys[0];
-      var parsed=(sRaw[sheetName]||[]).slice(1).map(function(r){
-        var typeStr = String(r[1] || '').trim().toLowerCase();
-        if (!typeStr.includes('inst')) return null; 
-        var pocRaw = String(r[4]||r[3]||'').trim();
-        if (pocRaw.toLowerCase() === 'aditi') return null;
-        var dRaw=r[2]||r[3],ds='';
-        if(dRaw){
-          var dStr = String(dRaw).trim();
-          if(dStr.includes('/')){ 
-              var p=dStr.split('/'); 
-              if(p.length >= 3) ds=(p[2].length===2?'20'+p[2]:p[2])+'-'+p[1].padStart(2,'0')+'-'+p[0].padStart(2,'0'); 
-          } else {
-              var dObj=new Date(dStr);
-              if(!isNaN(dObj.getTime())){ 
-                  var ist = new Date(dObj.getTime() + 5.5 * 60 * 60 * 1000);
-                  ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0'); 
-              }
-          }
-        }
-        var amt = parseFloat(String(r[6]||r[7]||r[8]||r[5]||'0').replace(/[^\d.-]/g, ''));
-        if (!ds || isNaN(amt) || amt === 0) return null;
-        return { ref: String(r[0]||'—'), date: ds, client: String(r[5]||r[4]||'—').trim(), poc: pocRaw || '—', type: String(r[1]||'Inst Order').trim(), amt: amt };
-      }).filter(Boolean);
-      if(parsed.length > 0){ SALES = parsed; renderAll(); }
     }).catch(function(e){});
   }
 
@@ -1265,5 +1261,3 @@ window.addEventListener('load',function(){
   }
 });
 </script>
-</body>
-</html>
