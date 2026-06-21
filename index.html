@@ -442,7 +442,7 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
 <div class="tip" id="tip"></div>
 
 <script>
-const SHEET_URL='https://script.google.com/macros/s/AKfycbzsb5FX-sds7Hv25Cd_crPLtJGqTDWaPDuNz10Z68UvaHjD_US5bLys6ncfkY_Wm1ibzA/exec';
+const SHEET_URL='https://script.google.com/macros/s/AKfycbwlZ0Ei--gRGtV3QiKLbZb_zvA23r7_potGuR5qnDSLerHIJYiSi3QJBx0yCoZO7d7jVA/exec';
 const BD_URL='https://script.google.com/macros/s/AKfycbwZOjviZgLXKd0nuXKxiGHUeJ9vrqRHxv3_-Hdc1fX-5UrTSNxiuMV_op4X_ey-7h4iNg/exec';
 const SALES_URL='https://script.google.com/macros/s/AKfycbx9Np_xJ6-OeDY_OL654BC_f9HfcS3-ZzY4KGJ0HBvMZSmkbH0z2kmxiRshT-mR1ODFig/exec';
 const SAMPLES_URL='https://script.google.com/macros/s/AKfycbwHPMP6i9NcDOZCR7xL7eEdJZXho8Ju0BWs0H7RVLKJmMs1h4JqJ7r3qRpHP-3iyAU/exec';
@@ -971,20 +971,25 @@ window.addEventListener('load',function(){
               if(!firstHeader[ind])firstHeader[ind]=String(r[1]||'').trim(); // Col 1 is now Header
             });
             
+               raw['Master_Log'].forEach(function(r){
+              if(!r||!r[0])return;
+              var ind=String(r[0]).trim();
+              if(!firstHeader[ind])firstHeader[ind]=String(r[2]||'').trim(); // Col 2 is Header
+            });
+            
             raw['Master_Log'].forEach(function(r){
-              if(!r||!r[2])return; // Col 2 is now Status
-              var key=smap[String(r[2]).trim()]; 
+              if(!r||!r[3])return; // Col 3 is Status
+              var key=smap[String(r[3]).trim()]; 
               if(!key)return;
               
               var ind=String(r[0]||'').trim();
-              var isPrimary = (String(r[1]||'').trim()===firstHeader[ind]);
-              var d=r[3], ds=''; // Col 3 is now Date
+              var isPrimary = (String(r[2]||'').trim()===firstHeader[ind]);
+              var d=r[4], ds=''; // Col 4 is Date
               
-              if (!d && r[1] && typeof r[1] === 'string') { 
-                var extracted = r[1].match(/\d{2}\s+[a-zA-Z]{3}\s+\d{2}/); 
+              if (!d && r[2] && typeof r[2] === 'string') { 
+                var extracted = r[2].match(/\d{2}\s+[a-zA-Z]{3}\s+\d{2}/); 
                 if (extracted) d = extracted[0]; 
-              }
-              
+              }           
               if(d&&typeof d==='string'&&d.length>=8){
                 var utc=new Date(d);
                 if(!isNaN(utc)){ 
