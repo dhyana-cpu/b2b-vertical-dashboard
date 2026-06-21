@@ -420,10 +420,15 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
         <div class="mc re"><div class="ml">No POC Yet</div><div class="mv" id="tgt-tile-nopoc">—</div><div class="ms">Need sourcing</div></div>
       </div>
 
+    <div class="g1"><div class="cc">
+        <div class="ch"><div class="ct">Industry Distribution</div><span style="font-size:11px;color:var(--or);background:rgba(249,115,22,0.1);padding:2px 8px;border-radius:10px;">2026 Triggers mapped</span></div>
+        <div class="cw" id="tgt-ind-chart" style="min-height:180px"></div>
+      </div></div>
+
       <div class="g1"><div class="cc">
         <div class="ch"><div class="ct">Sample Box Targets — Full Pipeline (Top Tier)</div></div>
-        <div style="max-height:600px;overflow-y:auto;">
-          <table class="tbl">
+        <div style="max-height:600px;overflow-y:auto;">  
+  <table class="tbl">
         <thead><tr><th>#</th><th>Company</th><th>Industry</th><th>2026 Trigger</th><th>POC</th><th>Contact</th><th>POC Status</th></tr></thead>
             <tbody id="dw-tgt-table">
               <tr><td>1</td><td style="color:#fff">Dr. Reddy's Laboratories</td><td>Pharma</td><td>International expansion</td><td style="color:#a78bfa">Karun Gaur</td><td>91212 30863</td><td><span class="badge yes">Identified</span></td></tr>
@@ -1378,6 +1383,20 @@ window.addEventListener('load',function(){
             set('tgt-tile-num', tgtWithNum);
             set('tgt-tile-num-pct', pct(tgtWithNum, tgt.length || 1) + ' dialable');
             set('tgt-tile-nopoc', tgtNoPoc);
+            
+            // Industry Distribution Logic
+            var indMap = {};
+            tgt.forEach(function(r) {
+               var ind = String(r[1] || r[0] || '').trim();
+               if (!ind || ind === '—') ind = 'Ungrouped / Other';
+               indMap[ind] = (indMap[ind] || 0) + 1;
+            });
+            var indEntries = Object.entries(indMap).sort(function(a,b) { return b[1] - a[1]; });
+            var indLabels = indEntries.map(function(e) { return e[0]; });
+            var indVals = indEntries.map(function(e) { return e[1]; });
+            
+            // Render the Horizontal Bar Chart
+            hbar('tgt-ind-chart', indLabels, indVals, ['#6b7280', '#3b82f6', '#f97316', '#22c55e', '#7c3aed', '#0ea5e9']);
             
             document.getElementById('dw-tgt-table').innerHTML = tgt.length ? tgt.map(function(r,i){
               // Fallbacks added to check adjacent columns just in case things shifted
