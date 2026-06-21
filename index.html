@@ -964,33 +964,46 @@ window.addEventListener('load',function(){
             var smap={'Email Delivered':'del','Email Opened':'open','Email Clicked':'click','RESPONDED':'resp','BOUNCED':'bounce'};
             var bd2={},bi2={},bdP={},bdF={};
             var firstHeader={};
+            
             raw['Master_Log'].forEach(function(r){
               if(!r||!r[0])return;
               var ind=String(r[0]).trim();
-              if(!firstHeader[ind])firstHeader[ind]=String(r[1]||'').trim(); // Mapped to sliced Batch
+              if(!firstHeader[ind])firstHeader[ind]=String(r[1]||'').trim(); // Mapped to Header (Col C)
             });
+            
             raw['Master_Log'].forEach(function(r){
-              if(!r||!r[2])return; // Mapped to sliced Status
-              var key=smap[String(r[2])];if(!key)return;
+              if(!r||!r[3])return; // Mapped to Status (Col G)
+              var key=smap[String(r[3])];if(!key)return;
               var ind=String(r[0]||'').trim();
               var isPrimary=(String(r[1]||'').trim()===firstHeader[ind]);
-              var d=r[3],ds=''; // Mapped to sliced Event Date
+              var d=r[4],ds=''; // Mapped to Event Date (Col I)
               
-              if (!d && r[1] && typeof r[1] === 'string') { var extracted = r[1].match(/\d{2}\s+[a-zA-Z]{3}\s+\d{2}/); if (extracted) d = extracted[0]; }
+              // Fallback: If Event Date is missing, extract it from the Header string!
+              if (!d && r[1] && typeof r[1] === 'string') { 
+                var extracted = r[1].match(/\d{2}\s+[a-zA-Z]{3}\s+\d{2}/); 
+                if (extracted) d = extracted[0]; 
+              }
+              
               if(d&&typeof d==='string'&&d.length>=8){
                 var utc=new Date(d);
-                if(!isNaN(utc)){ var ist=new Date(utc.getTime()+5.5*60*60*1000); ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0'); }
+                if(!isNaN(utc)){ 
+                  var ist=new Date(utc.getTime()+5.5*60*60*1000); 
+                  ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0'); 
+                }
               }
               if(!ds||ds<'2020-01-01')return;
               if(!bd2[ds])bd2[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};
               bd2[ds][key]++;
+              
               if(isPrimary){if(!bdP[ds])bdP[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};bdP[ds][key]++;}
               else{if(!bdF[ds])bdF[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};bdF[ds][key]++;}
+              
               var ind_cl=String(r[0]||'').trim().replace(/^N\(\d+\)[-–]\s*/,'').replace(/^O\(\d+\)[-–]\s*/,'').replace(/^[NO][-–]\s*/,'').replace(/^0[-–]\s*/,'').replace(/[-–]\s*\d+\/\d+\/\d+\s*$/,'').trim();
               if(!ind_cl)return;
               if(!bi2[ind_cl])bi2[ind_cl]={ind:ind_cl,del:0,open:0,click:0,resp:0,bounce:0};
               bi2[ind_cl][key]++;
             });
+            
             ML_BY_DATE.length=0; Object.values(bd2).sort(function(a,b){return a.date.localeCompare(b.date);}).forEach(function(d){ML_BY_DATE.push(d);});
             ML_BY_IND.length=0; Object.values(bi2).filter(function(i){return i.del>0;}).forEach(function(i){ML_BY_IND.push(i);});
             ML_PRIMARY=Object.values(bdP).sort(function(a,b){return a.date.localeCompare(b.date);});
