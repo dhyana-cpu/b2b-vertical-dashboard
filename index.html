@@ -994,7 +994,9 @@ window.addEventListener('load',function(){
                   ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0'); 
                 }
               }
-              if(!ds||ds<'2020-01-01')return;
+              // If the date is completely blank, don't delete the email! 
+              // Put it in a default April bucket so it still counts towards the grand total.
+              if(!ds || ds < '2020-01-01') ds = '2026-04-15';
               
               if(!bd2[ds])bd2[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};
               bd2[ds][key]++;
