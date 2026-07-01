@@ -872,6 +872,7 @@ function renderAll(){
   renderDiwaliEmail();
   renderCCBD();
   document.getElementById('lu').textContent='Updated '+new Date().toLocaleTimeString();
+}
 
 document.querySelectorAll('.tab').forEach(function(t){t.addEventListener('click',function(){
   document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on');});
