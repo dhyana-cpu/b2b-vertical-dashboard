@@ -52,6 +52,7 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
 .badge.warm{background:rgba(234,179,8,.12);color:#eab308;}.badge.cold{background:rgba(148,163,184,.1);color:#94a3b8;}
 .badge.inbound{background:rgba(59,130,246,.12);color:#60a5fa;}.badge.ccbd{background:rgba(124,58,237,.15);color:#a78bfa;}
 .badge.poc{background:rgba(124,58,237,.12);color:#c4b5fd;}
+.badge.urgent{background:rgba(249,115,22,.15);color:#f97316;}
 .frow{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
 .flbl{font-size:11px;color:var(--m);width:88px;flex-shrink:0;text-align:right;}
 .fwrap{flex:1;background:rgba(255,255,255,.05);border-radius:4px;height:24px;overflow:hidden;}
@@ -112,6 +113,7 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
     <div class="tab" data-tab="mails">Mails</div>
     <div class="tab" data-tab="ads">Ads</div>
     <div class="tab" data-tab="inmails">InMails</div>
+    <div class="tab" data-tab="ccbd">CCBD Leads</div>
     <div class="tab" data-tab="samples">Sample Data</div>
     <div class="tab" data-tab="recurring">Recurring Clients</div>
     <div class="tab" data-tab="bd">Active Conversations</div>
@@ -236,6 +238,62 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
       <div class="ch"><div class="ct">InMail Contact List</div></div>
       <table class="tbl"><thead><tr><th>#</th><th>Industry</th><th>Company</th><th>Role</th><th>Contact</th></tr></thead><tbody id="iTable"></tbody></table>
     </div></div>
+  </div>
+
+  <!-- ═══════════ CCBD LEADS TAB ═══════════ -->
+  <div class="tp" id="tp-ccbd">
+    <div style="display:flex;gap:10px;margin-bottom:16px;border-bottom:1px solid var(--b);padding-bottom:16px;">
+      <button class="qb on" id="btn-ccbd-s1" onclick="switchCCBD('ccbd-s1')">📞 Inbound Leads</button>
+      <button class="qb" id="btn-ccbd-fest" onclick="switchCCBD('ccbd-fest')">🎉 Festive Leads</button>
+    </div>
+    <div id="ccbd-s1" style="display:block;">
+      <div class="mg" style="grid-template-columns:repeat(4,1fr);">
+        <div class="mc bl"><div class="ml">Total B2B Leads</div><div class="mv" id="ccTotal">—</div><div class="ms" id="ccSub">in range</div></div>
+        <div class="mc or"><div class="ml">Urgent</div><div class="mv" id="ccUrgent">—</div><div class="ms" id="ccUrgentR">—</div></div>
+        <div class="mc gn"><div class="ml">Converted</div><div class="mv" id="ccConverted">—</div><div class="ms" id="ccConvertedR">—</div></div>
+        <div class="mc ye"><div class="ml">Top City</div><div class="mv" id="ccTopCity" style="font-size:14px">—</div><div class="ms" id="ccTopCityN">—</div></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
+        <div class="df" style="gap:6px;">
+          <span class="fl">Urgency</span>
+          <select class="di" id="ccUrgencyF">
+            <option value="all">All</option>
+            <option value="urgent">Urgent</option>
+            <option value="non-urgent">Non-Urgent</option>
+          </select>
+          <span class="fl">POC</span>
+          <select class="di" id="ccPocF">
+            <option value="all">All POCs</option>
+          </select>
+        </div>
+        <span style="font-size:11px;color:var(--m);font-family:monospace;" id="ccCount"></span>
+      </div>
+      <div class="g2">
+        <div class="cc"><div class="ch"><div class="ct">Leads by Date</div></div><div class="cw" id="ccDateChart" style="min-height:180px"></div></div>
+        <div class="cc"><div class="ch"><div class="ct">Leads by City</div></div><div class="cw" id="ccCityChart" style="min-height:180px"></div></div>
+      </div>
+      <div class="g1"><div class="cc">
+        <div class="ch"><div class="ct">All B2B Inbound Leads</div><span id="ccTableCount" style="font-size:11px;color:var(--m)"></span></div>
+        <div style="max-height:600px;overflow-y:auto;">
+          <table class="tbl">
+            <thead><tr><th>#</th><th>Date</th><th>Name</th><th>Phone</th><th>City</th><th>Remarks</th><th>Urgency</th><th>Conversion</th><th>POC</th></tr></thead>
+            <tbody id="ccTable"></tbody>
+          </table>
+        </div>
+      </div></div>
+    </div>
+    <div id="ccbd-fest" style="display:none;">
+      <div class="mg" style="grid-template-columns:repeat(4,1fr);">
+        <div class="mc bl"><div class="ml">Total Festive Leads</div><div class="mv" id="cfTotal">—</div><div class="ms">festive campaign</div></div>
+        <div class="mc or"><div class="ml">Top Platform</div><div class="mv" id="cfTopPlatform" style="font-size:14px">—</div><div class="ms" id="cfTopPlatformN">—</div></div>
+        <div class="mc ye"><div class="ml">Quality Breakdown</div><div class="mv" id="cfSuitable" style="font-size:18px">—</div><div class="ms" id="cfQualityS">—</div></div>
+        <div class="mc gn"><div class="ml">Top POC</div><div class="mv" id="cfTopPoc" style="font-size:14px">—</div><div class="ms" id="cfTopPocN">—</div></div>
+      </div>
+      <div class="g2">
+        <div class="cc"><div class="ch"><div class="ct">Festive Leads by Date</div></div><div class="cw" id="cfDateChart" style="min-height:180px"></div></div>
+        <div class="cc"><div class="ch"><div class="ct">Leads by Platform</div></div><div class="cw" id="cfPlatformChart" style="min-height:180px"></div></div>
+      </div>
+    </div>
   </div>
 
   <div class="tp" id="tp-recurring">
@@ -450,7 +508,7 @@ const BD_URL='https://script.google.com/macros/s/AKfycbwZOjviZgLXKd0nuXKxiGHUeJ9
 const SAMPLES_URL='https://script.google.com/macros/s/AKfycbwHPMP6i9NcDOZCR7xL7eEdJZXho8Ju0BWs0H7RVLKJmMs1h4JqJ7r3qRpHP-3iyAU/exec';
 const DIWALI_URL='https://script.google.com/macros/s/AKfycbwWOXAeQl5-KCG90vYob0uoCRA10QGq9qE9lPzc12Te3wP__7mt9IEGdB8g1gxFC0xF/exec';
 
-var BD_ROWS=[], ML_PRIMARY=[], ML_FOLLOWUP=[], SALES=[], SAMPLES=[], ML_BY_DATE=[], ML_BY_IND=[], ADS=[], INMAILS=[], DW_EMAIL=[];
+var BD_ROWS=[], ML_PRIMARY=[], ML_FOLLOWUP=[], SALES=[], SAMPLES=[], ML_BY_DATE=[], ML_BY_IND=[], ADS=[], INMAILS=[], DW_EMAIL=[]; var CCBD_ROWS=[], CCBD_FESTIVE=[];
 
 function switchDiwali(subId) {
   document.getElementById('d-ov').style.display = 'none';
@@ -461,6 +519,16 @@ function switchDiwali(subId) {
   document.getElementById('btn-d-tgt').classList.remove('on');
   document.getElementById(subId).style.display = 'block';
   document.getElementById('btn-' + subId).classList.add('on');
+}
+
+function switchCCBD(subId) {
+  document.getElementById('ccbd-s1').style.display = 'none';
+  document.getElementById('ccbd-fest').style.display = 'none';
+  document.getElementById('btn-ccbd-s1').classList.remove('on');
+  document.getElementById('btn-ccbd-fest').classList.remove('on');
+  document.getElementById(subId).style.display = 'block';
+  document.getElementById('btn-' + subId).classList.add('on');
+  setTimeout(renderCCBD, 30);
 }
 
 function fmt(n){if(!n||isNaN(n)||n===0)return'—';if(n>=100000)return'₹'+(n/100000).toFixed(1)+'L';if(n>=1000)return'₹'+(n/1000).toFixed(0)+'K';return'₹'+Math.round(n);}
@@ -571,6 +639,98 @@ function getMLRows(){
     if(t&&d.date>t)return false;
     return true;
   });
+}
+
+function fCCBD() {
+  var f=getF(), t=getT();
+  var urgF = document.getElementById('ccUrgencyF') ? document.getElementById('ccUrgencyF').value : 'all';
+  var pocF = document.getElementById('ccPocF') ? document.getElementById('ccPocF').value : 'all';
+  return CCBD_ROWS.filter(function(r) {
+    if (f && r.date < f) return false;
+    if (t && r.date > t) return false;
+    if (urgF === 'urgent' && r.urgency.toLowerCase() !== 'urgent') return false;
+    if (urgF === 'non-urgent' && r.urgency.toLowerCase() === 'urgent') return false;
+    if (pocF !== 'all' && r.poc !== pocF) return false;
+    return true;
+  });
+}
+
+function fCCBDFestive() {
+  var f=getF(), t=getT();
+  return CCBD_FESTIVE.filter(function(r) {
+    if (f && r.date < f) return false;
+    if (t && r.date > t) return false;
+    return true;
+  });
+}
+
+function renderCCBD() {
+  var rows = fCCBD();
+  var urgent = rows.filter(function(r) { return r.urgency.toLowerCase() === 'urgent'; }).length;
+  var converted = rows.filter(function(r) { var c = r.conversion.toLowerCase(); return c === 'yes' || c === 'converted'; }).length;
+  var cityMap = {};
+  rows.forEach(function(r) { if (r.city) cityMap[r.city] = (cityMap[r.city]||0) + 1; });
+  var citySorted = Object.entries(cityMap).sort(function(a,b) { return b[1]-a[1]; });
+  var topCity = citySorted[0];
+
+  set('ccTotal', rows.length);
+  set('ccSub', rows.length + ' leads in range');
+  set('ccUrgent', urgent);
+  set('ccUrgentR', pct(urgent, rows.length) + ' of leads');
+  set('ccConverted', converted);
+  set('ccConvertedR', pct(converted, rows.length) + ' conv rate');
+  set('ccTopCity', topCity ? topCity[0].slice(0,18) : '—');
+  set('ccTopCityN', topCity ? topCity[1] + ' leads' : '—');
+  set('ccCount', rows.length + ' leads shown');
+  set('ccTableCount', rows.length + ' leads');
+
+  var byDate = {};
+  rows.forEach(function(r) { if (r.date) byDate[r.date] = (byDate[r.date]||0) + 1; });
+  var dates = Object.keys(byDate).sort();
+  barChart('ccDateChart', dates.map(fd), [{label:'Leads', data: dates.map(function(d){return byDate[d];}), color:'#3b82f6', vf:function(v){return v;}}], 180);
+
+  var topCities = citySorted.slice(0, 8);
+  hbar('ccCityChart', topCities.map(function(c){return c[0].slice(0,20);}), topCities.map(function(c){return c[1];}), ['#3b82f6','#6d28d9','#5b21b6','#4c1d95','#1d4ed8','#1e40af','#1e3a8a','#0ea5e9']);
+
+  var tbl = document.getElementById('ccTable');
+  if (tbl) {
+    tbl.innerHTML = rows.length ? rows.map(function(r) {
+      var urgBadge = r.urgency.toLowerCase() === 'urgent' ? '<span class="badge urgent">Urgent</span>' : '<span class="badge cold">' + (r.urgency || '—') + '</span>';
+      var convBadge = '';
+      var cl = r.conversion.toLowerCase();
+      if (cl === 'yes' || cl === 'converted') convBadge = '<span class="badge yes">Yes</span>';
+      else if (cl === 'no') convBadge = '<span class="badge no">No</span>';
+      else convBadge = '<span style="color:#888">' + (r.conversion || '—') + '</span>';
+      return '<tr><td style="color:#888">' + r.sr + '</td><td>' + fd(r.date) + '</td><td style="color:#fff">' + r.name + '</td><td style="font-family:monospace;color:#a78bfa">' + r.phone + '</td><td>' + r.city + '</td><td style="color:#aaa;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="' + r.remarks + '">' + r.remarks + '</td><td>' + urgBadge + '</td><td>' + convBadge + '</td><td>' + (r.poc ? '<span class="badge poc">' + r.poc + '</span>' : '—') + '</td></tr>';
+    }).join('') : '<tr><td colspan="9" style="text-align:center;color:#555;padding:20px">No B2B inbound leads in range</td></tr>';
+  }
+
+  // Festive
+  var fest = fCCBDFestive();
+  var platMap = {}, pocMap = {};
+  fest.forEach(function(r) {
+    if (r.platform) platMap[r.platform] = (platMap[r.platform]||0) + 1;
+    if (r.poc) pocMap[r.poc.trim()] = (pocMap[r.poc.trim()]||0) + 1;
+  });
+  var platSorted = Object.entries(platMap).sort(function(a,b){return b[1]-a[1];});
+  var pocSorted = Object.entries(pocMap).sort(function(a,b){return b[1]-a[1];});
+  var topPlat = platSorted[0];
+  var topPoc = pocSorted[0];
+  var suitable = fest.filter(function(r) { var q = (r.quality||'').toLowerCase().trim(); return q && q !== 'not suitable'; }).length;
+
+  set('cfTotal', fest.length);
+  set('cfTopPlatform', topPlat ? topPlat[0] : '—');
+  set('cfTopPlatformN', topPlat ? topPlat[1] + ' leads' : '—');
+  set('cfSuitable', suitable + ' / ' + fest.length);
+  set('cfQualityS', 'suitable vs not suitable');
+  set('cfTopPoc', topPoc ? topPoc[0] : '—');
+  set('cfTopPocN', topPoc ? topPoc[1] + ' leads' : '—');
+
+  var fByDate = {};
+  fest.forEach(function(r) { if (r.date) fByDate[r.date] = (fByDate[r.date]||0) + 1; });
+  var fDates = Object.keys(fByDate).sort();
+  barChart('cfDateChart', fDates.map(fd), [{label:'Leads', data: fDates.map(function(d){return fByDate[d];}), color:'#f97316', vf:function(v){return v;}}], 180);
+  hbar('cfPlatformChart', platSorted.map(function(p){return p[0];}), platSorted.map(function(p){return p[1];}), ['#f97316','#3b82f6','#7c3aed','#22c55e','#eab308']);
 }
 
 function renderAll(){
@@ -710,8 +870,8 @@ function renderAll(){
   renderBD();
   renderSamples();
   renderDiwaliEmail();
+  renderCCBD();
   document.getElementById('lu').textContent='Updated '+new Date().toLocaleTimeString();
-}
 
 document.querySelectorAll('.tab').forEach(function(t){t.addEventListener('click',function(){
   document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on');});
@@ -944,6 +1104,7 @@ function renderSamples(){
 
 if(document.getElementById('bdPhase')){ ['bdPhase','bdSource','bdPoc'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('change',renderBD);}); }
 if(document.getElementById('smProd')){ ['smProd','smBy'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('change',renderSamples);}); }
+['ccUrgencyF','ccPocF'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('change',renderCCBD);});
 var sSortEl = document.getElementById('sSort'); if(sSortEl) sSortEl.addEventListener('change', renderAll);
 
 // ── BOOT ──────────────────────────────────────────────────
@@ -1095,10 +1256,52 @@ window.addEventListener('load',function(){
             if(parsedSales.length > 0){ SALES = parsedSales; }
           }
 
+           // CCBD_Sheet1 (B2B filtered by Apps Script)
+          if(raw['CCBD_Sheet1']){
+            var ccbdRaw = raw['CCBD_Sheet1'].slice(1);
+            var pocSet = new Set();
+            CCBD_ROWS = ccbdRaw.filter(function(r){return r[0]||r[2];}).map(function(r){
+              var dRaw=r[1], ds='';
+              if(dRaw){
+                var dObj=new Date(String(dRaw));
+                if(!isNaN(dObj.getTime())){var ist=new Date(dObj.getTime()+5.5*60*60*1000);ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0');}
+              }
+              var poc = String(r[9]||'').trim();
+              if (poc) pocSet.add(poc);
+              return {
+                sr: String(r[0]||'').trim(), date: ds||'', name: String(r[2]||'').trim(),
+                phone: String(r[3]||'').trim().replace(/\.0$/,''), city: String(r[4]||'').trim(),
+                remarks: String(r[5]||'').trim(), urgency: String(r[6]||'').trim(),
+                conversion: String(r[8]||'').trim(), poc: poc
+              };
+            });
+            var pocSelect = document.getElementById('ccPocF');
+            if (pocSelect) {
+              pocSelect.querySelectorAll('option:not([value="all"])').forEach(function(o){o.remove();});
+              pocSet.forEach(function(p){ if(p){var opt=document.createElement('option');opt.value=p;opt.textContent=p;pocSelect.appendChild(opt);} });
+            }
+          }
+
+          // CCBD_Festive
+          if(raw['CCBD_Festive']){
+            CCBD_FESTIVE = raw['CCBD_Festive'].slice(1).filter(function(r){return r[0]||r[2];}).map(function(r){
+              var dRaw=r[1], ds='';
+              if(dRaw){
+                var dObj=new Date(String(dRaw));
+                if(!isNaN(dObj.getTime())){var ist=new Date(dObj.getTime()+5.5*60*60*1000);ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0');}
+              }
+              return {
+                sr: String(r[0]||'').trim(), date: ds||'', name: String(r[2]||'').trim(),
+                phone: String(r[3]||'').trim().replace(/\.0$/,''), platform: String(r[4]||'').trim(),
+                quality: String(r[5]||'').trim(), remark: String(r[6]||'').trim(), poc: String(r[7]||'').trim()
+              };
+            });
+          }
+
           document.getElementById('stxt').textContent='live · google sheets';
           renderAll();
         }).catch(function(err){ 
-            console.error("SHEET_URL Fetch Error:", err); 
+            console.error("SHEET_URL Fetch Error:", err);
             document.getElementById('stxt').textContent='cached data (fetch failed)'; 
         });
     })();
