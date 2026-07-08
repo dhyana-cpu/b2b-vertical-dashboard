@@ -989,7 +989,8 @@ function renderRecurring(){
   var f=getF(), t=getT();
   // If no date filter active, always use Email Tracker (ground truth)
   // Only use ML-derived data when actually filtering by date
-  var source = (f || t) ? (filteredDW.length ? filteredDW : DW_EMAIL) : DW_EMAIL;
+  // If date filter is active and returns no data, show 0 (don't fall back to full total)
+  var source = (f || t) ? filteredDW : DW_EMAIL;
   var dwDel = source.reduce(function(a,m){return a+m.totalSent;},0);
   var dwResp = source.reduce(function(a,m){return a+m.responses;},0);
 
