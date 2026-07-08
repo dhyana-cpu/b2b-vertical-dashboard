@@ -365,6 +365,7 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
     </div>
 
     <div id="d-ov" style="display:block;">
+      <div id="dw-date-note" style="display:none;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);border-radius:8px;padding:8px 14px;font-size:11px;color:#f97316;margin-bottom:14px;">⚠️ Diwali Campaign data is campaign-level totals — date filters don't apply here.</div>
       <div class="mg" style="grid-template-columns:repeat(5,1fr);">
         <div class="mc bl"><div class="ml">Emails Sent</div><div class="mv" id="dw-tot-sent">—</div><div class="ms">Diwali Campaign</div></div>
         <div class="mc gn"><div class="ml">Responses</div><div class="mv" id="dw-tot-resp">—</div><div class="ms" id="dw-resp-rate">—</div></div>
@@ -965,6 +966,9 @@ function renderRecurring(){
 }
 
 function renderDiwaliEmail(){
+  var dwNote = document.getElementById('dw-date-note');
+  var f = getF(), t = getT();
+  if (dwNote) dwNote.style.display = (f || t) ? 'block' : 'none';
   var dwDel = DW_EMAIL.reduce(function(a,m){return a+m.totalSent;},0);
   var dwResp = DW_EMAIL.reduce(function(a,m){return a+m.responses;},0);
 
