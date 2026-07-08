@@ -965,18 +965,29 @@ function renderRecurring(){
   }
 }
 
-function renderDiwaliEmail(){
-  var dwNote = document.getElementById('dw-date-note');
-  var f = getF(), t = getT();
-  if (dwNote) dwNote.style.display = (f || t) ? 'block' : 'none';
-  var dwDel = DW_EMAIL.reduce(function(a,m){return a+m.totalSent;},0);
-  var dwResp = DW_EMAIL.reduce(function(a,m){return a+m.responses;},0);
+ function renderDiwaliEmail(){
+  // Build date-filtered industry totals from Master_Log raw data
+  var f=getF(), t=getT();
+  var indMap={};
+  (window._ML_IND_DATE||[]).forEach(function(r){
+    if(f && r.date<f) return;
+    if(t && r.date>t) return;
+    if(!indMap[r.ind]) indMap[r.ind]={industry:r.ind,totalSent:0,responses:0};
+    indMap[r.ind].totalSent += r.del;
+    indMap[r.ind].responses += r.resp;
+  });
+  // Fall back to DW_EMAIL (Email Tracker) if Master_Log has no data
+  var filteredDW = Object.values(indMap).filter(function(m){return m.totalSent>0;});
+  var source = filteredDW.length ? filteredDW : DW_EMAIL;
+
+  var dwDel = source.reduce(function(a,m){return a+m.totalSent;},0);
+  var dwResp = source.reduce(function(a,m){return a+m.responses;},0);
 
   set('dw-tot-sent', dwDel.toLocaleString());
   set('dw-tot-resp', dwResp.toLocaleString());
   set('dw-resp-rate', pct(dwResp, dwDel) + ' avg response');
 
-  var sorted = DW_EMAIL.slice().sort(function(a,b){return b.totalSent-a.totalSent;});
+  var sorted = source.slice().sort(function(a,b){return b.totalSent-a.totalSent;});
   var colors = ['var(--or)', 'var(--bl)', '#7c3aed', 'var(--gr)', '#eab308'];
   var maxV = sorted.length ? sorted[0].totalSent : 1;
 
@@ -1131,27 +1142,24 @@ window.addEventListener('load',function(){
           if(raw['Master_Log']){
             var smap={'Email Delivered':'del','Email Opened':'open','Email Clicked':'click','RESPONDED':'resp','BOUNCED':'bounce'};
             var bd2={},bi2={},bdP={},bdF={};
+            // NEW: per-industry per-date store for Diwali date filtering
+            var bi2d={};
             var firstHeader={};
             
             raw['Master_Log'].forEach(function(r){
               if(!r||!r[0])return;
               var ind=String(r[0]).trim();
-              if(!firstHeader[ind])firstHeader[ind]=String(r[1]||'').trim(); // Col 1 is now Header
+              if(!firstHeader[ind])firstHeader[ind]=String(r[1]||'').trim();
             });
             
             raw['Master_Log'].forEach(function(r){
-              if(!r||!r[2])return; // Col 2 is now Status
+              if(!r||!r[2])return;
               var key=smap[String(r[2]).trim()]; 
               if(!key)return;
               
               var ind=String(r[0]||'').trim();
               var isPrimary = (String(r[1]||'').trim()===firstHeader[ind]);
-              var d=r[3], ds=''; // Col 3 is now Date
-              
-              if (!d && r[1] && typeof r[1] === 'string') { 
-                var extracted = r[1].match(/\d{2}\s+[a-zA-Z]{3}\s+\d{2}/); 
-                if (extracted) d = extracted[0]; 
-              }
+              var d=r[3], ds=''; 
               
               if(d&&typeof d==='string'&&d.length>=8){
                 var utc=new Date(d);
@@ -1160,8 +1168,6 @@ window.addEventListener('load',function(){
                   ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0'); 
                 }
               }
-              // If the date is completely blank, don't delete the email! 
-              // Put it in a default April bucket so it still counts towards the grand total.
               if(!ds || ds < '2020-01-01') ds = '2026-04-15';
               
               if(!bd2[ds])bd2[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};
@@ -1174,12 +1180,18 @@ window.addEventListener('load',function(){
               if(!ind_cl)return;
               if(!bi2[ind_cl])bi2[ind_cl]={ind:ind_cl,del:0,open:0,click:0,resp:0,bounce:0};
               bi2[ind_cl][key]++;
+              // NEW: also store in bi2d keyed by "industry|date"
+              var idk=ind_cl+'|'+ds;
+              if(!bi2d[idk])bi2d[idk]={ind:ind_cl,date:ds,del:0,open:0,click:0,resp:0,bounce:0};
+              bi2d[idk][key]++;
             });
             
             ML_BY_DATE.length=0; Object.values(bd2).sort(function(a,b){return a.date.localeCompare(b.date);}).forEach(function(d){ML_BY_DATE.push(d);});
             ML_BY_IND.length=0; Object.values(bi2).filter(function(i){return i.del>0;}).forEach(function(i){ML_BY_IND.push(i);});
             ML_PRIMARY=Object.values(bdP).sort(function(a,b){return a.date.localeCompare(b.date);});
             ML_FOLLOWUP=Object.values(bdF).sort(function(a,b){return a.date.localeCompare(b.date);});
+            // NEW: expose for Diwali tab
+            window._ML_IND_DATE = Object.values(bi2d);
           }
 
           // ADS LOG
