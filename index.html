@@ -975,15 +975,15 @@ function renderRecurring(){
     'DIWALI Oil and Gas','DIWALI Consultancy','DIWALI FMCG','DIWALI Pharma'
   ];
   (window._ML_IND_DATE||[]).forEach(function(r){
-    var isDiwali = DIWALI_INDUSTRIES.some(function(d){
-      return r.ind.toLowerCase().indexOf(d.toLowerCase().replace('diwali ','')) > -1 
-             && r.ind.toLowerCase().indexOf('diwali') > -1;
+    var isDiwali = r.ind.toLowerCase().indexOf('diwali') > -1;
     });
     if(!isDiwali) return;
     if(f && r.date<f) return;
     if(t && r.date>t) return;
-    if(!indMap[r.ind]) indMap[r.ind]={industry:r.ind,totalSent:0,responses:0};
+    if(!indMap[r.ind]) indMap[r.ind]={industry:r.ind,totalSent:0,opened:0,clicked:0,responses:0};
     indMap[r.ind].totalSent += r.del;
+    indMap[r.ind].opened += r.open;
+    indMap[r.ind].clicked += r.click;
     indMap[r.ind].responses += r.resp;
   });
   // Fall back to DW_EMAIL (Email Tracker) if Master_Log has no data
@@ -1007,13 +1007,14 @@ function renderRecurring(){
   }).join('');
 
   var dwTableHtml = sorted.map(function(m){
+    var opened = m.opened||0, clicked = m.clicked||0;
     return '<tr><td style="color:#fff;font-weight:600;">'+m.industry+'</td>'+
       '<td>'+m.totalSent.toLocaleString()+'</td>'+
-      '<td>—</td><td>—</td>'+
+      '<td>'+(opened>0?opened.toLocaleString():'—')+'</td>'+
+      '<td>'+(clicked>0?clicked.toLocaleString():'—')+'</td>'+
       '<td>'+m.responses.toLocaleString()+'</td>'+
       '<td><span class="badge warm">'+pct(m.responses,m.totalSent)+'</span></td></tr>';
   }).join('');
-
   if(!sorted.length){
     dwBarsHtml = '<div style="color:#555;font-size:11px;text-align:center;padding:20px;">No data</div>';
     dwTableHtml = '<tr><td colspan="6" style="text-align:center;padding:20px;color:#555;">No Diwali Email Tracker data found</td></tr>';
