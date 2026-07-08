@@ -986,8 +986,10 @@ function renderRecurring(){
   });
   // Fall back to DW_EMAIL (Email Tracker) if Master_Log has no data
   var filteredDW = Object.values(indMap).filter(function(m){return m.totalSent>0;});
-  var source = filteredDW.length ? filteredDW : DW_EMAIL;
-
+  var f=getF(), t=getT();
+  // If no date filter active, always use Email Tracker (ground truth)
+  // Only use ML-derived data when actually filtering by date
+  var source = (f || t) ? (filteredDW.length ? filteredDW : DW_EMAIL) : DW_EMAIL;
   var dwDel = source.reduce(function(a,m){return a+m.totalSent;},0);
   var dwResp = source.reduce(function(a,m){return a+m.responses;},0);
 
