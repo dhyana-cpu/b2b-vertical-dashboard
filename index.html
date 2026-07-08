@@ -969,7 +969,17 @@ function renderRecurring(){
   // Build date-filtered industry totals from Master_Log raw data
   var f=getF(), t=getT();
   var indMap={};
+  var DIWALI_INDUSTRIES = [
+    'DIWALI Banking','DIWALI IT','DIWALI Asset','DIWALI Banking 2',
+    'DIWALI Oil & Gas 2','DIWALI Wealth','DIWALI Manufacturing & Automative',
+    'DIWALI Oil and Gas','DIWALI Consultancy','DIWALI FMCG','DIWALI Pharma'
+  ];
   (window._ML_IND_DATE||[]).forEach(function(r){
+    var isDiwali = DIWALI_INDUSTRIES.some(function(d){
+      return r.ind.toLowerCase().indexOf(d.toLowerCase().replace('diwali ','')) > -1 
+             && r.ind.toLowerCase().indexOf('diwali') > -1;
+    });
+    if(!isDiwali) return;
     if(f && r.date<f) return;
     if(t && r.date>t) return;
     if(!indMap[r.ind]) indMap[r.ind]={industry:r.ind,totalSent:0,responses:0};
