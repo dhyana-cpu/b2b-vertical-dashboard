@@ -990,9 +990,13 @@ function renderRecurring(){
   // If no date filter active, always use Email Tracker (ground truth)
   // Only use ML-derived data when actually filtering by date
   // If date filter is active and returns no data, show 0 (don't fall back to full total)
+  // Always use DW_EMAIL for responses (it has canonical industry names + response counts)
+  // Use filteredDW for opened/clicked when date filter is active
   var source = (f || t) ? filteredDW : DW_EMAIL;
+
   var dwDel = source.reduce(function(a,m){return a+m.totalSent;},0);
-  var dwResp = source.reduce(function(a,m){return a+m.responses;},0);
+  // For responses, always sum from DW_EMAIL regardless of date filter
+  var dwResp = DW_EMAIL.reduce(function(a,m){return a+m.responses;},0);
 
   set('dw-tot-sent', dwDel.toLocaleString());
   set('dw-tot-resp', dwResp.toLocaleString());
@@ -1009,12 +1013,13 @@ function renderRecurring(){
 
   var dwTableHtml = sorted.map(function(m){
     var opened = m.opened||0, clicked = m.clicked||0;
+    var resp = m.responses||0;
     return '<tr><td style="color:#fff;font-weight:600;">'+m.industry+'</td>'+
       '<td>'+m.totalSent.toLocaleString()+'</td>'+
       '<td>'+(opened>0?opened.toLocaleString():'—')+'</td>'+
       '<td>'+(clicked>0?clicked.toLocaleString():'—')+'</td>'+
-      '<td>'+m.responses.toLocaleString()+'</td>'+
-      '<td><span class="badge warm">'+pct(m.responses,m.totalSent)+'</span></td></tr>';
+      '<td>'+(resp>0?resp.toLocaleString():'—')+'</td>'+
+      '<td><span class="badge warm">'+pct(resp,m.totalSent)+'</span></td></tr>';
   }).join('');
   if(!sorted.length){
     dwBarsHtml = '<div style="color:#555;font-size:11px;text-align:center;padding:20px;">No data</div>';
