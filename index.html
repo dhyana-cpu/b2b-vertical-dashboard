@@ -975,9 +975,7 @@ function renderRecurring(){
     'DIWALI Oil and Gas','DIWALI Consultancy','DIWALI FMCG','DIWALI Pharma'
   ];
   (window._ML_IND_DATE||[]).forEach(function(r){
-    var isDiwali = r.ind.toLowerCase().indexOf('diwali') > -1;
-    });
-    if(!isDiwali) return;
+    if(r.ind.toLowerCase().indexOf('diwali') === -1) return;
     if(f && r.date<f) return;
     if(t && r.date>t) return;
     if(!indMap[r.ind]) indMap[r.ind]={industry:r.ind,totalSent:0,opened:0,clicked:0,responses:0};
