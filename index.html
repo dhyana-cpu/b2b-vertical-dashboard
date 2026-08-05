@@ -494,6 +494,59 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
       </table>
     </div></div>
   </div>
+
+  <div class="tp" id="tp-pend">
+    <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;">
+      <button class="qb on" id="pdSubSamples" onclick="switchPendSub('samples')">📦 Samples</button>
+      <button class="qb" id="pdSubSales" onclick="switchPendSub('sales')">💰 Sales</button>
+    </div>
+
+    <div id="pd-samples">
+      <div class="mg" style="grid-template-columns:repeat(4,1fr);">
+        <div class="mc bl"><div class="ml">Total Pending</div><div class="mv" id="pdTotal">—</div><div class="ms" id="pdSub">in range</div></div>
+        <div class="mc gn"><div class="ml">Today's Samples</div><div class="mv" id="pdToday">—</div><div class="ms" id="pdTodaySub">by POC</div></div>
+        <div class="mc ye"><div class="ml">BAU Clients</div><div class="mv" id="pdBAU">—</div><div class="ms">repeat companies</div></div>
+        <div class="mc or"><div class="ml">Unique Clients</div><div class="mv" id="pdUnique">—</div><div class="ms">first-time only</div></div>
+      </div>
+      <div class="mg" style="grid-template-columns:repeat(4,1fr);">
+        <div class="mc bl"><div class="ml">Weekly Avg</div><div class="mv" id="pdWeekAvg">—</div><div class="ms">last 7 days</div></div>
+        <div class="mc bl"><div class="ml">Monthly Avg</div><div class="mv" id="pdMonthAvg">—</div><div class="ms">last 30 days</div></div>
+        <div class="mc bl"><div class="ml">Most Sent Box</div><div class="mv" id="pdTopProd" style="font-size:13px">—</div><div class="ms" id="pdTopQty">—</div></div>
+        <div class="mc bl"><div class="ml">Top POC</div><div class="mv" id="pdTopPoc" style="font-size:14px">—</div><div class="ms">most active</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+        <div class="df" style="gap:6px;">
+          <span class="fl">POC</span>
+          <select class="di" id="pdPocFilter"><option value="all">All POCs</option></select>
+          <span class="fl">Company Type</span>
+          <select class="di" id="pdTypeFilter">
+            <option value="all">All</option>
+            <option value="bau">BAU only</option>
+            <option value="unique">Unique only</option>
+          </select>
+        </div>
+      </div>
+      <div class="g3">
+        <div class="cc"><div class="ch"><div class="ct">Samples by Date</div></div><div class="cw" id="pdDateChart" style="min-height:180px"></div></div>
+        <div class="cc"><div class="ch"><div class="ct">Top Products Sent</div></div><div class="cw" id="pdProdChart" style="min-height:180px"></div></div>
+        <div class="cc"><div class="ch"><div class="ct">Samples by POC</div></div><div class="cw" id="pdPocChart" style="min-height:180px"></div></div>
+      </div>
+      <div class="g1"><div class="cc">
+        <div class="ch"><div class="ct">All Pending Samples</div><span id="pdCount" style="font-size:11px;color:var(--m)"></span></div>
+        <table class="tbl">
+          <thead><tr><th>Ref</th><th>Date</th><th>Product</th><th>Size</th><th>Qty</th><th>Client</th><th>Company</th><th>POC</th><th>Type</th><th>Dispatch</th></tr></thead>
+          <tbody id="pdTable"></tbody>
+        </table>
+      </div></div>
+    </div>
+
+    <div id="pd-sales" style="display:none;">
+      <div style="color:var(--m);font-size:13px;padding:40px;text-align:center;background:var(--s);border:1px solid var(--b);border-radius:12px;">
+        Sales sub-tab reserved for future integration.<br>
+        <span style="font-size:11px;">Existing Sales tab data is already live at the top-level "Sales" tab.</span>
+      </div>
+    </div>
+  </div>
   
   <div class="tp" id="tp-bd">
     <div class="mg" style="grid-template-columns:repeat(4,1fr);">
@@ -1182,7 +1235,10 @@ if(document.getElementById('smProd')){ ['smProd','smBy'].forEach(function(id){va
 function renderPending(){
   var today=new Date();
   var todayStr=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
-  var src=PENDING_SAMPLES;
+  var ALLOWED_POCS=['Mahi','Bhoomika','Prabhnoor','Kritik','Dhyana','Khushi'];
+  var src=PENDING_SAMPLES.filter(function(s){
+    return ALLOWED_POCS.some(function(p){return String(s.poc||'').toLowerCase().trim()===p.toLowerCase();});
+  });
   var f=getF(),t=getT();
   var pocFilter=document.getElementById('pdPocFilter')?document.getElementById('pdPocFilter').value:'all';
   var typeFilter=document.getElementById('pdTypeFilter')?document.getElementById('pdTypeFilter').value:'all';
@@ -1248,6 +1304,13 @@ function renderPending(){
 ['ccUrgencyF','ccPocF'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('change',renderCCBD);});
 var sSortEl = document.getElementById('sSort'); if(sSortEl) sSortEl.addEventListener('change', renderAll);
 
+function switchPendSub(which){
+  document.getElementById('pd-samples').style.display=(which==='samples'?'block':'none');
+  document.getElementById('pd-sales').style.display=(which==='sales'?'block':'none');
+  document.getElementById('pdSubSamples').classList.toggle('on',which==='samples');
+  document.getElementById('pdSubSales').classList.toggle('on',which==='sales');
+  if(which==='samples'&&typeof renderPending==='function')renderPending();
+}  
 // ── BOOT ──────────────────────────────────────────────────
 window.addEventListener('load',function(){
   requestAnimationFrame(function(){requestAnimationFrame(function(){ renderAll(); });});
@@ -1579,11 +1642,17 @@ window.addEventListener('load',function(){
         }
         return {ref:String(r[0]||'').trim(),poc:String(r[1]||'').trim(),date:ds,product:String(r[3]||'').trim(),grammage:String(r[4]||'').trim(),qty:parseFloat(r[5])||1,client:String(r[6]||'').trim(),contact:String(r[7]||'').trim(),location:String(r[8]||'').trim(),company:String(r[9]||'').trim(),dispatch:String(r[10]||'').trim()};
       });
-      var pocs={};
-      PENDING_SAMPLES.forEach(function(s){if(s.poc)pocs[s.poc]=1;});
+      var ALLOWED_POCS_LIST=['Mahi','Bhoomika','Prabhnoor','Kritik','Dhyana','Khushi'];
+      var pocsInData={};
+      PENDING_SAMPLES.forEach(function(s){
+        var pn=String(s.poc||'').trim();
+        ALLOWED_POCS_LIST.forEach(function(ap){
+          if(pn.toLowerCase()===ap.toLowerCase())pocsInData[ap]=1;
+        });
+      });
       var sel=document.getElementById('pdPocFilter');
       if(sel){
-        sel.innerHTML='<option value="all">All POCs</option>'+Object.keys(pocs).sort().map(function(p){return '<option value="'+p+'">'+p+'</option>';}).join('');
+        sel.innerHTML='<option value="all">All POCs</option>'+Object.keys(pocsInData).sort().map(function(p){return '<option value="'+p+'">'+p+'</option>';}).join('');
         sel.addEventListener('change',renderPending);
       }
       var typeSel=document.getElementById('pdTypeFilter');
