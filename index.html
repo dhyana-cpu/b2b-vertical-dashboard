@@ -1337,6 +1337,7 @@ function switchPendSub(which){
   document.getElementById('pdSubSamples').classList.toggle('on',which==='samples');
   document.getElementById('pdSubSales').classList.toggle('on',which==='sales');
   if(which==='sales') renderPendSales();
+  if(which==='sales') renderPendSales();
   if(which==='samples'&&typeof renderPending==='function')renderPending();
 }  
 // ── BOOT ──────────────────────────────────────────────────
