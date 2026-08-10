@@ -1461,11 +1461,12 @@ window.addEventListener('load',function(){
             if(parsedSales.length > 0){ SALES = parsedSales; }
           }
 
-           // CCBD_Sheet1 (B2B filtered by Apps Script)
-          if(raw['CCBD_Sheet1']){
-            var ccbdRaw = raw['CCBD_Sheet1'].slice(1);
+           // CCBD_BAU — new CCBD Tracker BAU tab
+          // Cols: [0]SrNo [1]Date [2]Name [3]Phone [4]City [5]Remarks [6]Urgency [7]Dept [8]Channel [9]POC [10]Quality [11]Conversion
+          if(raw['CCBD_BAU']){
+            var ccbdRaw = raw['CCBD_BAU'];
             var pocSet = new Set();
-            CCBD_ROWS = ccbdRaw.filter(function(r){return r[0]||r[2];}).map(function(r){
+            CCBD_ROWS = ccbdRaw.filter(function(r){return r[2]||r[1];}).map(function(r){
               var dRaw=r[1], ds='';
               if(dRaw){
                 var dObj=new Date(String(dRaw));
@@ -1477,7 +1478,7 @@ window.addEventListener('load',function(){
                 sr: String(r[0]||'').trim(), date: ds||'', name: String(r[2]||'').trim(),
                 phone: String(r[3]||'').trim().replace(/\.0$/,''), city: String(r[4]||'').trim(),
                 remarks: String(r[5]||'').trim(), urgency: String(r[6]||'').trim(),
-                conversion: String(r[8]||'').trim(), poc: poc
+                conversion: String(r[11]||'').trim(), poc: poc
               };
             });
             var pocSelect = document.getElementById('ccPocF');
@@ -1627,10 +1628,10 @@ window.addEventListener('load',function(){
       }).catch(function(e){console.warn('Diwali extras fetch failed',e);});
   }
 
-  fetch(PENDING_SAMPLES_URL+'?t='+Date.now(),{cache:'no-store',redirect:'follow'})
+  fetch(SHEET_URL+'?t='+Date.now(),{cache:'no-store',redirect:'follow'})
     .then(function(r){return r.json();})
     .then(function(sRaw){
-      var rows=(sRaw['Samples']||[]).slice(1).filter(function(r){return r[0]||r[6];});
+      var rows=(sRaw['Pending_Delivery']||[]).filter(function(r){return r[0]||r[6];});
       PENDING_SAMPLES=rows.map(function(r){
         var dRaw=r[2],ds='';
         if(dRaw){
