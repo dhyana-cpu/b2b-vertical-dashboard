@@ -1337,17 +1337,17 @@ window.addEventListener('load',function(){
             raw['Master_Log'].forEach(function(r){
               if(!r||!r[0])return;
               var ind=String(r[0]).trim();
-              if(!firstHeader[ind])firstHeader[ind]=String(r[1]||'').trim();
+              if(!firstHeader[ind])firstHeader[ind]=String(r[2]||'').trim();
             });
             
-            raw['Master_Log'].forEach(function(r){
-              if(!r||!r[2])return;
-              var key=smap[String(r[2]).trim()]; 
+             raw['Master_Log'].forEach(function(r){
+              if(!r||!r[3])return;
+              var key=smap[String(r[3]).trim()]; 
               if(!key)return;
               
               var ind=String(r[0]||'').trim();
-              var isPrimary = (String(r[1]||'').trim()===firstHeader[ind]);
-              var d=r[3], ds=''; 
+              var isPrimary = (String(r[2]||'').trim()===firstHeader[ind]);
+              var d=r[4], ds='';
               
               if(d&&typeof d==='string'&&d.length>=8){
                 var utc=new Date(d);
