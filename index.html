@@ -540,12 +540,15 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,sans-serif;}
       </div></div>
     </div>
 
-    <div id="pd-sales" style="display:none;">
-      <div style="color:var(--m);font-size:13px;padding:40px;text-align:center;background:var(--s);border:1px solid var(--b);border-radius:12px;">
-        Sales sub-tab reserved for future integration.<br>
-        <span style="font-size:11px;">Existing Sales tab data is already live at the top-level "Sales" tab.</span>
-      </div>
-    </div>
+   <div id="pd-sales" style="display:none;">
+      <div class="g1"><div class="cc">
+        <div class="ch"><div class="ct">Pending Sales Orders</div><span style="font-size:11px;color:var(--m);font-family:monospace;" id="pdSalesCount"></span></div>
+        <table class="tbl">
+          <thead><tr><th>Ref No.</th><th>PO Date</th><th>Order Date</th><th>POC</th><th>Client</th><th style="text-align:right">Gross Sales</th><th>POC Name</th><th>Contact</th></tr></thead>
+          <tbody id="pdSalesTable"></tbody>
+        </table>
+      </div></div>
+    </div> 
   </div>
   
   <div class="tp" id="tp-bd">
@@ -602,9 +605,8 @@ const BD_URL='https://script.google.com/macros/s/AKfycbwZOjviZgLXKd0nuXKxiGHUeJ9
 const SAMPLES_URL='https://script.google.com/macros/s/AKfycbwHPMP6i9NcDOZCR7xL7eEdJZXho8Ju0BWs0H7RVLKJmMs1h4JqJ7r3qRpHP-3iyAU/exec';
 const DIWALI_URL='https://script.google.com/macros/s/AKfycbwWOXAeQl5-KCG90vYob0uoCRA10QGq9qE9lPzc12Te3wP__7mt9IEGdB8g1gxFC0xF/exec';
 const PENDING_SAMPLES_URL='https://script.google.com/macros/s/AKfycbxPgaV6qRo4b5t4MmcWJimbsanDLMkT-I-3REEgiYFYvJdkmCJ6hDZnntyCYX20Ouyq/exec';
-var PENDING_SAMPLES=[];
+var PENDING_SAMPLES=[], PENDING_SALES=[];
 var BD_ROWS=[], ML_PRIMARY=[], ML_FOLLOWUP=[], SALES=[], SAMPLES=[], ML_BY_DATE=[], ML_BY_IND=[], ADS=[], INMAILS=[], DW_EMAIL=[]; var CCBD_ROWS=[], CCBD_FESTIVE=[];
-
 function switchDiwali(subId) {
   document.getElementById('d-ov').style.display = 'none';
   document.getElementById('d-li').style.display = 'none';
@@ -1301,6 +1303,31 @@ function renderPending(){
     }).join(''):'<tr><td colspan="10" style="text-align:center;color:#555;padding:20px">No pending samples in range</td></tr>';
   }
 }
+function renderPendSales(){
+  var f=getF(), t=getT();
+  var src=PENDING_SALES.filter(function(s){
+    if(f && s.poDate<f) return false;
+    if(t && s.poDate>t) return false;
+    return true;
+  });
+  set('pdSalesCount', src.length+' orders');
+  var tbl=document.getElementById('pdSalesTable');
+  if(tbl){
+    tbl.innerHTML=src.length?src.map(function(s){
+      return '<tr>'+
+        '<td style="font-family:monospace;color:#a78bfa;font-size:11px">'+(s.ref||'—')+'</td>'+
+        '<td>'+fd(s.poDate)+'</td>'+
+        '<td>'+fd(s.orderDate)+'</td>'+
+        '<td><span class="badge poc">'+(s.poc||'—')+'</span></td>'+
+        '<td style="color:#fff;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(s.client||'—')+'</td>'+
+        '<td style="text-align:right;color:#22c55e;font-family:monospace">₹'+Number(s.gross||0).toLocaleString()+'</td>'+
+        '<td style="color:#aaa">'+(s.pocName||'—')+'</td>'+
+        '<td style="color:#aaa;font-family:monospace">'+(s.contact||'—')+'</td>'+
+      '</tr>';
+    }).join(''):'<tr><td colspan="8" style="text-align:center;color:#555;padding:20px">No sales orders in range</td></tr>';
+  }
+}
+
 ['ccUrgencyF','ccPocF'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('change',renderCCBD);});
 var sSortEl = document.getElementById('sSort'); if(sSortEl) sSortEl.addEventListener('change', renderAll);
 
@@ -1309,6 +1336,7 @@ function switchPendSub(which){
   document.getElementById('pd-sales').style.display=(which==='sales'?'block':'none');
   document.getElementById('pdSubSamples').classList.toggle('on',which==='samples');
   document.getElementById('pdSubSales').classList.toggle('on',which==='sales');
+  if(which==='sales') renderPendSales();
   if(which==='samples'&&typeof renderPending==='function')renderPending();
 }  
 // ── BOOT ──────────────────────────────────────────────────
@@ -1463,6 +1491,28 @@ window.addEventListener('load',function(){
 
            // CCBD_BAU — new CCBD Tracker BAU tab
           // Cols: [0]SrNo [1]Date [2]Name [3]Phone [4]City [5]Remarks [6]Urgency [7]Dept [8]Channel [9]POC [10]Quality [11]Conversion
+          // Pending Sales
+          if(raw['Pending_Sales']){
+            PENDING_SALES = raw['Pending_Sales'].filter(function(r){return r[0];}).map(function(r){
+              function toDS(v){
+                if(!v) return '';
+                var d=new Date(String(v));
+                if(!isNaN(d.getTime())){var ist=new Date(d.getTime()+5.5*60*60*1000);return ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0');}
+                return '';
+              }
+              return {
+                ref:String(r[0]||'').trim(),
+                poDate:toDS(r[1]),
+                orderDate:toDS(r[2]),
+                poc:String(r[3]||'').trim(),
+                client:String(r[4]||'').trim(),
+                gross:parseFloat(r[5])||0,
+                pocName:String(r[6]||'').trim(),
+                contact:String(r[7]||'').trim()
+              };
+            });
+          }
+
           if(raw['CCBD_BAU']){
             var ccbdRaw = raw['CCBD_BAU'];
             var pocSet = new Set();
