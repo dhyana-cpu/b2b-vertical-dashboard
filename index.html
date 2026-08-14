@@ -11,464 +11,483 @@
 </head>
 <body>
 <div class="bar">
-  <div class="logo">SNACKIBLE <em>/ B2B</em></div>
-  <div class="stl"><div class="dot"></div><span id="stxt">ready</span></div>
+<div class="logo">SNACKIBLE <em>/ B2B</em></div>
+<div class="stl"><div class="dot"></div><span id="stxt">ready</span></div>
 </div>
 <div class="wrap">
-  <div class="ph">
-    <div>
-        <p class="pt">B2B Dashboard <span style="font-size:12px;color:var(--gr);background:rgba(34,197,94,0.1);padding:2px 8px;border-radius:10px;">v4.0 Live</span></p>
-        <p class="ps">Mails · Sales · Ads · InMails · <em id="lu">—</em></p>
-    </div>
-    <div class="df">
-      <span class="fl">Range</span>
-      <input type="date" class="di" id="df">
-      <span style="color:var(--m);font-size:11px">→</span>
-      <input type="date" class="di" id="dt">
-      <button class="qb on" data-r="all">All</button>
-      <button class="qb" data-r="mtd">MTD</button>
-      <button class="qb" data-r="30">30d</button>
-      <button class="qb" data-r="7">7d</button>
-      <button class="qb" data-r="today">Today</button>
-      <span style="font-size:11px;color:var(--m);font-family:monospace;" id="fi">—</span>
-    </div>
-  </div>
-  <div class="mg">
-    <div class="mc gn"><div class="ml">Total B2B Sales</div><div class="mv" id="tSales">—</div><div class="ms" id="tOrders">— orders</div></div>
-    <div class="mc bl"><div class="ml">Emails Delivered</div><div class="mv" id="tDel">—</div><div class="ms" id="tOpenR">—</div></div>
-    <div class="mc or"><div class="ml">Email Responses</div><div class="mv" id="tResp">—</div><div class="ms" id="tRespR">—</div></div>
-    <div class="mc ye"><div class="ml">Ads Leads</div><div class="mv" id="tLeads">—</div><div class="ms" id="tConvR">—</div></div>
-    <div class="mc"><div class="ml">InMails Sent</div><div class="mv" id="tInmail">—</div><div class="ms" id="tInmailS">—</div></div>
-  </div>
-  <div class="tabs">
-    <div class="tab on" data-tab="ov">Overview</div>
-    <div class="tab" data-tab="sales">Sales</div>
-    <div class="tab" data-tab="mails">Mails</div>
-    <div class="tab" data-tab="ads">Ads</div>
-    <div class="tab" data-tab="inmails">InMails</div>
-    <div class="tab" data-tab="ccbd">CCBD Leads</div>
-    <div class="tab" data-tab="samples">Sample Data</div>
-    <div class="tab" data-tab="recurring">Recurring Clients</div>
-    <div class="tab" data-tab="bd">Active Conversations</div>
-    <div class="tab" data-tab="diwali" style="color:var(--or); font-weight:600;">✨ Diwali Campaign</div>
-    <div class="tab" data-tab="pend">📦 Pending Delivery</div>
-  </div>
-  <div class="tp on" id="tp-ov">
-    <div class="g2">
-      <div class="cc">
-        <div class="ch"><div class="ct">Email Funnel</div></div>
-        <div class="fg">
-          <div class="fc"><div class="fcv" style="color:var(--bl)" id="fcDel">—</div><div class="fcl">Delivered</div><div class="fcr">100%</div></div>
-          <div class="fc"><div class="fcv" style="color:var(--ac2)" id="fcOpen">—</div><div class="fcl">Opened</div><div class="fcr" id="fcOpenR">—</div></div>
-          <div class="fc"><div class="fcv" style="color:var(--or)" id="fcClick">—</div><div class="fcl">Clicked</div><div class="fcr" id="fcClickR">—</div></div>
-          <div class="fc"><div class="fcv" style="color:var(--gr)" id="fcResp">—</div><div class="fcl">Responded</div><div class="fcr" id="fcRespR">—</div></div>
-        </div>
-        <div class="frow"><span class="flbl">Delivered</span><div class="fwrap"><div class="fbar" id="fbDel" style="width:100%;background:#3b82f6">—</div></div><span class="fpct">100%</span></div>
-        <div class="frow"><span class="flbl">Opened</span><div class="fwrap"><div class="fbar" id="fbOpen" style="background:#7c3aed">—</div></div><span class="fpct" id="fpOpen">—</span></div>
-        <div class="frow"><span class="flbl">Clicked</span><div class="fwrap"><div class="fbar" id="fbClick" style="background:#f97316">—</div></div><span class="fpct" id="fpClick">—</span></div>
-        <div class="frow"><span class="flbl">Responded</span><div class="fwrap"><div class="fbar" id="fbResp" style="background:#22c55e">—</div></div><span class="fpct" id="fpResp">—</span></div>
-        <div class="frow"><span class="flbl">Bounced</span><div class="fwrap"><div class="fbar" id="fbBounce" style="background:#ef4444">—</div></div><span class="fpct" id="fpBounce">—</span></div>
-      </div>
-      <div class="cc"><div class="ch"><div class="ct">Sales by Date (₹)</div></div><div class="cw" id="ovSales" style="min-height:220px"></div></div>
-    </div>
-    <div class="g3">
-      <div class="cc"><div class="ch"><div class="ct">Ads — Lead Source</div></div><div class="cw" id="ovAdsType" style="min-height:160px"></div></div>
-      <div class="cc"><div class="ch"><div class="ct">Ads — Conversion</div></div><div class="cw" id="ovAdsConv" style="min-height:160px"></div></div>
-      <div class="cc"><div class="ch"><div class="ct">Sales by POC</div></div><div class="cw" id="ovPoc" style="min-height:160px"></div></div>
-    </div>
-  </div>
-  <div class="tp" id="tp-sales">
-    <div class="mg" style="grid-template-columns:repeat(4,1fr);">
-      <div class="mc gn"><div class="ml">Total Revenue</div><div class="mv" id="sTotalRev">—</div><div class="ms" id="sTotalOrd">—</div></div>
-      <div class="mc gn"><div class="ml">Avg Order Value</div><div class="mv" id="sAvg">—</div><div class="ms">per order</div></div>
-      <div class="mc gn"><div class="ml">Top POC</div><div class="mv" id="sTopPoc">—</div><div class="ms" id="sTopAmt">—</div></div>
-      <div class="mc gn"><div class="ml">Top 5 Orders</div><div id="sTop5List" style="margin-top: 4px; display: flex; flex-direction: column; gap: 5px;">—</div></div>
-    </div>
-    <div class="g2">
-      <div class="cc"><div class="ch"><div class="ct">Revenue by POC</div></div><div class="cw" id="sPocChart" style="min-height:180px"></div></div>
-      <div class="cc"><div class="ch"><div class="ct">Daily Revenue</div></div><div class="cw" id="sDateChart" style="min-height:180px"></div></div>
-    </div>
-    <div class="g1"><div class="cc">
-      <div class="ch">
-        <div style="display:flex; align-items:center; gap:10px;">
-          <div class="ct">All Orders</div>
-          <span id="sCount" style="font-size:11px;color:var(--m)"></span>
-        </div>
-        <select class="di" id="sSort" style="font-size:11px; padding:4px 8px;" onchange="renderAll()">
-          <option value="date-desc">Newest First</option>
-          <option value="amt-desc">Amount: High to Low</option>
-          <option value="amt-asc">Amount: Low to High</option>
-        </select>
-      </div>
-      <table class="tbl"><thead><tr><th>Ref</th><th>Date</th><th>Client</th><th>POC</th><th>Type</th><th style="text-align:right">Amount</th></tr></thead><tbody id="sTable"></tbody></table>
-    </div></div>
-  </div>
-  <div class="tp" id="tp-mails">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
-      <div class="df" style="gap:6px;">
-        <span class="fl">Mail Type</span>
-        <button class="qb on" id="mTypeAll" data-mtype="all">All Mails</button>
-        <button class="qb" id="mTypePri" data-mtype="primary">🟢 Primary</button>
-        <button class="qb" id="mTypeFol" data-mtype="followup">🔄 Follow-ups</button>
-      </div>
-      <span id="mTypeLabel" style="font-size:11px;color:var(--m);padding:8px 12px;background:var(--s);border:1px solid var(--b);border-radius:8px;">Showing all mails</span>
-    </div>
-    <div class="mg" style="grid-template-columns:repeat(5,1fr);">
-      <div class="mc bl"><div class="ml">Delivered</div><div class="mv" id="mDel">—</div><div class="ms" id="mDelS">—</div></div>
-      <div class="mc"><div class="ml">Opened</div><div class="mv" id="mOpen">—</div><div class="ms" id="mOpenR">—</div></div>
-      <div class="mc or"><div class="ml">Clicked</div><div class="mv" id="mClick">—</div><div class="ms" id="mClickR">—</div></div>
-      <div class="mc gn"><div class="ml">Responded</div><div class="mv" id="mResp">—</div><div class="ms" id="mRespR">—</div></div>
-      <div class="mc re"><div class="ml">Bounced</div><div class="mv" id="mBounce">—</div><div class="ms" id="mBounceR">—</div></div>
-    </div>
-    <div class="g2">
-      <div class="cc">
-        <div class="ch">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <div class="ct">Daily Email Events</div>
-            <select class="di" id="mEventFilter" style="font-size:11px; padding:4px 8px;" onchange="renderAll()">
-              <option value="all">All Events</option>
-              <option value="del">Delivered</option>
-              <option value="open">Opened</option>
-              <option value="click">Clicked</option>
-              <option value="resp">Responded</option>
-            </select>
-          </div>
-        </div>
-        <div class="cw" id="mDailyChart" style="min-height:240px"></div>
-      </div>
-      <div class="cc"><div class="ch"><div class="ct">Open Rate by Industry</div></div><div class="cw" id="mIndChart" style="min-height:240px"></div></div>
-    </div>
-    <div class="g1"><div class="cc">
-      <div class="ch"><div class="ct">Performance by Industry</div></div>
-      <div class="mrow mhdr"><span>Industry</span><span>Delivered</span><span>Opened</span><span>Clicked</span><span>Responded</span></div>
-      <div id="mIndTable"></div>
-      <div class="mrow" style="font-weight:600;color:#fff;border-top:1px solid var(--b);margin-top:6px;padding-top:10px;" id="mIndTotal"></div>
-    </div></div>
-  </div>
-  <div class="tp" id="tp-ads">
-    <div class="mg" style="grid-template-columns:repeat(4,1fr);">
-      <div class="mc ye"><div class="ml">Total Leads</div><div class="mv" id="aTotal">—</div><div class="ms">from ads</div></div>
-      <div class="mc ye"><div class="ml">Inbound</div><div class="mv" id="aInbound">—</div><div class="ms" id="aInboundR">—</div></div>
-      <div class="mc ye"><div class="ml">CCBD</div><div class="mv" id="aCcbd">—</div><div class="ms" id="aCcbdR">—</div></div>
-      <div class="mc gn"><div class="ml">Converted</div><div class="mv" id="aConv">—</div><div class="ms" id="aConvR">—</div></div>
-    </div>
-    <div class="g1"><div class="cc">
-      <div class="ch"><div class="ct">All Leads</div><span id="aCount" style="font-size:11px;color:var(--m)"></span></div>
-      <table class="tbl"><thead><tr><th>Date</th><th>Client</th><th>Source</th><th>POC</th><th>Lead Type</th><th>Converted</th><th style="text-align:right">Order Value</th></tr></thead><tbody id="aTable"></tbody></table>
-    </div></div>
-  </div>
-  <div class="tp" id="tp-inmails">
-    <div class="mg" style="grid-template-columns:repeat(3,1fr);">
-      <div class="mc bl"><div class="ml">Total Contacts</div><div class="mv" id="iTotal">—</div><div class="ms">LinkedIn InMails</div></div>
-      <div class="mc bl"><div class="ml">Facility Mgmt</div><div class="mv" id="iFM">—</div><div class="ms">FM industry</div></div>
-      <div class="mc bl"><div class="ml">IT Industry</div><div class="mv" id="iIT">—</div><div class="ms">IT sector</div></div>
-    </div>
-    <div class="g1"><div class="cc">
-      <div class="ch"><div class="ct">InMail Contact List</div></div>
-      <table class="tbl"><thead><tr><th>#</th><th>Industry</th><th>Company</th><th>Role</th><th>Contact</th></tr></thead><tbody id="iTable"></tbody></table>
-    </div></div>
-  </div>
-  <!-- ═══════════ CCBD LEADS TAB ═══════════ -->
-  <div class="tp" id="tp-ccbd">
-    <div style="display:flex;gap:10px;margin-bottom:16px;border-bottom:1px solid var(--b);padding-bottom:16px;">
-      <button class="qb on" id="btn-ccbd-s1" onclick="switchCCBD('ccbd-s1')">📞 Inbound Leads</button>
-      <button class="qb" id="btn-ccbd-fest" onclick="switchCCBD('ccbd-fest')">🎉 Festive Leads</button>
-    </div>
-    <div id="ccbd-s1" style="display:block;">
-      <div class="mg" style="grid-template-columns:repeat(4,1fr);">
-        <div class="mc bl"><div class="ml">Total B2B Leads</div><div class="mv" id="ccTotal">—</div><div class="ms" id="ccSub">in range</div></div>
-        <div class="mc or"><div class="ml">Urgent</div><div class="mv" id="ccUrgent">—</div><div class="ms" id="ccUrgentR">—</div></div>
-        <div class="mc gn"><div class="ml">Converted</div><div class="mv" id="ccConverted">—</div><div class="ms" id="ccConvertedR">—</div></div>
-        <div class="mc ye"><div class="ml">Top City</div><div class="mv" id="ccTopCity" style="font-size:14px">—</div><div class="ms" id="ccTopCityN">—</div></div>
-      </div>
-      <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
-        <div class="df" style="gap:6px;">
-          <span class="fl">Urgency</span>
-          <select class="di" id="ccUrgencyF">
-            <option value="all">All</option>
-            <option value="urgent">Urgent</option>
-            <option value="non-urgent">Non-Urgent</option>
-          </select>
-          <span class="fl">POC</span>
-          <select class="di" id="ccPocF">
-            <option value="all">All POCs</option>
-          </select>
-        </div>
-        <span style="font-size:11px;color:var(--m);font-family:monospace;" id="ccCount"></span>
-      </div>
-      <div class="g2">
-        <div class="cc"><div class="ch"><div class="ct">Leads by Date</div></div><div class="cw" id="ccDateChart" style="min-height:180px"></div></div>
-        <div class="cc"><div class="ch"><div class="ct">Leads by City</div></div><div class="cw" id="ccCityChart" style="min-height:180px"></div></div>
-      </div>
-      <div class="g1"><div class="cc">
-        <div class="ch"><div class="ct">All B2B Inbound Leads</div><span id="ccTableCount" style="font-size:11px;color:var(--m)"></span></div>
-        <div style="max-height:600px;overflow-y:auto;">
-          <table class="tbl">
-            <thead><tr><th>#</th><th>Date</th><th>Name</th><th>Phone</th><th>City</th><th>Remarks</th><th>Urgency</th><th>Conversion</th><th>POC</th></tr></thead>
-            <tbody id="ccTable"></tbody>
-          </table>
-        </div>
-      </div></div>
-    </div>
-    <div id="ccbd-fest" style="display:none;">
-      <div class="mg" style="grid-template-columns:repeat(4,1fr);">
-        <div class="mc bl"><div class="ml">Total Festive Leads</div><div class="mv" id="cfTotal">—</div><div class="ms">festive campaign</div></div>
-        <div class="mc or"><div class="ml">Top Platform</div><div class="mv" id="cfTopPlatform" style="font-size:14px">—</div><div class="ms" id="cfTopPlatformN">—</div></div>
-        <div class="mc ye"><div class="ml">Quality Breakdown</div><div class="mv" id="cfSuitable" style="font-size:18px">—</div><div class="ms" id="cfQualityS">—</div></div>
-        <div class="mc gn"><div class="ml">Top POC</div><div class="mv" id="cfTopPoc" style="font-size:14px">—</div><div class="ms" id="cfTopPocN">—</div></div>
-      </div>
-      <div class="g2">
-        <div class="cc"><div class="ch"><div class="ct">Festive Leads by Date</div></div><div class="cw" id="cfDateChart" style="min-height:180px"></div></div>
-        <div class="cc"><div class="ch"><div class="ct">Leads by Platform</div></div><div class="cw" id="cfPlatformChart" style="min-height:180px"></div></div>
-      </div>
-    </div>
-  </div>
-  <div class="tp" id="tp-recurring">
-    <div class="mg" style="grid-template-columns:repeat(3,1fr);">
-      <div class="mc gn"><div class="ml">Total Recurring</div><div class="mv" id="rcTotal">—</div><div class="ms">clients</div></div>
-      <div class="mc gn"><div class="ml">Total Revenue</div><div class="mv" id="rcRevenue">—</div><div class="ms">from recurring</div></div>
-      <div class="mc gn"><div class="ml">Top POC</div><div class="mv" id="rcTopPoc">—</div><div class="ms" id="rcTopPocAmt">—</div></div>
-    </div>
-    <div class="g1"><div class="cc">
-      <div class="ch"><div class="ct">Recurring Clients</div><span id="rcCount" style="font-size:11px;color:var(--m)"></span></div>
-      <table class="tbl">
-        <thead><tr><th>Client Name</th><th>POC</th><th>Phone</th><th>Location</th><th style="text-align:center">Total Orders</th><th>Order History</th><th style="text-align:right">Revenue</th></tr></thead>
-        <tbody id="rcTable"></tbody>
-      </table>
-    </div></div>
-  </div>
+<div class="ph">
+<div>
+<p class="pt">B2B Dashboard <span style="font-size:12px;color:var(--gr);background:rgba(34,197,94,0.1);padding:2px 8px;border-radius:10px;">v4.0 Live</span></p>
+<p class="ps">Mails · Sales · Ads · InMails · <em id="lu">—</em></p>
+</div>
+<div class="df">
+<span class="fl">Range</span>
+<input type="date" class="di" id="df">
+<span style="color:var(--m);font-size:11px">→</span>
+<input type="date" class="di" id="dt">
+<button class="qb on" data-r="all">All</button>
+<button class="qb" data-r="mtd">MTD</button>
+<button class="qb" data-r="30">30d</button>
+<button class="qb" data-r="7">7d</button>
+<button class="qb" data-r="today">Today</button>
+<span style="font-size:11px;color:var(--m);font-family:monospace;" id="fi">—</span>
+</div>
+</div>
 
-  <div class="tp" id="tp-samples">
-    <div class="mg" style="grid-template-columns:repeat(4,1fr);">
-      <div class="mc bl"><div class="ml">Total Samples</div><div class="mv" id="smTotal">—</div><div class="ms" id="smSub">in range</div></div>
-      <div class="mc bl"><div class="ml">Unique Clients</div><div class="mv" id="smClients">—</div><div class="ms">recipients</div></div>
-      <div class="mc bl"><div class="ml">Most Sent</div><div class="mv" id="smTopProd" style="font-size:13px">—</div><div class="ms" id="smTopQty">—</div></div>
-      <div class="mc bl"><div class="ml">Requested By</div><div class="mv" id="smTopPoc" style="font-size:14px">—</div><div class="ms">most active</div></div>
-    </div>
-    <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
-      <div class="df" style="gap:6px;">
-        <span class="fl">Product</span>
-        <select class="di" id="smProd" style="min-width:200px;">
-          <option value="all">All Products</option>
-          <option value="Cheesy Jalepeno Dip with Piri Piri Ragi Chips">Cheesy Jalepeno Dip</option>
-          <option value="Peri Peri Ragi Chips">Peri Peri Ragi Chips</option>
-          <option value="Piri piri ragi chips">Piri piri ragi chips</option>
-          <option value="Nacho cheese Jowar puffs">Nacho Cheese Jowar Puffs</option>
-          <option value="Biscuit Sticks with Butterscotch Dip">Biscuit Sticks Butterscotch</option>
-          <option value="Baked Pizza Sticks with a Cheesy Jalapeno Dip">Baked Pizza Sticks</option>
-          <option value="Best Seller Box of 10">Best Seller Box</option>
-          <option value="Cheese Dosa Khakhra">Cheese Dosa Khakhra</option>
-          <option value="Pistachio Dip with Biscuit sticks">Pistachio Dipsters</option>
-        </select>
-        <span class="fl">By</span>
-        <select class="di" id="smBy">
-          <option value="all">All</option>
-          <option value="Siya">Siya</option>
-          <option value="Mahi">Mahi</option>
-          <option value="Bhoomika">Bhoomika</option>
-          <option value="Dhyana">Dhyana</option>
-        </select>
-      </div>
-      <span style="font-size:11px;color:var(--m);font-family:monospace;" id="smCount"></span>
-    </div>
-    <div class="g2">
-      <div class="cc"><div class="ch"><div class="ct">Samples by Date</div></div><div class="cw" id="smDateChart" style="min-height:180px"></div></div>
-      <div class="cc"><div class="ch"><div class="ct">Top Products Sampled</div></div><div class="cw" id="smProdChart" style="min-height:180px"></div></div>
-    </div>
-    <div class="g1"><div class="cc">
-      <div class="ch"><div class="ct">All Sample Requests</div></div>
-      <table class="tbl">
-        <thead><tr><th>Date</th><th>Product Sampled</th><th>Client</th><th>Qty</th><th>Requested By</th><th>Dispatch</th></tr></thead>
-        <tbody id="smTable"></tbody>
-      </table>
-    </div></div>
-  </div>
-  <div class="tp" id="tp-diwali">
-    <div style="display:flex;gap:10px;margin-bottom:16px;border-bottom:1px solid var(--b);padding-bottom:16px;flex-wrap:wrap;">
-      <button class="qb on" id="btn-d-ov" onclick="switchDiwali('d-ov')">Overview & Emails</button>
-      <button class="qb" id="btn-d-li" onclick="switchDiwali('d-li')">LinkedIn & Cold Calls</button>
-      <button class="qb" id="btn-d-tgt" onclick="switchDiwali('d-tgt')">Sample Targets (105)</button>
-    </div>
-    <div id="d-ov" style="display:block;">
-      <div id="dw-date-note" style="display:none;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);border-radius:8px;padding:8px 14px;font-size:11px;color:#f97316;margin-bottom:14px;">⚠️ Diwali Campaign data is campaign-level totals — date filters don't apply here.</div>
-      <div class="mg" style="grid-template-columns:repeat(5,1fr);">
-        <div class="mc bl"><div class="ml">Emails Sent</div><div class="mv" id="dw-tot-sent">—</div><div class="ms">Diwali Campaign</div></div>
-        <div class="mc gn"><div class="ml">Responses</div><div class="mv" id="dw-tot-resp">—</div><div class="ms" id="dw-resp-rate">—</div></div>
-        <div class="mc or"><div class="ml">LinkedIn Leads</div><div class="mv" id="dw-li-count">—</div><div class="ms" id="dw-li-sub">—</div></div>
-        <div class="mc ye"><div class="ml">Cold Calls</div><div class="mv" id="dw-cc-count">—</div><div class="ms" id="dw-cc-sub">—</div></div>
-        <div class="mc" style="border-left:3px solid #7c3aed"><div class="ml">Sample Targets</div><div class="mv" id="dw-tgt-count">—</div><div class="ms" id="dw-tgt-sub">—</div></div>
-      </div>
-      <div class="g2">
-        <div class="cc">
-          <div class="ch"><div class="ct">Email Volume by Industry</div></div>
-          <div id="dw-ind-bars"></div> </div>
-        <div class="cc">
-          <div class="ch"><div class="ct">Cold Call Outcomes (Jun 8)</div></div>
-          <div id="dw-outcome-bars"></div>
-        </div>
-      </div>
+<div class="mg">
+<div class="mc gn"><div class="ml">Total B2B Sales</div><div class="mv" id="tSales">—</div><div class="ms" id="tOrders">— orders</div></div>
+<div class="mc bl"><div class="ml">Emails Delivered</div><div class="mv" id="tDel">—</div><div class="ms" id="tOpenR">—</div></div>
+<div class="mc or"><div class="ml">Email Responses</div><div class="mv" id="tResp">—</div><div class="ms" id="tRespR">—</div></div>
+<div class="mc ye"><div class="ml">Ads Leads</div><div class="mv" id="tLeads">—</div><div class="ms" id="tConvR">—</div></div>
+<div class="mc"><div class="ml">InMails Sent</div><div class="mv" id="tInmail">—</div><div class="ms" id="tInmailS">—</div></div>
+</div>
 
-      <div class="g1"><div class="cc">
-        <div class="ch"><div class="ct">Diwali Email Tracker</div></div>
-        <table class="tbl">
-          <thead><tr><th>Industry</th><th>Delivered</th><th>Opened</th><th>Clicked</th><th>Responses</th><th>Rate</th></tr></thead>
-          <tbody id="dw-ind-table"></tbody>
-        </table>
-      </div></div>
-    </div>
-    <div id="d-li" style="display:none;">
-      <div class="mg" style="grid-template-columns:repeat(3,1fr); margin-bottom:14px;">
-        <div class="mc bl"><div class="ml">Total Leads</div><div class="mv" id="li-tile-tot">—</div><div class="ms">LinkedIn mapped</div></div>
-        <div class="mc gn"><div class="ml">InMails Sent</div><div class="mv" id="li-tile-sent">—</div><div class="ms" id="li-tile-sent-pct">—</div></div>
-        <div class="mc or"><div class="ml">Pending</div><div class="mv" id="li-tile-pend">—</div><div class="ms">to be sent</div></div>
-      </div>
-      <div class="mg" style="grid-template-columns:repeat(4,1fr);">
-        <div class="mc bl"><div class="ml">Total Calls (Jun 8)</div><div class="mv" id="cc-tile-tot">—</div><div class="ms">Vanshika & Mahi</div></div>
-        <div class="mc gn"><div class="ml">Positive Outcomes</div><div class="mv" id="cc-tile-pos">—</div><div class="ms">catalogue / connects</div></div>
-        <div class="mc re"><div class="ml">Not Interested</div><div class="mv" id="cc-tile-no">—</div><div class="ms" id="cc-tile-no-pct">—</div></div>
-        <div class="mc or"><div class="ml">Follow-Up Needed</div><div class="mv" id="cc-tile-fu">—</div><div class="ms">not picked up</div></div>
-      </div>
-      <div class="g2">
-        <div class="cc">
-          <div class="ch"><div class="ct">LinkedIn Leads Pipeline</div></div>
-          <div style="max-height:500px;overflow-y:auto;">
-            <table class="tbl">
-              <thead><tr><th>Name</th><th>Company</th><th>Position</th><th>InMail</th></tr></thead>
-              <tbody id="dw-li-table"></tbody>
-            </table>
-          </div>
-        </div>
+<div class="tabs">
+<div class="tab on" data-tab="ov">Overview</div>
+<div class="tab" data-tab="sales">Sales</div>
+<div class="tab" data-tab="mails">Mails</div>
+<div class="tab" data-tab="ads">Ads</div>
+<div class="tab" data-tab="inmails">InMails</div>
+<div class="tab" data-tab="ccbd">CCBD Leads</div>
+<div class="tab" data-tab="samples">Sample Data</div>
+<div class="tab" data-tab="recurring">Recurring Clients</div>
+<div class="tab" data-tab="bd">Active Conversations</div>
+<div class="tab" data-tab="diwali" style="color:var(--or); font-weight:600;">✨ Diwali Campaign</div>
+<div class="tab" data-tab="pend"> Pending Delivery</div>
+<div class="tab" data-tab="pendsales"> Pending Sales</div>
+</div>
 
-        <div class="cc">
-          <div class="ch"><div class="ct">Cold Call Log (June 8)</div></div>
-          <div style="max-height:500px;overflow-y:auto;">
-            <table class="tbl">
-              <thead><tr><th>Company</th><th>Called By</th><th>Follow Up</th><th>Status</th></tr></thead>
-              <tbody id="dw-cc-table"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="d-tgt" style="display:none;">
-      <div class="mg" style="grid-template-columns:repeat(4,1fr); margin-bottom:14px;">
-        <div class="mc or"><div class="ml">Total Target Companies</div><div class="mv" id="tgt-tile-tot">—</div><div class="ms">Across industries</div></div>
-        <div class="mc gn"><div class="ml">POC Identified</div><div class="mv" id="tgt-tile-poc">—</div><div class="ms" id="tgt-tile-poc-pct">—</div></div>
-        <div class="mc bl"><div class="ml">Contact Number Available</div><div class="mv" id="tgt-tile-num">—</div><div class="ms" id="tgt-tile-num-pct">—</div></div>
-        <div class="mc re"><div class="ml">No POC Yet</div><div class="mv" id="tgt-tile-nopoc">—</div><div class="ms">Need sourcing</div></div>
-      </div>
-      <div class="g1"><div class="cc">
-        <div class="ch"><div class="ct">Industry Distribution</div><span style="font-size:11px;color:var(--or);background:rgba(249,115,22,0.1);padding:2px 8px;border-radius:10px;">2026 Triggers mapped</span></div>
-        <div class="cw" id="tgt-ind-chart" style="min-height:180px"></div>
-      </div></div>
-      <div class="g1"><div class="cc">
-        <div class="ch"><div class="ct">Sample Box Targets — Full Pipeline (Top Tier)</div></div>
-        <div style="max-height:600px;overflow-y:auto;">
-          <table class="tbl">
-            <thead><tr><th>#</th><th>Company</th><th>Industry</th><th>2026 Trigger</th><th>POC</th><th>Contact</th><th>POC Status</th></tr></thead>
-            <tbody id="dw-tgt-table"></tbody>
-          </table>
-        </div>
-      </div></div>
-    </div>
-  </div>
+<div class="tp on" id="tp-ov">
+<div class="g2">
+<div class="cc">
+<div class="ch"><div class="ct">Email Funnel</div></div>
+<div class="fg">
+<div class="fc"><div class="fcv" style="color:var(--bl)" id="fcDel">—</div><div class="fcl">Delivered</div><div class="fcr">100%</div></div>
+<div class="fc"><div class="fcv" style="color:var(--ac2)" id="fcOpen">—</div><div class="fcl">Opened</div><div class="fcr" id="fcOpenR">—</div></div>
+<div class="fc"><div class="fcv" style="color:var(--or)" id="fcClick">—</div><div class="fcl">Clicked</div><div class="fcr" id="fcClickR">—</div></div>
+<div class="fc"><div class="fcv" style="color:var(--gr)" id="fcResp">—</div><div class="fcl">Responded</div><div class="fcr" id="fcRespR">—</div></div>
+</div>
+<div class="frow"><span class="flbl">Delivered</span><div class="fwrap"><div class="fbar" id="fbDel" style="width:100%;background:#3b82f6">—</div></div><span class="fpct">100%</span></div>
+<div class="frow"><span class="flbl">Opened</span><div class="fwrap"><div class="fbar" id="fbOpen" style="background:#7c3aed">—</div></div><span class="fpct" id="fpOpen">—</span></div>
+<div class="frow"><span class="flbl">Clicked</span><div class="fwrap"><div class="fbar" id="fbClick" style="background:#f97316">—</div></div><span class="fpct" id="fpClick">—</span></div>
+<div class="frow"><span class="flbl">Responded</span><div class="fwrap"><div class="fbar" id="fbResp" style="background:#22c55e">—</div></div><span class="fpct" id="fpResp">—</span></div>
+<div class="frow"><span class="flbl">Bounced</span><div class="fwrap"><div class="fbar" id="fbBounce" style="background:#ef4444">—</div></div><span class="fpct" id="fpBounce">—</span></div>
+</div>
+<div class="cc"><div class="ch"><div class="ct">Sales by Date (₹)</div></div><div class="cw" id="ovSales" style="min-height:220px"></div></div>
+</div>
+<div class="g3">
+<div class="cc"><div class="ch"><div class="ct">Ads — Lead Source</div></div><div class="cw" id="ovAdsType" style="min-height:160px"></div></div>
+<div class="cc"><div class="ch"><div class="ct">Ads — Conversion</div></div><div class="cw" id="ovAdsConv" style="min-height:160px"></div></div>
+<div class="cc"><div class="ch"><div class="ct">Sales by POC</div></div><div class="cw" id="ovPoc" style="min-height:160px"></div></div>
+</div>
+</div>
 
-  <div class="tp" id="tp-pend">
-    <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;">
-      <button class="qb on" id="pdSubSamples" onclick="switchPendSub('samples')">📦 Samples</button>
-      <button class="qb" id="pdSubSales" onclick="switchPendSub('sales')">💰 Sales</button>
-    </div>
-    <div id="pd-samples">
-      <div class="mg" style="grid-template-columns:repeat(4,1fr);">
-        <div class="mc bl"><div class="ml">Total Pending</div><div class="mv" id="pdTotal">—</div><div class="ms" id="pdSub">in range</div></div>
-        <div class="mc gn"><div class="ml">Today's Samples</div><div class="mv" id="pdToday">—</div><div class="ms" id="pdTodaySub">by POC</div></div>
-        <div class="mc ye"><div class="ml">BAU Clients</div><div class="mv" id="pdBAU">—</div><div class="ms">repeat companies</div></div>
-        <div class="mc or"><div class="ml">Unique Clients</div><div class="mv" id="pdUnique">—</div><div class="ms">first-time only</div></div>
-      </div>
-      <div class="mg" style="grid-template-columns:repeat(5,1fr);">
-        <div class="mc bl"><div class="ml">Weekly Avg</div><div class="mv" id="pdWeekAvg">—</div><div class="ms">last 7 days</div></div>
-        <div class="mc bl"><div class="ml">Monthly Avg</div><div class="mv" id="pdMonthAvg">—</div><div class="ms">last 30 days</div></div>
-        <div class="mc bl"><div class="ml">All-Time Avg</div><div class="mv" id="pdAllAvg">—</div><div class="ms">since first record</div></div>
-        <div class="mc bl"><div class="ml">Most Sent Box</div><div class="mv" id="pdTopProd" style="font-size:13px">—</div><div class="ms" id="pdTopQty">—</div></div>
-        <div class="mc bl"><div class="ml">Top POC</div><div class="mv" id="pdTopPoc" style="font-size:14px">—</div><div class="ms">most active</div></div>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
-        <div class="df" style="gap:6px;">
-          <span class="fl">POC</span>
-          <select class="di" id="pdPocFilter"><option value="all">All POCs</option></select>
-          <span class="fl">Company Type</span>
-          <select class="di" id="pdTypeFilter">
-            <option value="all">All</option>
-            <option value="bau">BAU only</option>
-            <option value="unique">Unique only</option>
-          </select>
-        </div>
-      </div>
-      <div class="g3">
-        <div class="cc"><div class="ch"><div class="ct">Samples by Date</div></div><div class="cw" id="pdDateChart" style="min-height:180px"></div></div>
-        <div class="cc"><div class="ch"><div class="ct">Top Products Sent</div></div><div class="cw" id="pdProdChart" style="min-height:180px"></div></div>
-        <div class="cc"><div class="ch"><div class="ct">Samples by POC</div></div><div class="cw" id="pdPocChart" style="min-height:180px"></div></div>
-      </div>
-      <div class="g1"><div class="cc">
-        <div class="ch"><div class="ct">All Pending Samples</div><span id="pdCount" style="font-size:11px;color:var(--m)"></span></div>
-        <table class="tbl">
-          <thead><tr><th>Ref</th><th>Date</th><th>Product</th><th>Size</th><th>Qty</th><th>Client</th><th>Company</th><th>POC</th><th>Type</th><th>Dispatch</th></tr></thead>
-          <tbody id="pdTable"></tbody>
-        </table>
-      </div></div>
-    </div>
-   <div id="pd-sales" style="display:none;">
-      <div class="g1"><div class="cc">
-        <div class="ch"><div class="ct">Pending Sales Orders</div><span style="font-size:11px;color:var(--m);font-family:monospace;" id="pdSalesCount"></span></div>
-        <table class="tbl">
-          <thead><tr><th>Ref No.</th><th>PO Date</th><th>Order Date</th><th>POC</th><th>Client</th><th style="text-align:right">Gross Sales</th><th>POC Name</th><th>Contact</th></tr></thead>
-          <tbody id="pdSalesTable"></tbody>
-        </table>
-      </div></div>
-    </div>
-  </div>
+<div class="tp" id="tp-sales">
+<div class="mg" style="grid-template-columns:repeat(4,1fr);">
+<div class="mc gn"><div class="ml">Total Revenue</div><div class="mv" id="sTotalRev">—</div><div class="ms" id="sTotalOrd">—</div></div>
+<div class="mc gn"><div class="ml">Avg Order Value</div><div class="mv" id="sAvg">—</div><div class="ms">per order</div></div>
+<div class="mc gn"><div class="ml">Top POC</div><div class="mv" id="sTopPoc">—</div><div class="ms" id="sTopAmt">—</div></div>
+<div class="mc gn"><div class="ml">Top 5 Orders</div><div id="sTop5List" style="margin-top: 4px; display: flex; flex-direction: column; gap: 5px;">—</div></div>
+</div>
+<div class="g2">
+<div class="cc"><div class="ch"><div class="ct">Revenue by POC</div></div><div class="cw" id="sPocChart" style="min-height:180px"></div></div>
+<div class="cc"><div class="ch"><div class="ct">Daily Revenue</div></div><div class="cw" id="sDateChart" style="min-height:180px"></div></div>
+</div>
+<div class="g1"><div class="cc">
+<div class="ch">
+<div style="display:flex; align-items:center; gap:10px;">
+<div class="ct">All Orders</div>
+<span id="sCount" style="font-size:11px;color:var(--m)"></span>
+</div>
+<select class="di" id="sSort" style="font-size:11px; padding:4px 8px;" onchange="renderAll()">
+<option value="date-desc">Newest First</option>
+<option value="amt-desc">Amount: High to Low</option>
+<option value="amt-asc">Amount: Low to High</option>
+</select>
+</div>
+<table class="tbl"><thead><tr><th>Ref</th><th>Date</th><th>Client</th><th>POC</th><th>Type</th><th style="text-align:right">Amount</th></tr></thead><tbody id="sTable"></tbody></table>
+</div></div>
+</div>
 
-  <div class="tp" id="tp-bd">
-    <div class="mg" style="grid-template-columns:repeat(4,1fr);">
-      <div class="mc ye"><div class="ml">Total Leads</div><div class="mv" id="bdTotal">—</div><div class="ms" id="bdSub">in range</div></div>
-      <div class="mc re"><div class="ml">Cold</div><div class="mv" id="bdCold">—</div><div class="ms" id="bdColdR">—</div></div>
-      <div class="mc or"><div class="ml">Hot</div><div class="mv" id="bdHot">—</div><div class="ms" id="bdHotR">—</div></div>
-      <div class="mc gn"><div class="ml">Converted</div><div class="mv" id="bdConv">—</div><div class="ms" id="bdConvR">—</div></div>
-    </div>
-    <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
-      <div class="df" style="gap:6px;">
-        <span class="fl">Phase</span>
-        <select class="di" id="bdPhase">
-          <option value="all">All Phases</option>
-          <option value="Cold">Cold</option>
-          <option value="Hot">Hot</option>
-          <option value="Converted">Converted</option>
-        </select>
-        <span class="fl">Source</span>
-        <select class="di" id="bdSource">
-          <option value="all">All Sources</option>
-          <option value="Shopify">Shopify</option>
-          <option value="CC BD">CC BD</option>
-          <option value="Email">Email</option>
-        </select>
-        <span class="fl">POC</span>
-        <select class="di" id="bdPoc">
-          <option value="all">All POCs</option>
-          <option value="Siya">Siya</option>
-          <option value="Manjari">Manjari</option>
-        </select>
-      </div>
-      <span style="font-size:11px;color:var(--m);font-family:monospace;" id="bdCount"></span>
-    </div>
-    <div class="g3" id="bdPipeline" style="margin-bottom:14px;"></div>
-    <div class="g1"><div class="cc">
-      <div class="ch"><div class="ct">All Conversations</div></div>
-      <table class="tbl">
-        <thead><tr><th>Date</th><th>Company</th><th>Contact</th><th>POC</th><th>Source</th><th>Phase</th><th style="width:100px">Converted?</th><th style="width:40px; text-align:center">✔</th><th>Follow-up</th><th>Remarks</th></tr></thead>
-        <tbody id="bdTable"></tbody>
-      </table>
-    </div></div>
-  </div>
+<div class="tp" id="tp-mails">
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+<div class="df" style="gap:6px;">
+<span class="fl">Mail Type</span>
+<button class="qb on" id="mTypeAll" data-mtype="all">All Mails</button>
+<button class="qb" id="mTypePri" data-mtype="primary">🟢 Primary</button>
+<button class="qb" id="mTypeFol" data-mtype="followup">🔄 Follow-ups</button>
+</div>
+<span id="mTypeLabel" style="font-size:11px;color:var(--m);padding:8px 12px;background:var(--s);border:1px solid var(--b);border-radius:8px;">Showing all mails</span>
+</div>
+<div class="mg" style="grid-template-columns:repeat(5,1fr);">
+<div class="mc bl"><div class="ml">Delivered</div><div class="mv" id="mDel">—</div><div class="ms" id="mDelS">—</div></div>
+<div class="mc"><div class="ml">Opened</div><div class="mv" id="mOpen">—</div><div class="ms" id="mOpenR">—</div></div>
+<div class="mc or"><div class="ml">Clicked</div><div class="mv" id="mClick">—</div><div class="ms" id="mClickR">—</div></div>
+<div class="mc gn"><div class="ml">Responded</div><div class="mv" id="mResp">—</div><div class="ms" id="mRespR">—</div></div>
+<div class="mc re"><div class="ml">Bounced</div><div class="mv" id="mBounce">—</div><div class="ms" id="mBounceR">—</div></div>
+</div>
+<div class="g2">
+<div class="cc">
+<div class="ch">
+<div style="display:flex; align-items:center; gap:10px;">
+<div class="ct">Daily Email Events</div>
+<select class="di" id="mEventFilter" style="font-size:11px; padding:4px 8px;" onchange="renderAll()">
+<option value="all">All Events</option>
+<option value="del">Delivered</option>
+<option value="open">Opened</option>
+<option value="click">Clicked</option>
+<option value="resp">Responded</option>
+</select>
+</div>
+</div>
+<div class="cw" id="mDailyChart" style="min-height:240px"></div>
+</div>
+<div class="cc"><div class="ch"><div class="ct">Open Rate by Industry</div></div><div class="cw" id="mIndChart" style="min-height:240px"></div></div>
+</div>
+<div class="g1"><div class="cc">
+<div class="ch"><div class="ct">Performance by Industry</div></div>
+<div class="mrow mhdr"><span>Industry</span><span>Delivered</span><span>Opened</span><span>Clicked</span><span>Responded</span></div>
+<div id="mIndTable"></div>
+<div class="mrow" style="font-weight:600;color:#fff;border-top:1px solid var(--b);margin-top:6px;padding-top:10px;" id="mIndTotal"></div>
+</div></div>
+</div>
+
+<div class="tp" id="tp-ads">
+<div class="mg" style="grid-template-columns:repeat(4,1fr);">
+<div class="mc ye"><div class="ml">Total Leads</div><div class="mv" id="aTotal">—</div><div class="ms">from ads</div></div>
+<div class="mc ye"><div class="ml">Inbound</div><div class="mv" id="aInbound">—</div><div class="ms" id="aInboundR">—</div></div>
+<div class="mc ye"><div class="ml">CCBD</div><div class="mv" id="aCcbd">—</div><div class="ms" id="aCcbdR">—</div></div>
+<div class="mc gn"><div class="ml">Converted</div><div class="mv" id="aConv">—</div><div class="ms" id="aConvR">—</div></div>
+</div>
+<div class="g1"><div class="cc">
+<div class="ch"><div class="ct">All Leads</div><span id="aCount" style="font-size:11px;color:var(--m)"></span></div>
+<table class="tbl"><thead><tr><th>Date</th><th>Client</th><th>Source</th><th>POC</th><th>Lead Type</th><th>Converted</th><th style="text-align:right">Order Value</th></tr></thead><tbody id="aTable"></tbody></table>
+</div></div>
+</div>
+
+<div class="tp" id="tp-inmails">
+<div class="mg" style="grid-template-columns:repeat(3,1fr);">
+<div class="mc bl"><div class="ml">Total Contacts</div><div class="mv" id="iTotal">—</div><div class="ms">LinkedIn InMails</div></div>
+<div class="mc bl"><div class="ml">Facility Mgmt</div><div class="mv" id="iFM">—</div><div class="ms">FM industry</div></div>
+<div class="mc bl"><div class="ml">IT Industry</div><div class="mv" id="iIT">—</div><div class="ms">IT sector</div></div>
+</div>
+<div class="g1"><div class="cc">
+<div class="ch"><div class="ct">InMail Contact List</div></div>
+<table class="tbl"><thead><tr><th>#</th><th>Industry</th><th>Company</th><th>Role</th><th>Contact</th></tr></thead><tbody id="iTable"></tbody></table>
+</div></div>
+</div>
+
+<!-- ═══════════ CCBD LEADS TAB ═══════════ -->
+<div class="tp" id="tp-ccbd">
+<div style="display:flex;gap:10px;margin-bottom:16px;border-bottom:1px solid var(--b);padding-bottom:16px;">
+<button class="qb on" id="btn-ccbd-s1" onclick="switchCCBD('ccbd-s1')">📞 Inbound Leads</button>
+<button class="qb" id="btn-ccbd-fest" onclick="switchCCBD('ccbd-fest')">🎉 Festive Leads</button>
+</div>
+<div id="ccbd-s1" style="display:block;">
+<div class="mg" style="grid-template-columns:repeat(4,1fr);">
+<div class="mc bl"><div class="ml">Total B2B Leads</div><div class="mv" id="ccTotal">—</div><div class="ms" id="ccSub">in range</div></div>
+<div class="mc or"><div class="ml">Urgent</div><div class="mv" id="ccUrgent">—</div><div class="ms" id="ccUrgentR">—</div></div>
+<div class="mc gn"><div class="ml">Converted</div><div class="mv" id="ccConverted">—</div><div class="ms" id="ccConvertedR">—</div></div>
+<div class="mc ye"><div class="ml">Top City</div><div class="mv" id="ccTopCity" style="font-size:14px">—</div><div class="ms" id="ccTopCityN">—</div></div>
+</div>
+<div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
+<div class="df" style="gap:6px;">
+<span class="fl">Urgency</span>
+<select class="di" id="ccUrgencyF">
+<option value="all">All</option>
+<option value="urgent">Urgent</option>
+<option value="non-urgent">Non-Urgent</option>
+</select>
+<span class="fl">POC</span>
+<select class="di" id="ccPocF">
+<option value="all">All POCs</option>
+</select>
+</div>
+<span style="font-size:11px;color:var(--m);font-family:monospace;" id="ccCount"></span>
+</div>
+<div class="g2">
+<div class="cc"><div class="ch"><div class="ct">Leads by Date</div></div><div class="cw" id="ccDateChart" style="min-height:180px"></div></div>
+<div class="cc"><div class="ch"><div class="ct">Leads by City</div></div><div class="cw" id="ccCityChart" style="min-height:180px"></div></div>
+</div>
+<div class="g1"><div class="cc">
+<div class="ch"><div class="ct">All B2B Inbound Leads</div><span id="ccTableCount" style="font-size:11px;color:var(--m)"></span></div>
+<div style="max-height:600px;overflow-y:auto;">
+<table class="tbl">
+<thead><tr><th>#</th><th>Date</th><th>Name</th><th>Phone</th><th>City</th><th>Remarks</th><th>Urgency</th><th>Conversion</th><th>POC</th></tr></thead>
+<tbody id="ccTable"></tbody>
+</table>
+</div>
+</div></div>
+</div>
+<div id="ccbd-fest" style="display:none;">
+<div class="mg" style="grid-template-columns:repeat(4,1fr);">
+<div class="mc bl"><div class="ml">Total Festive Leads</div><div class="mv" id="cfTotal">—</div><div class="ms">festive campaign</div></div>
+<div class="mc or"><div class="ml">Top Platform</div><div class="mv" id="cfTopPlatform" style="font-size:14px">—</div><div class="ms" id="cfTopPlatformN">—</div></div>
+<div class="mc ye"><div class="ml">Quality Breakdown</div><div class="mv" id="cfSuitable" style="font-size:18px">—</div><div class="ms" id="cfQualityS">—</div></div>
+<div class="mc gn"><div class="ml">Top POC</div><div class="mv" id="cfTopPoc" style="font-size:14px">—</div><div class="ms" id="cfTopPocN">—</div></div>
+</div>
+<div class="g2">
+<div class="cc"><div class="ch"><div class="ct">Festive Leads by Date</div></div><div class="cw" id="cfDateChart" style="min-height:180px"></div></div>
+<div class="cc"><div class="ch"><div class="ct">Leads by Platform</div></div><div class="cw" id="cfPlatformChart" style="min-height:180px"></div></div>
+</div>
+</div>
+</div>
+
+<div class="tp" id="tp-recurring">
+<div class="mg" style="grid-template-columns:repeat(3,1fr);">
+<div class="mc gn"><div class="ml">Total Recurring</div><div class="mv" id="rcTotal">—</div><div class="ms">clients</div></div>
+<div class="mc gn"><div class="ml">Total Revenue</div><div class="mv" id="rcRevenue">—</div><div class="ms">from recurring</div></div>
+<div class="mc gn"><div class="ml">Top POC</div><div class="mv" id="rcTopPoc">—</div><div class="ms" id="rcTopPocAmt">—</div></div>
+</div>
+<div class="g1"><div class="cc">
+<div class="ch"><div class="ct">Recurring Clients</div><span id="rcCount" style="font-size:11px;color:var(--m)"></span></div>
+<table class="tbl">
+<thead><tr><th>Client Name</th><th>POC</th><th>Phone</th><th>Location</th><th style="text-align:center">Total Orders</th><th>Order History</th><th style="text-align:right">Revenue</th></tr></thead>
+<tbody id="rcTable"></tbody>
+</table>
+</div></div>
+</div>
+
+<div class="tp" id="tp-samples">
+<div class="mg" style="grid-template-columns:repeat(5,1fr);">
+<div class="mc bl"><div class="ml">Total Samples</div><div class="mv" id="smTotal">—</div><div class="ms" id="smSub">in range</div></div>
+<div class="mc gn"><div class="ml">Sent Today</div><div class="mv" id="smToday">—</div><div class="ms" id="smTodaySub">units</div></div>
+<div class="mc bl"><div class="ml">Unique Clients</div><div class="mv" id="smClients">—</div><div class="ms">recipients</div></div>
+<div class="mc bl"><div class="ml">Most Sent</div><div class="mv" id="smTopProd" style="font-size:13px">—</div><div class="ms" id="smTopQty">—</div></div>
+<div class="mc bl"><div class="ml">Requested By</div><div class="mv" id="smTopPoc" style="font-size:14px">—</div><div class="ms">most active</div></div>
+</div>
+<div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
+<div class="df" style="gap:6px;">
+<span class="fl">Product</span>
+<select class="di" id="smProd" style="min-width:200px;">
+<option value="all">All Products</option>
+<option value="Cheesy Jalepeno Dip with Piri Piri Ragi Chips">Cheesy Jalepeno Dip</option>
+<option value="Peri Peri Ragi Chips">Peri Peri Ragi Chips</option>
+<option value="Piri piri ragi chips">Piri piri ragi chips</option>
+<option value="Nacho cheese Jowar puffs">Nacho Cheese Jowar Puffs</option>
+<option value="Biscuit Sticks with Butterscotch Dip">Biscuit Sticks Butterscotch</option>
+<option value="Baked Pizza Sticks with a Cheesy Jalapeno Dip">Baked Pizza Sticks</option>
+<option value="Best Seller Box of 10">Best Seller Box</option>
+<option value="Cheese Dosa Khakhra">Cheese Dosa Khakhra</option>
+<option value="Pistachio Dip with Biscuit sticks">Pistachio Dipsters</option>
+</select>
+<span class="fl">By</span>
+<select class="di" id="smBy">
+<option value="all">All</option>
+<option value="Siya">Siya</option>
+<option value="Mahi">Mahi</option>
+<option value="Bhoomika">Bhoomika</option>
+<option value="Dhyana">Dhyana</option>
+</select>
+</div>
+<span style="font-size:11px;color:var(--m);font-family:monospace;" id="smCount"></span>
+</div>
+<div class="g2">
+<div class="cc"><div class="ch"><div class="ct">Samples by Date</div></div><div class="cw" id="smDateChart" style="min-height:180px"></div></div>
+<div class="cc"><div class="ch"><div class="ct">Top Products Sampled</div></div><div class="cw" id="smProdChart" style="min-height:180px"></div></div>
+</div>
+<div class="g2">
+<div class="cc"><div class="ch"><div class="ct">Unique Clients</div><span id="smClientsCount" style="font-size:11px;color:var(--m)"></span></div><div id="smClientsListEl" style="max-height:280px;overflow-y:auto;"></div></div>
+<div class="cc"><div class="ch"><div class="ct">Sent Today</div><span id="smTodayCount" style="font-size:11px;color:var(--m)"></span></div><div id="smTodayListEl" style="max-height:280px;overflow-y:auto;"></div></div>
+</div>
+<div class="g1"><div class="cc">
+<div class="ch"><div class="ct">All Sample Requests</div></div>
+<table class="tbl">
+<thead><tr><th>Date</th><th>Product Sampled</th><th>Client</th><th>Qty</th><th>Requested By</th><th>Dispatch</th></tr></thead>
+<tbody id="smTable"></tbody>
+</table>
+</div></div>
+</div>
+
+<div class="tp" id="tp-diwali">
+<div style="display:flex;gap:10px;margin-bottom:16px;border-bottom:1px solid var(--b);padding-bottom:16px;flex-wrap:wrap;">
+<button class="qb on" id="btn-d-ov" onclick="switchDiwali('d-ov')">Overview & Emails</button>
+<button class="qb" id="btn-d-li" onclick="switchDiwali('d-li')">LinkedIn & Cold Calls</button>
+<button class="qb" id="btn-d-tgt" onclick="switchDiwali('d-tgt')">Sample Targets (105)</button>
+</div>
+
+<div id="d-ov" style="display:block;">
+<div id="dw-date-note" style="display:none;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);border-radius:8px;padding:8px 14px;font-size:11px;color:#f97316;margin-bottom:14px;">⚠️ Diwali Campaign data is campaign-level totals — date filters don't apply here.</div>
+<div class="mg" style="grid-template-columns:repeat(5,1fr);">
+<div class="mc bl"><div class="ml">Emails Sent</div><div class="mv" id="dw-tot-sent">—</div><div class="ms">Diwali Campaign</div></div>
+<div class="mc gn"><div class="ml">Responses</div><div class="mv" id="dw-tot-resp">—</div><div class="ms" id="dw-resp-rate">—</div></div>
+<div class="mc or"><div class="ml">LinkedIn Leads</div><div class="mv" id="dw-li-count">—</div><div class="ms" id="dw-li-sub">—</div></div>
+<div class="mc ye"><div class="ml">Cold Calls</div><div class="mv" id="dw-cc-count">—</div><div class="ms" id="dw-cc-sub">—</div></div>
+<div class="mc" style="border-left:3px solid #7c3aed"><div class="ml">Sample Targets</div><div class="mv" id="dw-tgt-count">—</div><div class="ms" id="dw-tgt-sub">—</div></div>
+</div>
+
+<div class="g2">
+<div class="cc">
+<div class="ch"><div class="ct">Email Volume by Industry</div></div>
+<div id="dw-ind-bars"></div> </div>
+<div class="cc">
+<div class="ch"><div class="ct">Cold Call Outcomes (Jun 8)</div></div>
+<div id="dw-outcome-bars"></div>
+</div>
+</div>
+
+<div class="g1"><div class="cc">
+<div class="ch"><div class="ct">Diwali Email Tracker</div></div>
+<table class="tbl">
+<thead><tr><th>Industry</th><th>Delivered</th><th>Opened</th><th>Clicked</th><th>Responses</th><th>Rate</th></tr></thead>
+<tbody id="dw-ind-table"></tbody>
+</table>
+</div></div>
+</div>
+
+<div id="d-li" style="display:none;">
+<div class="mg" style="grid-template-columns:repeat(3,1fr); margin-bottom:14px;">
+<div class="mc bl"><div class="ml">Total Leads</div><div class="mv" id="li-tile-tot">—</div><div class="ms">LinkedIn mapped</div></div>
+<div class="mc gn"><div class="ml">InMails Sent</div><div class="mv" id="li-tile-sent">—</div><div class="ms" id="li-tile-sent-pct">—</div></div>
+<div class="mc or"><div class="ml">Pending</div><div class="mv" id="li-tile-pend">—</div><div class="ms">to be sent</div></div>
+</div>
+
+<div class="mg" style="grid-template-columns:repeat(4,1fr);">
+<div class="mc bl"><div class="ml">Total Calls (Jun 8)</div><div class="mv" id="cc-tile-tot">—</div><div class="ms">Vanshika & Mahi</div></div>
+<div class="mc gn"><div class="ml">Positive Outcomes</div><div class="mv" id="cc-tile-pos">—</div><div class="ms">catalogue / connects</div></div>
+<div class="mc re"><div class="ml">Not Interested</div><div class="mv" id="cc-tile-no">—</div><div class="ms" id="cc-tile-no-pct">—</div></div>
+<div class="mc or"><div class="ml">Follow-Up Needed</div><div class="mv" id="cc-tile-fu">—</div><div class="ms">not picked up</div></div>
+</div>
+
+<div class="g2">
+<div class="cc">
+<div class="ch"><div class="ct">LinkedIn Leads Pipeline</div></div>
+<div style="max-height:500px;overflow-y:auto;">
+<table class="tbl">
+<thead><tr><th>Name</th><th>Company</th><th>Position</th><th>InMail</th></tr></thead>
+<tbody id="dw-li-table"></tbody>
+</table>
+</div>
+</div>
+
+<div class="cc">
+<div class="ch"><div class="ct">Cold Call Log (June 8)</div></div>
+<div style="max-height:500px;overflow-y:auto;">
+<table class="tbl">
+<thead><tr><th>Company</th><th>Called By</th><th>Follow Up</th><th>Status</th></tr></thead>
+<tbody id="dw-cc-table"></tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<div id="d-tgt" style="display:none;">
+<div class="mg" style="grid-template-columns:repeat(4,1fr); margin-bottom:14px;">
+<div class="mc or"><div class="ml">Total Target Companies</div><div class="mv" id="tgt-tile-tot">—</div><div class="ms">Across industries</div></div>
+<div class="mc gn"><div class="ml">POC Identified</div><div class="mv" id="tgt-tile-poc">—</div><div class="ms" id="tgt-tile-poc-pct">—</div></div>
+<div class="mc bl"><div class="ml">Contact Number Available</div><div class="mv" id="tgt-tile-num">—</div><div class="ms" id="tgt-tile-num-pct">—</div></div>
+<div class="mc re"><div class="ml">No POC Yet</div><div class="mv" id="tgt-tile-nopoc">—</div><div class="ms">Need sourcing</div></div>
+</div>
+
+<div class="g1"><div class="cc">
+<div class="ch"><div class="ct">Industry Distribution</div><span style="font-size:11px;color:var(--or);background:rgba(249,115,22,0.1);padding:2px 8px;border-radius:10px;">2026 Triggers mapped</span></div>
+<div class="cw" id="tgt-ind-chart" style="min-height:180px"></div>
+</div></div>
+
+<div class="g1"><div class="cc">
+<div class="ch"><div class="ct">Sample Box Targets — Full Pipeline (Top Tier)</div></div>
+<div style="max-height:600px;overflow-y:auto;">  
+<table class="tbl">
+<thead><tr><th>#</th><th>Company</th><th>Industry</th><th>2026 Trigger</th><th>POC</th><th>Contact</th><th>POC Status</th></tr></thead>
+<tbody id="dw-tgt-table"></tbody>
+</table>
+</div>
+</div></div>
+</div>
+</div>
+
+<div class="tp" id="tp-pend">
+<div class="mg" style="grid-template-columns:repeat(4,1fr);">
+<div class="mc bl"><div class="ml">Total Pending</div><div class="mv" id="pdTotal">—</div><div class="ms" id="pdSub">in range</div></div>
+<div class="mc gn"><div class="ml">Today's Samples</div><div class="mv" id="pdToday">—</div><div class="ms" id="pdTodaySub">by POC</div></div>
+<div class="mc ye"><div class="ml">BAU Clients</div><div class="mv" id="pdBAU">—</div><div class="ms">repeat companies</div></div>
+<div class="mc or"><div class="ml">Unique Clients</div><div class="mv" id="pdUnique">—</div><div class="ms">first-time only</div></div>
+</div>
+<div class="mg" style="grid-template-columns:repeat(4,1fr);">
+<div class="mc bl"><div class="ml">Weekly Avg</div><div class="mv" id="pdWeekAvg">—</div><div class="ms">last 7 days</div></div>
+<div class="mc bl"><div class="ml">Monthly Avg</div><div class="mv" id="pdMonthAvg">—</div><div class="ms">last 30 days</div></div>
+<div class="mc bl"><div class="ml">Most Sent Box</div><div class="mv" id="pdTopProd" style="font-size:13px">—</div><div class="ms" id="pdTopQty">—</div></div>
+<div class="mc bl"><div class="ml">Top POC</div><div class="mv" id="pdTopPoc" style="font-size:14px">—</div><div class="ms">most active</div></div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+<div class="df" style="gap:6px;">
+<span class="fl">POC</span>
+<select class="di" id="pdPocFilter"><option value="all">All POCs</option></select>
+<span class="fl">Company Type</span>
+<select class="di" id="pdTypeFilter">
+<option value="all">All</option>
+<option value="bau">BAU only</option>
+<option value="unique">Unique only</option>
+</select>
+</div>
+</div>
+<div class="g3">
+<div class="cc"><div class="ch"><div class="ct">Samples by Date</div></div><div class="cw" id="pdDateChart" style="min-height:180px"></div></div>
+<div class="cc"><div class="ch"><div class="ct">Top Products Sent</div></div><div class="cw" id="pdProdChart" style="min-height:180px"></div></div>
+<div class="cc"><div class="ch"><div class="ct">Samples by POC</div></div><div class="cw" id="pdPocChart" style="min-height:180px"></div></div>
+</div>
+<div class="g1"><div class="cc">
+<div class="ch"><div class="ct">All Pending Samples</div><span id="pdCount" style="font-size:11px;color:var(--m)"></span></div>
+<table class="tbl">
+<thead><tr><th>Ref</th><th>Date</th><th>Product</th><th>Size</th><th>Qty</th><th>Client</th><th>Company</th><th>POC</th><th>Type</th><th>Dispatch</th></tr></thead>
+<tbody id="pdTable"></tbody>
+</table>
+</div></div>
+</div>
+
+<div class="tp" id="tp-pendsales">
+<div class="g1"><div class="cc">
+<div class="ch"><div class="ct">Pending Sales Orders</div><span style="font-size:11px;color:var(--m);font-family:monospace;" id="pdSalesCount"></span></div>
+<table class="tbl">
+<thead><tr><th>Ref No.</th><th>PO Date</th><th>Order Date</th><th>POC</th><th>Client</th><th style="text-align:right">Gross Sales</th><th>POC Name</th><th>Contact</th></tr></thead>
+<tbody id="pdSalesTable"></tbody>
+</table>
+</div></div>
+</div>
+
+<div class="tp" id="tp-bd">
+<div class="mg" style="grid-template-columns:repeat(4,1fr);">
+<div class="mc ye"><div class="ml">Total Leads</div><div class="mv" id="bdTotal">—</div><div class="ms" id="bdSub">in range</div></div>
+<div class="mc re"><div class="ml">Cold</div><div class="mv" id="bdCold">—</div><div class="ms" id="bdColdR">—</div></div>
+<div class="mc or"><div class="ml">Hot</div><div class="mv" id="bdHot">—</div><div class="ms" id="bdHotR">—</div></div>
+<div class="mc gn"><div class="ml">Converted</div><div class="mv" id="bdConv">—</div><div class="ms" id="bdConvR">—</div></div>
+</div>
+<div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
+<div class="df" style="gap:6px;">
+<span class="fl">Phase</span>
+<select class="di" id="bdPhase">
+<option value="all">All Phases</option>
+<option value="Cold">Cold</option>
+<option value="Hot">Hot</option>
+<option value="Converted">Converted</option>
+</select>
+<span class="fl">Source</span>
+<select class="di" id="bdSource">
+<option value="all">All Sources</option>
+<option value="Shopify">Shopify</option>
+<option value="CC BD">CC BD</option>
+<option value="Email">Email</option>
+</select>
+<span class="fl">POC</span>
+<select class="di" id="bdPoc">
+<option value="all">All POCs</option>
+<option value="Siya">Siya</option>
+<option value="Manjari">Manjari</option>
+</select>
+</div>
+<span style="font-size:11px;color:var(--m);font-family:monospace;" id="bdCount"></span>
+</div>
+<div class="g3" id="bdPipeline" style="margin-bottom:14px;"></div>
+<div class="g1"><div class="cc">
+<div class="ch"><div class="ct">All Conversations</div></div>
+<table class="tbl">
+<thead><tr><th>Date</th><th>Company</th><th>Contact</th><th>POC</th><th>Source</th><th>Phase</th><th style="width:100px">Converted?</th><th style="width:40px; text-align:center">✔</th><th>Follow-up</th><th>Remarks</th></tr></thead>
+<tbody id="bdTable"></tbody>
+</table>
+</div></div>
+</div>
+
 </div>
 <div class="tip" id="tip"></div>
 <script src="script.js"></script>
