@@ -1,11 +1,13 @@
 // Paste your new single API link right here:
-const SHEET_URL='https://script.google.com/macros/s/AKfycbzsb5FX-sds7Hv25Cd_crPLtJGqTDWaPDuNz10Z68UvaHjD_US5bLys6ncfkY_Wm1ibzA/exec';
+const SHEET_URL='https://script.google.com/macros/s/AKfycbwPVvV-1OACvRgDYtmHpTS9QnDbc556B-G_C-nvradUY_PGjP2NsDr1DTJydIu82ID8/exec';
 
 // Your existing supplementary links:
 const BD_URL='https://script.google.com/macros/s/AKfycbwZOjviZgLXKd0nuXKxiGHUeJ9vrqRHxv3_-Hdc1fX-5UrTSNxiuMV_op4X_ey-7h4iNg/exec';
 const SAMPLES_URL='https://script.google.com/macros/s/AKfycbwHPMP6i9NcDOZCR7xL7eEdJZXho8Ju0BWs0H7RVLKJmMs1h4JqJ7r3qRpHP-3iyAU/exec';
 const DIWALI_URL='https://script.google.com/macros/s/AKfycbwWOXAeQl5-KCG90vYob0uoCRA10QGq9qE9lPzc12Te3wP__7mt9IEGdB8g1gxFC0xF/exec';
 const PENDING_SAMPLES_URL='https://script.google.com/macros/s/AKfycbxPgaV6qRo4b5t4MmcWJimbsanDLMkT-I-3REEgiYFYvJdkmCJ6hDZnntyCYX20Ouyq/exec';
+// Old multi-tab sheet (Mails/Ads/InMails/CCBD) — kept separate now that SHEET_URL points at the new single Active Orders sheet:
+const LEGACY_URL='https://script.google.com/macros/s/AKfycbzsb5FX-sds7Hv25Cd_crPLtJGqTDWaPDuNz10Z68UvaHjD_US5bLys6ncfkY_Wm1ibzA/exec';
 var PENDING_SAMPLES=[], PENDING_SALES=[];
 var BD_ROWS=[], ML_PRIMARY=[], ML_FOLLOWUP=[], SALES=[], SAMPLES=[], ML_BY_DATE=[], ML_BY_IND=[], ADS=[], INMAILS=[], DW_EMAIL=[]; var CCBD_ROWS=[], CCBD_FESTIVE=[];
 function switchDiwali(subId) {
@@ -772,114 +774,8 @@ fetch(SHEET_URL + '?t=' + Date.now(), { cache: 'no-store', signal: ctrl.signal, 
 clearTimeout(timeoutId);
 var sheetKeys = Object.keys(raw);
 
-// MASTER LOG
-if(raw['Master_Log']){
-var smap={'Email Delivered':'del','Email Opened':'open','Email Clicked':'click','RESPONDED':'resp','BOUNCED':'bounce'};
-var bd2={},bi2={},bdP={},bdF={};
-// NEW: per-industry per-date store for Diwali date filtering
-var bi2d={};
-var firstHeader={};
-
-raw['Master_Log'].forEach(function(r){
-if(!r||!r[0])return;
-var ind=String(r[0]).trim();
-if(!firstHeader[ind])firstHeader[ind]=String(r[2]||'').trim();
-});
-
-raw['Master_Log'].forEach(function(r){
-if(!r||!r[3])return;
-var key=smap[String(r[3]).trim()]; 
-if(!key)return;
-
-var ind=String(r[0]||'').trim();
-var isPrimary = (String(r[2]||'').trim()===firstHeader[ind]);
-var d=r[4], ds='';
-
-if(d&&typeof d==='string'&&d.length>=8){
-var utc=new Date(d);
-if(!isNaN(utc)){ 
-var ist=new Date(utc.getTime()+5.5*60*60*1000); 
-ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0'); 
-}
-}
-if(!ds || ds < '2020-01-01') ds = '2026-04-15';
-
-if(!bd2[ds])bd2[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};
-bd2[ds][key]++;
-
-if(isPrimary){if(!bdP[ds])bdP[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};bdP[ds][key]++;}
-else{if(!bdF[ds])bdF[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};bdF[ds][key]++;}
-
-var ind_cl=String(r[0]||'').trim().replace(/^N\(\d+\)[-–]\s*/,'').replace(/^O\(\d+\)[-–]\s*/,'').replace(/^[NO][-–]\s*/,'').replace(/^0[-–]\s*/,'').replace(/[-–]\s*\d+\/\d+\/\d+\s*$/,'').trim();
-if(!ind_cl)return;
-if(!bi2[ind_cl])bi2[ind_cl]={ind:ind_cl,del:0,open:0,click:0,resp:0,bounce:0};
-bi2[ind_cl][key]++;
-// NEW: also store in bi2d keyed by "industry|date"
-var idk=ind_cl+'|'+ds;
-if(!bi2d[idk])bi2d[idk]={ind:ind_cl,date:ds,del:0,open:0,click:0,resp:0,bounce:0};
-bi2d[idk][key]++;
-});
-
-ML_BY_DATE.length=0; Object.values(bd2).sort(function(a,b){return a.date.localeCompare(b.date);}).forEach(function(d){ML_BY_DATE.push(d);});
-ML_BY_IND.length=0; Object.values(bi2).filter(function(i){return i.del>0;}).forEach(function(i){ML_BY_IND.push(i);});
-ML_PRIMARY=Object.values(bdP).sort(function(a,b){return a.date.localeCompare(b.date);});
-ML_FOLLOWUP=Object.values(bdF).sort(function(a,b){return a.date.localeCompare(b.date);});
-// NEW: expose for Diwali tab
-window._ML_IND_DATE = Object.values(bi2d);
-}
-
-// ADS LOG
-var adsKey = sheetKeys.find(function(k){ return k.toLowerCase().replace(/\s+/g, '').includes('ads_log') || k.toLowerCase().replace(/\s+/g, '') === 'adslog'; }) || 'Ads_Log';
-if(raw[adsKey]){
-var parsedAds = raw[adsKey].slice(1).map(function(r){
-var client = String(r[1]||'').trim();
-if(!client || client==='—') return null;
-var dRaw = r[4], ds = '';
-if(dRaw){
-var dStr = String(dRaw).trim();
-if(dStr.includes('/')){ 
-var p = dStr.split('/'); 
-if(p.length >= 3) {
-var yr = p[2].length===2 ? '20'+p[2] : p[2];
-var first = parseInt(p[0]), second = parseInt(p[1]);
-if(first > 12) ds = yr+'-'+String(second).padStart(2,'0')+'-'+String(first).padStart(2,'0');
-else ds = yr+'-'+String(first).padStart(2,'0')+'-'+String(second).padStart(2,'0');
-}
-} else {
-var dObj = new Date(dStr);
-if(!isNaN(dObj.getTime())){ 
-var ist = new Date(dObj.getTime() + 5.5 * 60 * 60 * 1000);
-ds = ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0'); 
-}
-}
-}
-if(!ds) ds = new Date().toISOString().slice(0,10); 
-var valRaw = String(r[11]||r[10]||r[6]||'').replace(/[^\d.-]/g, '');
-return {
-date: ds, client: client, type: String(r[8]||r[7]||'Inbound').trim() || 'Inbound',
-poc: String(r[9]||'—').trim(), lead: String(r[13]||'Cold').trim(),
-conv: String(r[12]||'—').trim(), val: parseFloat(valRaw) || null
-};
-}).filter(Boolean);
-if(parsedAds.length > 0) ADS = parsedAds;
-}
-
-// INMAILS 
-var inmailsKey = sheetKeys.find(function(k){ return k.toLowerCase().replace(/\s+/g, '') === 'inmails'; }) || 'InMails ';
-if(raw[inmailsKey]){
-var parsedInmails = raw[inmailsKey].slice(1).map(function(r, i){
-var company = String(r[2]||'').trim();
-if(!company) return null; 
-return {
-n: i+1, ind: String(r[1]||'—').trim(), company: company,
-role: String(r[3]||'—').trim(), poc: String(r[4]||'—').trim()
-};
-}).filter(Boolean);
-if(parsedInmails.length > 0) INMAILS = parsedInmails;
-}
-
 // SALES LOG (Inside SHEET_URL fetch now)
-var salesKey = sheetKeys.find(function(k) { return k.toLowerCase().includes('sale'); }) || 'Sales_Log';
+var salesKey = sheetKeys.find(function(k) { var kl = k.toLowerCase(); return kl.includes('sale') || kl.includes('active order'); }) || 'Sales_Log';
 if(raw[salesKey]){
 var parsedSales = raw[salesKey].slice(1).map(function(r){
 var typeStr = String(r[1] || '').trim().toLowerCase();
@@ -907,8 +803,129 @@ return { ref: String(r[0]||'—'), date: ds, client: String(r[5]||r[4]||'—').t
 if(parsedSales.length > 0){ SALES = parsedSales; }
 }
 
-// CCBD_BAU — new CCBD Tracker BAU tab
-// Cols: [0]SrNo [1]Date [2]Name [3]Phone [4]City [5]Remarks [6]Urgency [7]Dept [8]Channel [9]POC [10]Quality [11]Conversion
+document.getElementById('stxt').textContent='live · google sheets';
+renderAll();
+}).catch(function(err){
+console.error("SHEET_URL Fetch Error:", err);
+document.getElementById('stxt').textContent='cached data (fetch failed)';
+});
+})();
+}
+
+if (typeof LEGACY_URL !== 'undefined' && LEGACY_URL) {
+(function() {
+var ctrl = new AbortController();
+var timeoutId = setTimeout(function() { ctrl.abort(); }, 60000);
+
+fetch(LEGACY_URL + '?t=' + Date.now(), { cache: 'no-store', signal: ctrl.signal, redirect: 'follow' })
+.then(function(r) { return r.json(); })
+.then(function(raw) {
+clearTimeout(timeoutId);
+var sheetKeys = Object.keys(raw);
+
+// MASTER LOG
+if(raw['Master_Log']){
+var smap={'Email Delivered':'del','Email Opened':'open','Email Clicked':'click','RESPONDED':'resp','BOUNCED':'bounce'};
+var bd2={},bi2={},bdP={},bdF={};
+var bi2d={};
+var firstHeader={};
+
+raw['Master_Log'].forEach(function(r){
+if(!r||!r[0])return;
+var ind=String(r[0]).trim();
+if(!firstHeader[ind])firstHeader[ind]=String(r[2]||'').trim();
+});
+
+raw['Master_Log'].forEach(function(r){
+if(!r||!r[3])return;
+var key=smap[String(r[3]).trim()];
+if(!key)return;
+
+var ind=String(r[0]||'').trim();
+var isPrimary = (String(r[2]||'').trim()===firstHeader[ind]);
+var d=r[4], ds='';
+
+if(d&&typeof d==='string'&&d.length>=8){
+var utc=new Date(d);
+if(!isNaN(utc)){
+var ist=new Date(utc.getTime()+5.5*60*60*1000);
+ds=ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0');
+}
+}
+if(!ds || ds < '2020-01-01') ds = '2026-04-15';
+
+if(!bd2[ds])bd2[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};
+bd2[ds][key]++;
+
+if(isPrimary){if(!bdP[ds])bdP[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};bdP[ds][key]++;}
+else{if(!bdF[ds])bdF[ds]={date:ds,del:0,open:0,click:0,resp:0,bounce:0};bdF[ds][key]++;}
+
+var ind_cl=String(r[0]||'').trim().replace(/^N\(\d+\)[-–]\s*/,'').replace(/^O\(\d+\)[-–]\s*/,'').replace(/^[NO][-–]\s*/,'').replace(/^0[-–]\s*/,'').replace(/[-–]\s*\d+\/\d+\/\d+\s*$/,'').trim();
+if(!ind_cl)return;
+if(!bi2[ind_cl])bi2[ind_cl]={ind:ind_cl,del:0,open:0,click:0,resp:0,bounce:0};
+bi2[ind_cl][key]++;
+var idk=ind_cl+'|'+ds;
+if(!bi2d[idk])bi2d[idk]={ind:ind_cl,date:ds,del:0,open:0,click:0,resp:0,bounce:0};
+bi2d[idk][key]++;
+});
+
+ML_BY_DATE.length=0; Object.values(bd2).sort(function(a,b){return a.date.localeCompare(b.date);}).forEach(function(d){ML_BY_DATE.push(d);});
+ML_BY_IND.length=0; Object.values(bi2).filter(function(i){return i.del>0;}).forEach(function(i){ML_BY_IND.push(i);});
+ML_PRIMARY=Object.values(bdP).sort(function(a,b){return a.date.localeCompare(b.date);});
+ML_FOLLOWUP=Object.values(bdF).sort(function(a,b){return a.date.localeCompare(b.date);});
+window._ML_IND_DATE = Object.values(bi2d);
+}
+
+// ADS LOG
+var adsKey = sheetKeys.find(function(k){ return k.toLowerCase().replace(/\s+/g, '').includes('ads_log') || k.toLowerCase().replace(/\s+/g, '') === 'adslog'; }) || 'Ads_Log';
+if(raw[adsKey]){
+var parsedAds = raw[adsKey].slice(1).map(function(r){
+var client = String(r[1]||'').trim();
+if(!client || client==='—') return null;
+var dRaw = r[4], ds = '';
+if(dRaw){
+var dStr = String(dRaw).trim();
+if(dStr.includes('/')){
+var p = dStr.split('/');
+if(p.length >= 3) {
+var yr = p[2].length===2 ? '20'+p[2] : p[2];
+var first = parseInt(p[0]), second = parseInt(p[1]);
+if(first > 12) ds = yr+'-'+String(second).padStart(2,'0')+'-'+String(first).padStart(2,'0');
+else ds = yr+'-'+String(first).padStart(2,'0')+'-'+String(second).padStart(2,'0');
+}
+} else {
+var dObj = new Date(dStr);
+if(!isNaN(dObj.getTime())){
+var ist = new Date(dObj.getTime() + 5.5 * 60 * 60 * 1000);
+ds = ist.getFullYear()+'-'+String(ist.getMonth()+1).padStart(2,'0')+'-'+String(ist.getDate()).padStart(2,'0');
+}
+}
+}
+if(!ds) ds = new Date().toISOString().slice(0,10);
+var valRaw = String(r[11]||r[10]||r[6]||'').replace(/[^\d.-]/g, '');
+return {
+date: ds, client: client, type: String(r[8]||r[7]||'Inbound').trim() || 'Inbound',
+poc: String(r[9]||'—').trim(), lead: String(r[13]||'Cold').trim(),
+conv: String(r[12]||'—').trim(), val: parseFloat(valRaw) || null
+};
+}).filter(Boolean);
+if(parsedAds.length > 0) ADS = parsedAds;
+}
+
+// INMAILS
+var inmailsKey = sheetKeys.find(function(k){ return k.toLowerCase().replace(/\s+/g, '') === 'inmails'; }) || 'InMails ';
+if(raw[inmailsKey]){
+var parsedInmails = raw[inmailsKey].slice(1).map(function(r, i){
+var company = String(r[2]||'').trim();
+if(!company) return null;
+return {
+n: i+1, ind: String(r[1]||'—').trim(), company: company,
+role: String(r[3]||'—').trim(), poc: String(r[4]||'—').trim()
+};
+}).filter(Boolean);
+if(parsedInmails.length > 0) INMAILS = parsedInmails;
+}
+
 // Pending Sales
 if(raw['Pending_Sales']){
 PENDING_SALES = raw['Pending_Sales'].filter(function(r){return r[0];}).map(function(r){
@@ -972,11 +989,9 @@ quality: String(r[5]||'').trim(), remark: String(r[6]||'').trim(), poc: String(r
 });
 }
 
-document.getElementById('stxt').textContent='live · google sheets';
 renderAll();
-}).catch(function(err){ 
-console.error("SHEET_URL Fetch Error:", err);
-document.getElementById('stxt').textContent='cached data (fetch failed)'; 
+}).catch(function(err){
+console.error("LEGACY_URL Fetch Error:", err);
 });
 })();
 }
