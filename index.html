@@ -17,7 +17,7 @@
     <div class="bar">
         <div class="logo">SNACKIBLE <em>/ B2B</em></div>
         <div class="stl">
-            <div class="dot"></div><span id="stxt">ready</span>
+            <div class="dot loading" id="statusDot"></div><span id="stxt">loading live data…</span>
         </div>
     </div>
     <div class="wrap">
@@ -86,6 +86,8 @@
         </div>
 
         <div class="tp on" id="tp-ov">
+            <div class="tierbar" id="ovLoadingBar"><span class="spin"></span><span>Loading overview data…</span>
+            </div>
             <div class="g2">
                 <div class="cc">
                     <div class="ch">
@@ -169,6 +171,8 @@
         </div>
 
         <div class="tp" id="tp-sales">
+            <div class="tierbar" id="salesLoadingBar"><span class="spin"></span><span>Loading sales data…</span>
+            </div>
             <div class="mg" style="grid-template-columns:repeat(4,1fr);">
                 <div class="mc gn">
                     <div class="ml">Total Revenue</div>
@@ -236,12 +240,36 @@
         </div>
 
         <div class="tp" id="tp-mails">
+            <div class="tierbar" id="mailsLoadingBar"><span class="spin"></span><span>Loading email data…</span>
+            </div>
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
                 <div class="df" style="gap:6px;">
                     <span class="fl">Mail Type</span>
                     <button class="qb on" id="mTypeAll" data-mtype="all">All Mails</button>
                     <button class="qb" id="mTypePri" data-mtype="primary">🟢 Primary</button>
                     <button class="qb" id="mTypeFol" data-mtype="followup">🔄 Follow-ups</button>
+                </div>
+                <div class="df" style="gap:6px;">
+                    <span class="fl">Year</span>
+                    <select class="di" id="mYear">
+                        <option value="all">All Years</option>
+                    </select>
+                    <span class="fl">Month</span>
+                    <select class="di" id="mMonth">
+                        <option value="all">All Months</option>
+                        <option value="01">Jan</option>
+                        <option value="02">Feb</option>
+                        <option value="03">Mar</option>
+                        <option value="04">Apr</option>
+                        <option value="05">May</option>
+                        <option value="06">Jun</option>
+                        <option value="07">Jul</option>
+                        <option value="08">Aug</option>
+                        <option value="09">Sep</option>
+                        <option value="10">Oct</option>
+                        <option value="11">Nov</option>
+                        <option value="12">Dec</option>
+                    </select>
                 </div>
                 <span id="mTypeLabel"
                     style="font-size:11px;color:var(--m);padding:8px 12px;background:var(--s);border:1px solid var(--b);border-radius:8px;">Showing
@@ -274,11 +302,11 @@
                     <div class="ms" id="mBounceR">—</div>
                 </div>
             </div>
-            <div class="g2">
+            <div class="g2" style="align-items:start;">
                 <div class="cc">
                     <div class="ch">
                         <div style="display:flex; align-items:center; gap:10px;">
-                            <div class="ct">Daily Email Events</div>
+                            <div class="ct">Email Events</div>
                             <select class="di" id="mEventFilter" style="font-size:11px; padding:4px 8px;"
                                 onchange="renderAll()">
                                 <option value="all">All Events</option>
@@ -289,7 +317,18 @@
                             </select>
                         </div>
                     </div>
-                    <div class="cw" id="mDailyChart" style="min-height:240px"></div>
+                    <div style="margin-bottom:16px;">
+                        <div style="font-size:11px;color:var(--m);margin-bottom:6px;font-weight:600;">Last 7 Days</div>
+                        <div class="cw" id="mDailyChart7" style="min-height:140px"></div>
+                    </div>
+                    <div style="margin-bottom:16px;">
+                        <div style="font-size:11px;color:var(--m);margin-bottom:6px;font-weight:600;">Last Few Weeks</div>
+                        <div class="cw" id="mWeeklyChart" style="min-height:140px"></div>
+                    </div>
+                    <div>
+                        <div style="font-size:11px;color:var(--m);margin-bottom:6px;font-weight:600;">Last Few Months</div>
+                        <div class="cw" id="mMonthlyChart" style="min-height:140px"></div>
+                    </div>
                 </div>
                 <div class="cc">
                     <div class="ch">
@@ -315,6 +354,8 @@
         </div>
 
         <div class="tp" id="tp-ads">
+            <div class="tierbar" id="adsLoadingBar"><span class="spin"></span><span>Loading ads data…</span>
+            </div>
             <div class="mg" style="grid-template-columns:repeat(4,1fr);">
                 <div class="mc ye">
                     <div class="ml">Total Leads</div>
@@ -361,6 +402,8 @@
         </div>
 
         <div class="tp" id="tp-inmails">
+            <div class="tierbar" id="inmailsLoadingBar"><span class="spin"></span><span>Loading InMails data…</span>
+            </div>
             <div class="mg" style="grid-template-columns:repeat(3,1fr);">
                 <div class="mc bl">
                     <div class="ml">Total Contacts</div>
@@ -401,6 +444,8 @@
 
         <!-- ═══════════ CCBD LEADS TAB ═══════════ -->
         <div class="tp" id="tp-ccbd">
+            <div class="tierbar" id="ccbdLoadingBar"><span class="spin"></span><span>Loading CCBD leads…</span>
+            </div>
             <div style="display:flex;gap:10px;margin-bottom:16px;border-bottom:1px solid var(--b);padding-bottom:16px;">
                 <button class="qb on" id="btn-ccbd-s1" onclick="switchCCBD('ccbd-s1')">📞 Inbound Leads</button>
                 <button class="qb" id="btn-ccbd-fest" onclick="switchCCBD('ccbd-fest')">🎉 Festive Leads</button>
@@ -525,6 +570,8 @@
         </div>
 
         <div class="tp" id="tp-recurring">
+            <div class="tierbar" id="recurringLoadingBar"><span class="spin"></span><span>Loading recurring
+                    clients…</span></div>
             <div class="mg" style="grid-template-columns:repeat(3,1fr);">
                 <div class="mc gn">
                     <div class="ml">Total Recurring</div>
@@ -695,6 +742,8 @@
         </div>
 
         <div class="tp" id="tp-diwali">
+            <div class="tierbar" id="diwaliLoadingBar"><span class="spin"></span><span>Loading Diwali campaign
+                    data…</span></div>
             <div
                 style="display:flex;gap:10px;margin-bottom:16px;border-bottom:1px solid var(--b);padding-bottom:16px;flex-wrap:wrap;">
                 <button class="qb on" id="btn-d-ov" onclick="switchDiwali('d-ov')">Overview & Emails</button>
@@ -916,6 +965,8 @@
         </div>
 
         <div class="tp" id="tp-pend">
+            <div class="tierbar" id="pendLoadingBar"><span class="spin"></span><span>Loading pending delivery
+                    data…</span></div>
             <div class="mg" style="grid-template-columns:repeat(4,1fr);">
                 <div class="mc bl">
                     <div class="ml">Total Pending</div>
@@ -1022,6 +1073,8 @@
         </div>
 
         <div class="tp" id="tp-pendsales">
+            <div class="tierbar" id="pendsalesLoadingBar"><span class="spin"></span><span>Loading pending sales
+                    data…</span></div>
             <div class="g1">
                 <div class="cc">
                     <div class="ch">
@@ -1048,6 +1101,8 @@
         </div>
 
         <div class="tp" id="tp-bd">
+            <div class="tierbar" id="bdLoadingBar"><span class="spin"></span><span>Loading conversations data…</span>
+            </div>
             <div class="mg" style="grid-template-columns:repeat(4,1fr);">
                 <div class="mc ye">
                     <div class="ml">Total Leads</div>

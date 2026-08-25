@@ -63,6 +63,23 @@ body {
     background: var(--gr);
 }
 
+.dot.loading {
+    background: var(--ye);
+    animation: dotPulse 1s ease-in-out infinite;
+}
+
+@keyframes dotPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .25;
+    }
+}
+
 .wrap {
     padding: 22px 28px;
     max-width: 1400px;

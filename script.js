@@ -11,7 +11,7 @@ const LEGACY_URL = 'https://script.google.com/macros/s/AKfycbzsb5FX-sds7Hv25Cd_c
 // Noor Database (mail-merge contact tracker) — Apps Script web app that loops
 // every tab in the sheet automatically (see NoorDatabase_AppsScript.gs).
 // Paste your deployed /exec URL here:
-const NOOR_URL = '';
+const NOOR_URL = 'https://script.google.com/macros/s/AKfycbxSHX1_69dPwbYqMgec7iKxQuXPCECRPCDg4cn5ePrxcQJNCkvom98tJGIQLTIKodcRtQ/exec';
 var PENDING_SAMPLES = [], PENDING_SALES = [];
 var BD_ROWS = [], ML_PRIMARY = [], ML_FOLLOWUP = [], SALES = [], SAMPLES = [], ML_BY_DATE = [], ML_BY_IND = [], ADS = [], INMAILS = [], DW_EMAIL = []; var CCBD_ROWS = [], CCBD_FESTIVE = []; var NOOR_BY_DATE = [];
 function switchDiwali(subId) {
@@ -39,6 +39,7 @@ function fmt(n) { if (!n || isNaN(n) || n === 0) return '—'; if (n >= 100000) 
 function pct(a, b) { return b > 0 ? Math.round(a / b * 100) + '%' : '0%'; }
 function fd(d) { return d ? d.slice(5).replace('-', '/') : '—'; }
 function set(id, v) { var el = document.getElementById(id); if (el) el.textContent = v; }
+function setStatusDot(loading) { var d = document.getElementById('statusDot'); if (d) d.classList.toggle('loading', loading); }
 var tipEl = document.getElementById('tip');
 function showTip(e, h) { tipEl.innerHTML = h; tipEl.style.display = 'block'; tipEl.style.left = (e.clientX + 12) + 'px'; tipEl.style.top = (e.clientY - 30) + 'px'; }
 function hideTip() { tipEl.style.display = 'none'; }
@@ -168,10 +169,14 @@ function getMLRows() {
     var mtype = window._mtype || 'all';
     var src = mtype === 'primary' ? ML_PRIMARY : mtype === 'followup' ? ML_FOLLOWUP : combinedByDateML();
     if (!src || !src.length) src = ML_BY_DATE;
-    if (!f && !t) return src;
+    var yearEl = document.getElementById('mYear'), monthEl = document.getElementById('mMonth');
+    var year = yearEl ? yearEl.value : 'all', month = monthEl ? monthEl.value : 'all';
+    if (!f && !t && year === 'all' && month === 'all') return src;
     return src.filter(function (d) {
         if (f && d.date < f) return false;
         if (t && d.date > t) return false;
+        if (year !== 'all' && d.date.slice(0, 4) !== year) return false;
+        if (month !== 'all' && d.date.slice(5, 7) !== month) return false;
         return true;
     });
 }
@@ -270,6 +275,7 @@ function renderCCBD() {
 
 function renderAll() {
     var sales = fSales(), ads = fAds();
+    populateMYearFilter();
     var mlRows = getMLRows();
 
     var tSalesAmt = sales.reduce(function (a, s) { return a + s.amt; }, 0);
@@ -337,16 +343,55 @@ function renderAll() {
     set('mBounce', mlBounce.toLocaleString()); set('mBounceR', pct(mlBounce, mlDel) + ' bounce rate');
 
     var evFilter = document.getElementById('mEventFilter') ? document.getElementById('mEventFilter').value : 'all';
-    var allEventDatasets = [
-        { id: 'del', label: 'Delivered', data: mlRows.map(function (r) { return r.del; }), color: '#3b82f6', vf: function (v) { return v.toLocaleString(); } },
-        { id: 'open', label: 'Opened', data: mlRows.map(function (r) { return r.open; }), color: '#7c3aed', vf: function (v, i) { return v.toLocaleString() + ' (' + pct(v, mlRows[i].del) + ' rate)'; } },
-        { id: 'click', label: 'Clicked', data: mlRows.map(function (r) { return r.click; }), color: '#f97316', vf: function (v, i) { return v.toLocaleString() + ' (' + pct(v, mlRows[i].del) + ' rate)'; } },
-        { id: 'resp', label: 'Responded', data: mlRows.map(function (r) { return r.resp; }), color: '#22c55e', vf: function (v, i) { return v.toLocaleString() + ' (' + pct(v, mlRows[i].del) + ' rate)'; } }
+    var eventDefs = [
+        { id: 'del', label: 'Delivered', color: '#3b82f6' },
+        { id: 'open', label: 'Opened', color: '#7c3aed' },
+        { id: 'click', label: 'Clicked', color: '#f97316' },
+        { id: 'resp', label: 'Responded', color: '#22c55e' }
     ];
+    var eventFields = evFilter === 'all' ? eventDefs : eventDefs.filter(function (d) { return d.id === evFilter; });
+    function mkEventDatasets(rows) {
+        return eventFields.map(function (ev) {
+            return {
+                label: ev.label, color: ev.color,
+                data: rows.map(function (r) { return r[ev.id] || 0; }),
+                vf: ev.id === 'del'
+                    ? function (v) { return v.toLocaleString(); }
+                    : function (v, i) { return v.toLocaleString() + ' (' + pct(v, rows[i].del) + ' rate)'; }
+            };
+        });
+    }
 
-    var chartDatasets = evFilter === 'all' ? allEventDatasets : allEventDatasets.filter(function (d) { return d.id === evFilter; });
+    // Plotting every day at once made the chart an unreadable knot of thin
+    // spikes across ~3 months. Instead show three resolutions: the raw last
+    // 7 days, weekly totals for recent weeks, and monthly totals for recent
+    // months — each readable at its own zoom level.
+    var last7Rows = mlRows.slice(-7);
+    barChart('mDailyChart7', last7Rows.map(function (r) { return fd(r.date); }), mkEventDatasets(last7Rows), 140);
 
-    barChart('mDailyChart', mlRows.map(function (r) { return fd(r.date); }), chartDatasets, 240);
+    var byWeekEv = {};
+    mlRows.forEach(function (r) {
+        var wk = getWeekMonday(r.date);
+        byWeekEv[wk] = byWeekEv[wk] || { date: wk, del: 0, open: 0, click: 0, resp: 0 };
+        ['del', 'open', 'click', 'resp'].forEach(function (k) { byWeekEv[wk][k] += r[k] || 0; });
+    });
+    var weekRows = Object.values(byWeekEv).sort(function (a, b) { return a.date.localeCompare(b.date); }).slice(-10);
+    var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var weekLbls = weekRows.map(function (r) {
+        var p = r.date.split('-'); var d1 = new Date(+p[0], +p[1] - 1, +p[2]); var d2 = new Date(d1); d2.setDate(d1.getDate() + 6);
+        return monthNames[d1.getMonth()] + ' ' + d1.getDate() + '-' + monthNames[d2.getMonth()] + ' ' + d2.getDate();
+    });
+    barChart('mWeeklyChart', weekLbls, mkEventDatasets(weekRows), 140);
+
+    var byMonthEv = {};
+    mlRows.forEach(function (r) {
+        var mk = r.date.slice(0, 7);
+        byMonthEv[mk] = byMonthEv[mk] || { date: mk, del: 0, open: 0, click: 0, resp: 0 };
+        ['del', 'open', 'click', 'resp'].forEach(function (k) { byMonthEv[mk][k] += r[k] || 0; });
+    });
+    var monthRows = Object.values(byMonthEv).sort(function (a, b) { return a.date.localeCompare(b.date); }).slice(-6);
+    var monthLbls = monthRows.map(function (r) { var p = r.date.split('-'); return monthNames[+p[1] - 1] + ' ' + p[0]; });
+    barChart('mMonthlyChart', monthLbls, mkEventDatasets(monthRows), 140);
     hbar('mIndChart', ML_BY_IND.map(function (m) { return m.ind; }),
         ML_BY_IND.map(function (m) { return +(pct(m.open, m.del).replace('%', '')); }),
         ['#7c3aed', '#6d28d9', '#5b21b6', '#4c1d95'], function (v) { return v + '% open'; });
@@ -491,6 +536,19 @@ function populateSmYearFilter() {
     if (!el) return;
     var cur = el.value;
     var years = smYearsInData();
+    el.innerHTML = '<option value="all">All Years</option>' + years.map(function (y) { return '<option value="' + y + '">' + y + '</option>'; }).join('');
+    if (years.indexOf(cur) !== -1) el.value = cur;
+}
+function mYearsInData() {
+    var years = {};
+    (combinedByDateML() || []).forEach(function (d) { if (d.date) years[d.date.slice(0, 4)] = 1; });
+    return Object.keys(years).sort();
+}
+function populateMYearFilter() {
+    var el = document.getElementById('mYear');
+    if (!el) return;
+    var cur = el.value;
+    var years = mYearsInData();
     el.innerHTML = '<option value="all">All Years</option>' + years.map(function (y) { return '<option value="' + y + '">' + y + '</option>'; }).join('');
     if (years.indexOf(cur) !== -1) el.value = cur;
 }
@@ -728,6 +786,7 @@ function renderSamples() {
 
 if (document.getElementById('bdPhase')) { ['bdPhase', 'bdSource', 'bdPoc'].forEach(function (id) { var el = document.getElementById(id); if (el) el.addEventListener('change', renderBD); }); }
 if (document.getElementById('smProd')) { ['smProd', 'smBy', 'smYear', 'smMonth'].forEach(function (id) { var el = document.getElementById(id); if (el) el.addEventListener('change', renderSamples); }); }
+if (document.getElementById('mYear')) { ['mYear', 'mMonth'].forEach(function (id) { var el = document.getElementById(id); if (el) el.addEventListener('change', renderAll); }); }
 
 function renderPending() {
     var today = new Date();
@@ -828,10 +887,48 @@ var sSortEl = document.getElementById('sSort'); if (sSortEl) sSortEl.addEventLis
 
 
 // ── BOOT ──────────────────────────────────────────────────
+// Skips the old immediate renderAll() here on purpose — with every data
+// array still empty at this point, that pass used to compute real zeros
+// (not just leave the "—" placeholders alone) and paint them before any
+// fetch had a chance to land, so the dashboard looked stuck at 0 for as
+// long as the Apps Script chain below took to resolve. The "—" placeholders
+// already baked into the HTML are the loading state; the pulsing amber
+// status dot (cleared once SHEET_URL settles, below) backs that up.
 window.addEventListener('load', function () {
-    requestAnimationFrame(function () { requestAnimationFrame(function () { renderAll(); }); });
+    // Per-tab loading banners: each tab's data comes from a different Apps
+    // Script fetch, and those resolve at very different speeds — a single
+    // page-wide banner would clear the instant the fastest one lands, hiding
+    // the fact that slower tabs are still empty. So each tab gets its own
+    // tierbar-style notice (same style as Samples' own, more granular one
+    // below), tied to whichever source(s) actually feed that tab. A bar's
+    // count can be >1 (e.g. Overview needs both SHEET_URL and LEGACY_URL;
+    // Mails needs LEGACY_URL and the Noor merge) — it only hides once every
+    // source feeding it has settled, success or failure.
+    var LOADING_GROUPS = {
+        sheet: ['ovLoadingBar', 'salesLoadingBar'],
+        legacy1: ['ovLoadingBar', 'mailsLoadingBar', 'adsLoadingBar', 'inmailsLoadingBar', 'ccbdLoadingBar', 'pendsalesLoadingBar'],
+        noor: ['mailsLoadingBar'],
+        bd: ['recurringLoadingBar', 'bdLoadingBar'],
+        diwali: ['diwaliLoadingBar'],
+        legacy2: ['pendLoadingBar']
+    };
+    var barPending = {};
+    function markLoading(group) {
+        LOADING_GROUPS[group].forEach(function (id) {
+            barPending[id] = (barPending[id] || 0) + 1;
+            var el = document.getElementById(id);
+            if (el) el.style.display = 'flex';
+        });
+    }
+    function clearLoading(group) {
+        LOADING_GROUPS[group].forEach(function (id) {
+            barPending[id] = Math.max(0, (barPending[id] || 0) - 1);
+            if (barPending[id] === 0) { var el = document.getElementById(id); if (el) el.style.display = 'none'; }
+        });
+    }
 
     if (typeof SHEET_URL !== 'undefined' && SHEET_URL) {
+        markLoading('sheet');
         (function () {
             var ctrl = new AbortController();
             var timeoutId = setTimeout(function () { ctrl.abort(); }, 60000);
@@ -872,15 +969,20 @@ window.addEventListener('load', function () {
                     }
 
                     document.getElementById('stxt').textContent = 'live · google sheets';
+                    setStatusDot(false);
+                    clearLoading('sheet');
                     renderAll();
                 }).catch(function (err) {
                     console.error("SHEET_URL Fetch Error:", err);
                     document.getElementById('stxt').textContent = 'cached data (fetch failed)';
+                    setStatusDot(false);
+                    clearLoading('sheet');
                 });
         })();
     }
 
     if (typeof LEGACY_URL !== 'undefined' && LEGACY_URL) {
+        markLoading('legacy1');
         (function () {
             var ctrl = new AbortController();
             var timeoutId = setTimeout(function () { ctrl.abort(); }, 60000);
@@ -1057,15 +1159,18 @@ window.addEventListener('load', function () {
                         });
                     }
 
+                    clearLoading('legacy1');
                     renderAll();
                 }).catch(function (err) {
                     console.error("LEGACY_URL Fetch Error:", err);
+                    clearLoading('legacy1');
                 });
         })();
     }
 
 
     if (typeof NOOR_URL !== 'undefined' && NOOR_URL) {
+        markLoading('noor');
         (function () {
             // Header labels look like "Previous Merge - 30 Jul 26" — pull the trailing date out.
             var MONTHS = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
@@ -1128,13 +1233,15 @@ window.addEventListener('load', function () {
 
                     NOOR_BY_DATE = Object.values(NOOR_AGG).sort(function (a, b) { return a.date.localeCompare(b.date); });
                     console.log('Noor Database: ' + totalSent + ' merge-sends aggregated across ' + tabsUsed + ' of ' + Object.keys(raw).length + ' tab(s)' + (tabsEmpty.length ? ' — skipped (no merge columns): ' + tabsEmpty.join(', ') : ''));
+                    clearLoading('noor');
                     renderAll();
                 })
-                .catch(function (e) { console.warn('Noor Database fetch failed', e); });
+                .catch(function (e) { console.warn('Noor Database fetch failed', e); clearLoading('noor'); });
         })();
     }
 
     if (typeof BD_URL !== 'undefined' && BD_URL) {
+        markLoading('bd');
         fetch(BD_URL + '?t=' + Date.now(), { cache: 'no-store', redirect: 'follow' }).then(function (r) { return r.json(); }).then(function (bdRaw) {
             BD_ROWS = (bdRaw['Sheet1'] || []).slice(1).filter(function (r) { return r[0] || r[1]; }).map(function (r) {
                 var dRaw = r[0], ds = '';
@@ -1149,10 +1256,12 @@ window.addEventListener('load', function () {
             var rcRaw = (bdRaw['Recurring clients'] || []).slice(1);
             RC_ROWS = rcRaw.filter(function (r) { return r[0] || r[1]; }).map(function (r) { return { client: String(r[0] || '').trim(), poc: String(r[1] || '').trim(), phone: String(r[2] || '').trim(), location: String(r[3] || '').trim(), revenue: String(r[4] || '').trim(), orders: String(r[5] || '').trim(), dates: String(r[6] || '').trim() }; });
             renderRecurring();
-        }).catch(function (e) { });
+            clearLoading('bd');
+        }).catch(function (e) { clearLoading('bd'); });
     }
 
     if (typeof DIWALI_URL !== 'undefined' && DIWALI_URL) {
+        markLoading('diwali');
         fetch(DIWALI_URL + '?t=' + Date.now(), { cache: 'no-store', redirect: 'follow' })
             .then(function (r) { return r.json(); })
             .then(function (dw) {
@@ -1246,10 +1355,12 @@ window.addEventListener('load', function () {
                 });
                 DW_EMAIL = Object.values(etMap).filter(function (m) { return m.totalSent > 0; });
                 renderDiwaliEmail();
-            }).catch(function (e) { console.warn('Diwali extras fetch failed', e); });
+                clearLoading('diwali');
+            }).catch(function (e) { console.warn('Diwali extras fetch failed', e); clearLoading('diwali'); });
     }
 
     if (typeof LEGACY_URL !== 'undefined' && LEGACY_URL) {
+        markLoading('legacy2');
         fetch(LEGACY_URL + '?t=' + Date.now(), { cache: 'no-store', redirect: 'follow' })
             .then(function (r) { return r.json(); })
             .then(function (sRaw) {
@@ -1282,8 +1393,9 @@ window.addEventListener('load', function () {
                 if (typeSel) typeSel.addEventListener('change', renderPending);
                 console.log('Pending samples loaded: ' + PENDING_SAMPLES.length + ' rows');
                 renderPending();
+                clearLoading('legacy2');
             })
-            .catch(function (e) { console.warn('Pending samples fetch failed', e); });
+            .catch(function (e) { console.warn('Pending samples fetch failed', e); clearLoading('legacy2'); });
     }
 
     function parseSampleRows(raw) {
