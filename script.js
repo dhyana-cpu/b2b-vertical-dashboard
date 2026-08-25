@@ -8,8 +8,10 @@ const DIWALI_URL = 'https://script.google.com/macros/s/AKfycbwWOXAeQl5-KCG90vYob
 const PENDING_SAMPLES_URL = 'https://script.google.com/macros/s/AKfycbxPgaV6qRo4b5t4MmcWJimbsanDLMkT-I-3REEgiYFYvJdkmCJ6hDZnntyCYX20Ouyq/exec';
 // Old multi-tab sheet (Mails/Ads/InMails/CCBD) — kept separate now that SHEET_URL points at the new single Active Orders sheet:
 const LEGACY_URL = 'https://script.google.com/macros/s/AKfycbzsb5FX-sds7Hv25Cd_crPLtJGqTDWaPDuNz10Z68UvaHjD_US5bLys6ncfkY_Wm1ibzA/exec';
-// Noor Database (mail-merge contact tracker) — read-only public Google Sheet, pulled via gviz JSON:
-const NOOR_SHEET_ID = '1vCd7Qk8c3R79kMvNjdkjGFQFZMCbNHL-XGRgqxYp5gQ';
+// Noor Database (mail-merge contact tracker) — Apps Script web app that loops
+// every tab in the sheet automatically (see NoorDatabase_AppsScript.gs).
+// Paste your deployed /exec URL here:
+const NOOR_URL = '';
 var PENDING_SAMPLES = [], PENDING_SALES = [];
 var BD_ROWS = [], ML_PRIMARY = [], ML_FOLLOWUP = [], SALES = [], SAMPLES = [], ML_BY_DATE = [], ML_BY_IND = [], ADS = [], INMAILS = [], DW_EMAIL = []; var CCBD_ROWS = [], CCBD_FESTIVE = []; var NOOR_BY_DATE = [];
 function switchDiwali(subId) {
@@ -101,7 +103,13 @@ function barChart(id, labels, datasets, h) {
             }
         });
     });
+    // Too many bars means every x-axis label gets drawn and they all pile up
+    // into an unreadable knot — only show every Nth label once there are more
+    // than ~18 of them, spaced out so the ones shown stay legible.
+    var maxLabels = 18;
+    var labelStep = Math.max(1, Math.ceil(labels.length / maxLabels));
     labels.forEach(function (lbl, i) {
+        if (i % labelStep !== 0 && i !== labels.length - 1) return;
         var x = (P.l + i * (cW / labels.length) + (cW / labels.length) / 2) | 0;
         var ty = h - 8;
         s += '<text x="' + x + '" y="' + ty + '" text-anchor="end" fill="#aaa" font-size="9" font-family="system-ui" transform="rotate(-45,' + x + ',' + ty + ')">' + lbl + '</text>';
@@ -117,13 +125,22 @@ function hbar(id, labels, values, colors, vf) {
     var W = Math.max(el.getBoundingClientRect().width, el.clientWidth, el.offsetWidth) || 500, maxV = 0;
     values.forEach(function (v) { if (v > maxV) maxV = v; });
     if (maxV === 0) maxV = 1;
-    var rowH = 32, P = { l: 115, r: 55, t: 4 }, H = labels.length * rowH + P.t * 2;
+    // Left margin used to be fixed at 115px, so any label longer than that ran
+    // off the left edge of the SVG and got clipped mid-word. Size it to the
+    // longest label instead (capped so a single long name can't eat the chart),
+    // and truncate anything that still won't fit — full text stays in the tooltip.
+    var CHAR_W = 5.7, MIN_L = 90, MAX_L = 230;
+    var maxLabelLen = labels.reduce(function (m, l) { return Math.max(m, String(l).length); }, 0);
+    var lblAreaW = Math.min(MAX_L, Math.max(MIN_L, Math.round(maxLabelLen * CHAR_W) + 16));
+    var allowedChars = Math.max(4, Math.floor((lblAreaW - 14) / CHAR_W));
+    function truncLbl(l) { l = String(l); return l.length > allowedChars ? l.slice(0, allowedChars - 1) + '…' : l; }
+    var rowH = 32, P = { l: lblAreaW, r: 55, t: 4 }, H = labels.length * rowH + P.t * 2;
     var s = '<svg width="' + W + '" height="' + H + '" xmlns="http://www.w3.org/2000/svg">';
     labels.forEach(function (lbl, i) {
         var y = P.t + i * rowH, bW = ((values[i] || 0) / maxV) * (W - P.l - P.r);
         var col = Array.isArray(colors) ? colors[i % colors.length] : colors;
         var tv = vf ? vf(values[i]) : '' + Math.round(values[i]);
-        s += '<text x="' + (P.l - 7) + '" y="' + (y + rowH / 2 + 4) + '" text-anchor="end" fill="#aaa" font-size="10" font-family="system-ui">' + lbl + '</text>';
+        s += '<text x="' + (P.l - 7) + '" y="' + (y + rowH / 2 + 4) + '" text-anchor="end" fill="#aaa" font-size="10" font-family="system-ui"><title>' + lbl + '</title>' + truncLbl(lbl) + '</text>';
         s += '<rect x="' + P.l + '" y="' + (y + 5) + '" width="' + Math.max(bW, 3).toFixed(1) + '" height="' + (rowH - 12) + '" fill="' + col + '" rx="3" opacity=".85" style="cursor:pointer" onmouseenter="showTip(event,\'' + lbl + ': ' + tv + '\')" onmouseleave="hideTip()"/>';
         s += '<text x="' + (P.l + bW + 7) + '" y="' + (y + rowH / 2 + 4) + '" fill="#ccc" font-size="10" font-family="system-ui">' + tv + '</text>';
     });
@@ -1048,9 +1065,9 @@ window.addEventListener('load', function () {
     }
 
 
-    if (typeof NOOR_SHEET_ID !== 'undefined' && NOOR_SHEET_ID) {
+    if (typeof NOOR_URL !== 'undefined' && NOOR_URL) {
         (function () {
-            // Parses "Previous Merge - 30 Jul 26" style headers into an ISO date.
+            // Header labels look like "Previous Merge - 30 Jul 26" — pull the trailing date out.
             var MONTHS = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
             function parseMergeHeaderDate(label) {
                 var m = String(label || '').match(/(\d{1,2})\s+([A-Za-z]{3,})\s+(\d{2,4})/);
@@ -1066,48 +1083,51 @@ window.addEventListener('load', function () {
             // Status is cumulative per merge column (SENT < OPENED < CLICKED < RESPONDED);
             // BOUNCED means the send failed, so it's counted separately and not as a delivery.
             var STATUS_LEVELS = { 'EMAIL_SENT': 0, 'EMAIL_OPENED': 1, 'EMAIL_CLICKED': 2, 'RESPONDED': 3, 'EMAIL_RESPONDED': 3 };
-            var url = 'https://docs.google.com/spreadsheets/d/' + NOOR_SHEET_ID + '/gviz/tq?tqx=out:json&headers=1&t=' + Date.now();
-            fetch(url, { cache: 'no-store', redirect: 'follow' })
-                .then(function (r) { return r.text(); })
-                .then(function (txt) {
-                    var m = txt.match(/setResponse\(([\s\S]*)\);?\s*$/);
-                    if (!m) throw new Error('Unexpected gviz response shape');
-                    var json = JSON.parse(m[1]);
-                    var cols = (json.table && json.table.cols) || [];
-                    var rows = (json.table && json.table.rows) || [];
-                    var mergeCols = []; // {idx, date}
-                    cols.forEach(function (c, i) {
-                        var label = String(c.label || '').trim();
-                        if (/previous merge/i.test(label)) {
-                            var ds = parseMergeHeaderDate(label);
-                            if (ds) mergeCols.push({ idx: i, date: ds });
-                        }
-                    });
-                    if (!mergeCols.length) { console.warn('Noor Database: no "Previous Merge" columns found'); return; }
-                    var byDate = {};
-                    var emailsCounted = 0;
-                    rows.forEach(function (row) {
-                        if (!row || !row.c) return;
-                        var company = row.c[3] && row.c[3].v != null ? String(row.c[3].v).trim() : '';
-                        var email = row.c[4] && row.c[4].v != null ? String(row.c[4].v).trim() : '';
-                        if (!company && !email) return; // skip blank spacer rows
-                        mergeCols.forEach(function (mc) {
-                            var cell = row.c[mc.idx];
-                            var status = cell && cell.v != null ? String(cell.v).trim().toUpperCase() : '';
-                            if (!status) return;
-                            if (!byDate[mc.date]) byDate[mc.date] = { date: mc.date, del: 0, open: 0, click: 0, resp: 0, bounce: 0 };
-                            if (status === 'BOUNCED') { byDate[mc.date].bounce++; return; }
-                            var lvl = STATUS_LEVELS[status];
-                            if (lvl === undefined) return; // unrecognized status, skip
-                            emailsCounted++;
-                            byDate[mc.date].del++;
-                            if (lvl >= 1) byDate[mc.date].open++;
-                            if (lvl >= 2) byDate[mc.date].click++;
-                            if (lvl >= 3) byDate[mc.date].resp++;
+
+            fetch(NOOR_URL + '?t=' + Date.now(), { cache: 'no-store', redirect: 'follow' })
+                .then(function (r) { return r.json(); })
+                .then(function (raw) {
+                    var NOOR_AGG = {};
+                    var totalSent = 0, tabsUsed = 0, tabsEmpty = [];
+
+                    Object.keys(raw).forEach(function (tabName) {
+                        var values = raw[tabName] || [];
+                        if (!values.length) { tabsEmpty.push(tabName); return; }
+                        var header = values[0] || [];
+                        var mergeCols = []; // {idx, date}
+                        header.forEach(function (label, i) {
+                            var lbl = String(label || '').trim();
+                            if (/previous merge/i.test(lbl)) {
+                                var ds = parseMergeHeaderDate(lbl);
+                                if (ds) mergeCols.push({ idx: i, date: ds });
+                            }
+                        });
+                        if (!mergeCols.length) { tabsEmpty.push(tabName); return; }
+                        tabsUsed++;
+
+                        values.slice(1).forEach(function (row) {
+                            if (!row) return;
+                            var company = row[3] != null ? String(row[3]).trim() : '';
+                            var email = row[4] != null ? String(row[4]).trim() : '';
+                            if (!company && !email) return; // skip blank spacer rows
+                            mergeCols.forEach(function (mc) {
+                                var status = row[mc.idx] != null ? String(row[mc.idx]).trim().toUpperCase() : '';
+                                if (!status) return;
+                                if (!NOOR_AGG[mc.date]) NOOR_AGG[mc.date] = { date: mc.date, del: 0, open: 0, click: 0, resp: 0, bounce: 0 };
+                                if (status === 'BOUNCED') { NOOR_AGG[mc.date].bounce++; return; }
+                                var lvl = STATUS_LEVELS[status];
+                                if (lvl === undefined) return; // unrecognized status, skip
+                                totalSent++;
+                                NOOR_AGG[mc.date].del++;
+                                if (lvl >= 1) NOOR_AGG[mc.date].open++;
+                                if (lvl >= 2) NOOR_AGG[mc.date].click++;
+                                if (lvl >= 3) NOOR_AGG[mc.date].resp++;
+                            });
                         });
                     });
-                    NOOR_BY_DATE = Object.values(byDate).sort(function (a, b) { return a.date.localeCompare(b.date); });
-                    console.log('Noor Database: ' + emailsCounted + ' merge-sends aggregated across ' + mergeCols.length + ' campaign(s)');
+
+                    NOOR_BY_DATE = Object.values(NOOR_AGG).sort(function (a, b) { return a.date.localeCompare(b.date); });
+                    console.log('Noor Database: ' + totalSent + ' merge-sends aggregated across ' + tabsUsed + ' of ' + Object.keys(raw).length + ' tab(s)' + (tabsEmpty.length ? ' — skipped (no merge columns): ' + tabsEmpty.join(', ') : ''));
                     renderAll();
                 })
                 .catch(function (e) { console.warn('Noor Database fetch failed', e); });
