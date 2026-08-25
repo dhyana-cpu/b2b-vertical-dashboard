@@ -37,6 +37,7 @@ function switchCCBD(subId) {
 
 function fmt(n) { if (!n || isNaN(n) || n === 0) return '—'; if (n >= 100000) return '₹' + (n / 100000).toFixed(1) + 'L'; if (n >= 1000) return '₹' + (n / 1000).toFixed(0) + 'K'; return '₹' + Math.round(n); }
 function pct(a, b) { return b > 0 ? Math.round(a / b * 100) + '%' : '0%'; }
+function pctDec(a, b, dec) { dec = dec || 2; return b > 0 ? (a / b * 100).toFixed(dec) + '%' : '0.00%'; }
 function fd(d) { return d ? d.slice(5).replace('-', '/') : '—'; }
 function set(id, v) { var el = document.getElementById(id); if (el) el.textContent = v; }
 function setStatusDot(loading) { var d = document.getElementById('statusDot'); if (d) d.classList.toggle('loading', loading); }
@@ -287,17 +288,17 @@ function renderAll() {
     var totalLeads = ads.length, totalConv = ads.filter(function (a) { return a.conv === 'Yes'; }).length;
 
     set('tSales', fmt(tSalesAmt) || '₹0'); set('tOrders', sales.length + ' orders');
-    set('tDel', mlDel.toLocaleString()); set('tOpenR', pct(mlOpen, mlDel) + ' open rate');
-    set('tResp', mlResp); set('tRespR', pct(mlResp, mlDel) + ' response rate');
+    set('tDel', mlDel.toLocaleString()); set('tOpenR', pctDec(mlOpen, mlDel) + ' open rate');
+    set('tResp', mlResp); set('tRespR', pctDec(mlResp, mlDel) + ' response rate');
     set('tLeads', totalLeads); set('tConvR', totalConv + ' converted · ' + pct(totalConv, totalLeads || 1));
 
     set('tInmail', INMAILS.length); set('tInmailS', 'FM: ' + INMAILS.filter(function (i) { return i.ind === 'FM'; }).length + ' · IT: ' + INMAILS.filter(function (i) { return i.ind === 'IT'; }).length);
     set('fi', (sales.length + ads.length) + ' records');
 
     set('fcDel', mlDel.toLocaleString());
-    set('fcOpen', mlOpen); set('fcOpenR', pct(mlOpen, mlDel));
-    set('fcClick', mlClick); set('fcClickR', pct(mlClick, mlDel));
-    set('fcResp', mlResp); set('fcRespR', pct(mlResp, mlDel));
+    set('fcOpen', mlOpen); set('fcOpenR', pctDec(mlOpen, mlDel));
+    set('fcClick', mlClick); set('fcClickR', pctDec(mlClick, mlDel));
+    set('fcResp', mlResp); set('fcRespR', pctDec(mlResp, mlDel));
     var setFbar = function (id, pctId, v, total) {
         var el = document.getElementById(id), pel = document.getElementById(pctId);
         var p = total > 0 ? v / total * 100 : 0;
@@ -337,10 +338,10 @@ function renderAll() {
     hbar('ovPoc', pocs.map(function (p) { return p[0]; }), pocs.map(function (p) { return p[1]; }), ['#a78bfa', '#7c3aed', '#6d28d9', '#5b21b6'], fmt);
 
     set('mDel', mlDel.toLocaleString()); set('mDelS', mlRows.length + ' days');
-    set('mOpen', mlOpen.toLocaleString()); set('mOpenR', pct(mlOpen, mlDel) + ' open rate');
-    set('mClick', mlClick.toLocaleString()); set('mClickR', pct(mlClick, mlDel) + ' click rate');
-    set('mResp', mlResp.toLocaleString()); set('mRespR', pct(mlResp, mlDel) + ' resp rate');
-    set('mBounce', mlBounce.toLocaleString()); set('mBounceR', pct(mlBounce, mlDel) + ' bounce rate');
+    set('mOpen', mlOpen.toLocaleString()); set('mOpenR', pctDec(mlOpen, mlDel) + ' open rate');
+    set('mClick', mlClick.toLocaleString()); set('mClickR', pctDec(mlClick, mlDel) + ' click rate');
+    set('mResp', mlResp.toLocaleString()); set('mRespR', pctDec(mlResp, mlDel) + ' resp rate');
+    set('mBounce', mlBounce.toLocaleString()); set('mBounceR', pctDec(mlBounce, mlDel) + ' bounce rate');
 
     var evFilter = document.getElementById('mEventFilter') ? document.getElementById('mEventFilter').value : 'all';
     var eventDefs = [
@@ -357,7 +358,7 @@ function renderAll() {
                 data: rows.map(function (r) { return r[ev.id] || 0; }),
                 vf: ev.id === 'del'
                     ? function (v) { return v.toLocaleString(); }
-                    : function (v, i) { return v.toLocaleString() + ' (' + pct(v, rows[i].del) + ' rate)'; }
+                    : function (v, i) { return v.toLocaleString() + ' (' + pctDec(v, rows[i].del) + ' rate)'; }
             };
         });
     }
@@ -398,8 +399,8 @@ function renderAll() {
 
     var mTD = ML_BY_IND.reduce(function (a, m) { return a + m.del; }, 0), mTO = ML_BY_IND.reduce(function (a, m) { return a + m.open; }, 0), mTC = ML_BY_IND.reduce(function (a, m) { return a + m.click; }, 0), mTR = ML_BY_IND.reduce(function (a, m) { return a + m.resp; }, 0);
     if (document.getElementById('mIndTable')) {
-        document.getElementById('mIndTable').innerHTML = ML_BY_IND.map(function (m) { return '<div class="mrow"><span style="color:#eee">' + m.ind + '</span><span>' + m.del.toLocaleString() + '</span><span>' + m.open.toLocaleString() + ' <span class="rate">' + pct(m.open, m.del) + '</span></span><span>' + m.click.toLocaleString() + ' <span class="rate">' + pct(m.click, m.del) + '</span></span><span>' + m.resp.toLocaleString() + ' <span class="rate">' + pct(m.resp, m.del) + '</span></span></div>'; }).join('');
-        document.getElementById('mIndTotal').innerHTML = '<span>TOTAL</span><span>' + mTD.toLocaleString() + '</span><span>' + mTO.toLocaleString() + ' <span class="rate">' + pct(mTO, mTD) + '</span></span><span>' + mTC.toLocaleString() + ' <span class="rate">' + pct(mTC, mTD) + '</span></span><span>' + mTR.toLocaleString() + ' <span class="rate">' + pct(mTR, mTD) + '</span></span>';
+        document.getElementById('mIndTable').innerHTML = ML_BY_IND.map(function (m) { return '<div class="mrow"><span style="color:#eee">' + m.ind + '</span><span>' + m.del.toLocaleString() + '</span><span>' + m.open.toLocaleString() + ' <span class="rate">' + pctDec(m.open, m.del) + '</span></span><span>' + m.click.toLocaleString() + ' <span class="rate">' + pctDec(m.click, m.del) + '</span></span><span>' + m.resp.toLocaleString() + ' <span class="rate">' + pctDec(m.resp, m.del) + '</span></span></div>'; }).join('');
+        document.getElementById('mIndTotal').innerHTML = '<span>TOTAL</span><span>' + mTD.toLocaleString() + '</span><span>' + mTO.toLocaleString() + ' <span class="rate">' + pctDec(mTO, mTD) + '</span></span><span>' + mTC.toLocaleString() + ' <span class="rate">' + pctDec(mTC, mTD) + '</span></span><span>' + mTR.toLocaleString() + ' <span class="rate">' + pctDec(mTR, mTD) + '</span></span>';
     }
 
     var avg = sales.length ? tSalesAmt / sales.length : 0;
